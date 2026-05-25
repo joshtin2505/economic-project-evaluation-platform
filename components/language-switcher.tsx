@@ -1,7 +1,7 @@
 "use client"
 
 import { useLocale } from "next-intl"
-import { useRouter, usePathname } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -19,13 +19,10 @@ const languages = [
 export function LanguageSwitcher() {
   const locale = useLocale()
   const router = useRouter()
-  const pathname = usePathname()
 
   const switchLocale = (newLocale: string) => {
-    const segments = pathname.split("/")
-    segments[1] = newLocale
-    const newPath = segments.join("/")
-    router.push(newPath)
+    document.cookie = `locale=${newLocale}; path=/; max-age=31536000`
+    router.refresh()
   }
 
   const currentLanguage = languages.find((lang) => lang.code === locale)

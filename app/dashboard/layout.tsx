@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useLocale, useTranslations } from "next-intl"
 import {
   LayoutDashboard,
   FolderKanban,
@@ -45,6 +46,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { cn } from "@/lib/utils"
+import { LanguageSwitcher } from "@/components/language-switcher"
 
 const mainNavItems = [
   { title: "Overview", href: "/dashboard", icon: LayoutDashboard },
@@ -87,6 +89,10 @@ function getBreadcrumbs(pathname: string) {
 
 function AppSidebar() {
   const pathname = usePathname()
+  const locale = useLocale()
+  const t = useTranslations("dashboard.sidebar")
+
+  const basePath = "/dashboard"
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
@@ -100,7 +106,9 @@ function AppSidebar() {
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">EconoLab</span>
-                  <span className="text-xs text-sidebar-foreground/60">Economic Analysis</span>
+                  <span className="text-xs text-sidebar-foreground/60">
+                    {locale === "es" ? "Análisis Económico" : "Economic Analysis"}
+                  </span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -110,7 +118,7 @@ function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Main</SidebarGroupLabel>
+          <SidebarGroupLabel>{locale === "es" ? "Principal" : "Main"}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainNavItems.map((item) => (
@@ -132,7 +140,7 @@ function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Analysis</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("analysis")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {analysisNavItems.map((item) => (
@@ -154,7 +162,7 @@ function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Other</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("configuration")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {otherNavItems.map((item) => (
@@ -179,10 +187,10 @@ function AppSidebar() {
       <SidebarFooter className="border-t border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="New Project">
+            <SidebarMenuButton asChild tooltip={t("newProject")}>
               <Link href="/dashboard/projects/new" className="bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90">
                 <Plus className="h-4 w-4" />
-                <span>New Project</span>
+                <span>{t("newProject")}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -231,6 +239,7 @@ function DashboardHeader() {
             className="h-9 w-64 bg-muted/50 pl-9"
           />
         </div>
+        <LanguageSwitcher />
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-4 w-4" />
           <Badge className="absolute -right-1 -top-1 h-4 w-4 rounded-full p-0 text-[10px]">
