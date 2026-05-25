@@ -1,0 +1,486 @@
+{
+  "common": {
+    "appName": "EconoLab",
+    "tagline": "Economic Project Evaluation Platform",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "logout": "Logout",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "download": "Download",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information",
+    "yes": "Yes",
+    "no": "No",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "finish": "Finish",
+    "language": "Language",
+    "spanish": "Spanish",
+    "english": "English"
+  },
+  "landing": {
+    "nav": {
+      "features": "Features",
+      "indicators": "Indicators",
+      "howItWorks": "How It Works",
+      "contact": "Contact",
+      "login": "Login",
+      "startFree": "Start Free"
+    },
+    "hero": {
+      "badge": "Engineering Economics Simplified",
+      "title": "Evaluate your investment projects with",
+      "titleHighlight": "scientific precision",
+      "description": "Comprehensive platform for economic viability analysis. Calculate NPV, IRR, Benefit/Cost ratio and more with step-by-step methodology.",
+      "cta": "Start Analysis",
+      "demo": "Watch Demo",
+      "stats": {
+        "projects": "Projects Analyzed",
+        "accuracy": "Calculation Accuracy",
+        "users": "Active Users"
+      }
+    },
+    "features": {
+      "title": "Everything you need to evaluate projects",
+      "subtitle": "Professional engineering economics tools at your fingertips",
+      "vpn": {
+        "title": "NPV Analysis",
+        "description": "Calculate Net Present Value with detailed cash flows and customizable discount rates."
+      },
+      "tir": {
+        "title": "IRR Calculation",
+        "description": "Determine Internal Rate of Return using Newton-Raphson method with visible iterations."
+      },
+      "bc": {
+        "title": "B/C Ratio",
+        "description": "Evaluate Benefit/Cost ratio for public and private projects."
+      },
+      "cashFlow": {
+        "title": "Cash Flows",
+        "description": "Visualize and analyze cash flows with interactive charts and detailed tables."
+      },
+      "tmar": {
+        "title": "MARR Configuration",
+        "description": "Define Minimum Acceptable Rate of Return based on your risk profile."
+      },
+      "reports": {
+        "title": "Professional Reports",
+        "description": "Generate executive reports ready to present to stakeholders."
+      }
+    },
+    "indicators": {
+      "title": "Key Economic Indicators",
+      "subtitle": "Master the fundamental metrics of project evaluation",
+      "vpn": {
+        "name": "Net Present Value",
+        "abbr": "NPV",
+        "description": "NPV represents the difference between the present value of cash inflows and outflows over a period of time.",
+        "interpretation": "NPV > 0: The project generates value and is acceptable"
+      },
+      "tir": {
+        "name": "Internal Rate of Return",
+        "abbr": "IRR",
+        "description": "IRR is the discount rate that makes the NPV of a project equal to zero.",
+        "interpretation": "IRR > MARR: The project is profitable"
+      },
+      "bc": {
+        "name": "Benefit/Cost Ratio",
+        "abbr": "B/C",
+        "description": "Compares the present value of benefits with the present value of project costs.",
+        "interpretation": "B/C > 1: Benefits exceed costs"
+      },
+      "payback": {
+        "name": "Payback Period",
+        "abbr": "PP",
+        "description": "Time required to recover the initial investment through project cash flows.",
+        "interpretation": "Lower PP = Lower investment risk"
+      }
+    },
+    "howItWorks": {
+      "title": "How Does It Work?",
+      "subtitle": "Three simple steps to evaluate your investment projects",
+      "step1": {
+        "title": "Define Your Project",
+        "description": "Enter basic data: initial investment, time horizon, and expected cash flows."
+      },
+      "step2": {
+        "title": "Configure Parameters",
+        "description": "Set MARR, inflation rates, and other parameters according to your economic context."
+      },
+      "step3": {
+        "title": "Analyze Results",
+        "description": "Get all calculated indicators with step-by-step explanations and visualizations."
+      }
+    },
+    "cta": {
+      "title": "Ready to make better investment decisions?",
+      "description": "Join thousands of professionals who trust EconoLab for their economic analysis.",
+      "button": "Create Free Account"
+    },
+    "footer": {
+      "description": "Professional platform for investment project evaluation with engineering economics methodology.",
+      "product": "Product",
+      "resources": "Resources",
+      "legal": "Legal",
+      "documentation": "Documentation",
+      "tutorials": "Tutorials",
+      "apiReference": "API Reference",
+      "support": "Support",
+      "blog": "Blog",
+      "community": "Community",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "cookies": "Cookies",
+      "rights": "All rights reserved."
+    }
+  },
+  "dashboard": {
+    "sidebar": {
+      "overview": "Overview",
+      "projects": "Projects",
+      "newProject": "New Project",
+      "analysis": "Analysis",
+      "vpn": "NPV Analysis",
+      "tir": "IRR Analysis",
+      "benefitCost": "Benefit/Cost",
+      "cashFlow": "Cash Flow",
+      "configuration": "Configuration",
+      "tmar": "MARR Settings",
+      "reports": "Reports",
+      "settings": "Settings"
+    },
+    "overview": {
+      "title": "Dashboard Overview",
+      "subtitle": "Overview of your projects and key metrics",
+      "welcome": "Welcome back",
+      "welcomeMessage": "Here's a summary of your portfolio activity",
+      "stats": {
+        "totalProjects": "Total Projects",
+        "avgVpn": "Average NPV",
+        "avgTir": "Average IRR",
+        "viableProjects": "Viable Projects"
+      },
+      "recentProjects": "Recent Projects",
+      "viewAll": "View All",
+      "quickActions": "Quick Actions",
+      "createProject": "Create Project",
+      "runAnalysis": "Run Analysis",
+      "generateReport": "Generate Report",
+      "vpnDistribution": "NPV Distribution by Project",
+      "tirComparison": "IRR vs MARR Comparison",
+      "cashFlowTrend": "Cash Flow Trend"
+    },
+    "projects": {
+      "title": "My Projects",
+      "subtitle": "Manage and analyze your investment projects",
+      "new": "New Project",
+      "search": "Search projects...",
+      "filter": "Filter",
+      "all": "All",
+      "viable": "Viable",
+      "notViable": "Not Viable",
+      "pending": "Pending",
+      "noProjects": "No projects",
+      "noProjectsDesc": "Create your first project to start analyzing investments.",
+      "table": {
+        "name": "Name",
+        "sector": "Sector",
+        "investment": "Investment",
+        "vpn": "NPV",
+        "tir": "IRR",
+        "status": "Status",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "status": {
+        "viable": "Viable",
+        "notViable": "Not Viable",
+        "pending": "Pending"
+      }
+    },
+    "newProject": {
+      "title": "Create New Project",
+      "subtitle": "Define the parameters of your investment project",
+      "steps": {
+        "basic": "Basic Info",
+        "investment": "Investment",
+        "cashFlows": "Cash Flows",
+        "review": "Review"
+      },
+      "basicInfo": {
+        "title": "Basic Project Information",
+        "name": "Project Name",
+        "namePlaceholder": "E.g.: Solar Plant Texas",
+        "description": "Description",
+        "descriptionPlaceholder": "Briefly describe the project...",
+        "sector": "Sector",
+        "selectSector": "Select a sector",
+        "sectors": {
+          "energy": "Energy",
+          "manufacturing": "Manufacturing",
+          "technology": "Technology",
+          "infrastructure": "Infrastructure",
+          "agriculture": "Agriculture",
+          "services": "Services",
+          "other": "Other"
+        },
+        "horizon": "Evaluation Horizon (years)",
+        "currency": "Currency",
+        "currencies": {
+          "mxn": "Mexican Peso (MXN)",
+          "usd": "US Dollar (USD)",
+          "eur": "Euro (EUR)"
+        }
+      },
+      "investment": {
+        "title": "Investment Data",
+        "initial": "Initial Investment",
+        "initialHelp": "Total amount required to start the project",
+        "salvage": "Salvage Value",
+        "salvageHelp": "Estimated asset value at the end of the horizon",
+        "tmar": "MARR (%)",
+        "tmarHelp": "Minimum Acceptable Rate of Return"
+      },
+      "cashFlows": {
+        "title": "Projected Cash Flows",
+        "year": "Year",
+        "inflows": "Inflows",
+        "outflows": "Outflows",
+        "netFlow": "Net Flow",
+        "addYear": "Add Year",
+        "uniform": "Use Uniform Flows",
+        "uniformAmount": "Annual Uniform Amount"
+      },
+      "review": {
+        "title": "Review and Create",
+        "summary": "Project Summary",
+        "projectName": "Name",
+        "projectSector": "Sector",
+        "projectHorizon": "Horizon",
+        "years": "years",
+        "initialInvestment": "Initial Investment",
+        "salvageValue": "Salvage Value",
+        "tmar": "MARR",
+        "totalInflows": "Total Inflows",
+        "totalOutflows": "Total Outflows",
+        "createProject": "Create Project"
+      }
+    },
+    "vpn": {
+      "title": "Net Present Value Analysis",
+      "subtitle": "Calculate NPV of your projects with step-by-step methodology",
+      "selectProject": "Select Project",
+      "selectProjectPlaceholder": "Choose a project to analyze",
+      "parameters": "Analysis Parameters",
+      "discountRate": "Discount Rate (%)",
+      "calculate": "Calculate NPV",
+      "results": "Analysis Results",
+      "vpnValue": "Net Present Value",
+      "interpretation": "Interpretation",
+      "viable": "The project IS VIABLE. Positive NPV indicates it generates value above the required rate.",
+      "notViable": "The project IS NOT VIABLE. Negative NPV indicates it destroys value.",
+      "steps": {
+        "title": "Calculation Procedure",
+        "formula": "NPV Formula",
+        "step": "Step",
+        "year": "Year",
+        "cashFlow": "Cash Flow",
+        "presentValue": "Present Value",
+        "discountFactor": "Discount Factor",
+        "calculation": "Calculation",
+        "total": "Total NPV"
+      },
+      "sensitivity": {
+        "title": "Sensitivity Analysis",
+        "description": "See how NPV changes with different discount rates",
+        "rate": "Rate",
+        "vpn": "NPV"
+      }
+    },
+    "tir": {
+      "title": "Internal Rate of Return Analysis",
+      "subtitle": "Calculate IRR using Newton-Raphson method",
+      "selectProject": "Select Project",
+      "selectProjectPlaceholder": "Choose a project to analyze",
+      "parameters": "Calculation Parameters",
+      "initialGuess": "Initial Guess (%)",
+      "tolerance": "Tolerance",
+      "maxIterations": "Max Iterations",
+      "calculate": "Calculate IRR",
+      "results": "Analysis Results",
+      "tirValue": "Internal Rate of Return",
+      "tmar": "Project MARR",
+      "interpretation": "Interpretation",
+      "viable": "The project IS PROFITABLE. IRR exceeds the required MARR.",
+      "notViable": "The project IS NOT PROFITABLE. IRR is less than MARR.",
+      "iterations": {
+        "title": "Newton-Raphson Method Iterations",
+        "iteration": "Iteration",
+        "rate": "Rate (r)",
+        "vpn": "NPV(r)",
+        "derivative": "NPV'(r)",
+        "newRate": "New Rate",
+        "error": "Error",
+        "converged": "Convergence reached"
+      },
+      "method": {
+        "title": "Methodology",
+        "description": "The Newton-Raphson method is an iterative algorithm for finding roots of functions. For IRR, we seek the rate r where NPV(r) = 0.",
+        "formula": "Iterative Formula"
+      }
+    },
+    "benefitCost": {
+      "title": "Benefit/Cost Analysis",
+      "subtitle": "Evaluate the relationship between project benefits and costs",
+      "selectProject": "Select Project",
+      "calculate": "Calculate B/C",
+      "results": "Results",
+      "ratio": "B/C Ratio",
+      "pvBenefits": "PV Benefits",
+      "pvCosts": "PV Costs",
+      "interpretation": "Interpretation",
+      "viable": "The project IS ACCEPTABLE. Benefits exceed costs.",
+      "notViable": "The project IS NOT ACCEPTABLE. Costs exceed benefits.",
+      "marginal": "The project is MARGINAL. Benefits barely cover costs.",
+      "breakdown": {
+        "title": "Calculation Breakdown",
+        "year": "Year",
+        "benefits": "Benefits",
+        "costs": "Costs",
+        "pvBenefits": "PV Benefits",
+        "pvCosts": "PV Costs"
+      }
+    },
+    "cashFlow": {
+      "title": "Cash Flow Analysis",
+      "subtitle": "Visualize and analyze project cash flows",
+      "selectProject": "Select Project",
+      "chart": "Flow Chart",
+      "table": "Detailed Table",
+      "cumulative": "Cumulative Flow",
+      "columns": {
+        "year": "Year",
+        "inflows": "Inflows",
+        "outflows": "Outflows",
+        "netFlow": "Net Flow",
+        "cumulative": "Cumulative"
+      },
+      "payback": {
+        "title": "Payback Period",
+        "simple": "Simple Payback",
+        "discounted": "Discounted Payback",
+        "years": "years",
+        "notRecovered": "Not recovered"
+      }
+    },
+    "tmar": {
+      "title": "MARR Configuration",
+      "subtitle": "Define the Minimum Acceptable Rate of Return",
+      "current": "Current MARR",
+      "methods": {
+        "title": "Calculation Methods",
+        "simple": "Simple Rate",
+        "simpleDesc": "Directly define the MARR value",
+        "capm": "CAPM Model",
+        "capmDesc": "Capital Asset Pricing Model",
+        "wacc": "Weighted Average Cost",
+        "waccDesc": "Weighted Average Cost of Capital"
+      },
+      "capm": {
+        "riskFree": "Risk-Free Rate (%)",
+        "marketReturn": "Market Return (%)",
+        "beta": "Project Beta",
+        "formula": "CAPM Formula"
+      },
+      "wacc": {
+        "equityWeight": "Equity Weight (%)",
+        "equityCost": "Cost of Equity (%)",
+        "debtWeight": "Debt Weight (%)",
+        "debtCost": "Cost of Debt (%)",
+        "taxRate": "Tax Rate (%)",
+        "formula": "WACC Formula"
+      },
+      "save": "Save MARR",
+      "history": "MARR History"
+    },
+    "reports": {
+      "title": "Reports",
+      "subtitle": "Generate professional reports of your analyses",
+      "generate": "Generate Report",
+      "templates": {
+        "title": "Report Templates",
+        "executive": "Executive Report",
+        "executiveDesc": "Concise summary for executive presentations",
+        "detailed": "Detailed Report",
+        "detailedDesc": "Complete analysis with all calculations and methodology",
+        "comparison": "Project Comparison",
+        "comparisonDesc": "Compare multiple projects side by side"
+      },
+      "recent": "Recent Reports",
+      "download": "Download",
+      "preview": "Preview",
+      "noReports": "No reports generated"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Customize your EconoLab experience",
+      "sections": {
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "notifications": "Notifications",
+        "security": "Security"
+      },
+      "profile": {
+        "name": "Name",
+        "email": "Email",
+        "company": "Company",
+        "role": "Role"
+      },
+      "preferences": {
+        "language": "Language",
+        "currency": "Default Currency",
+        "theme": "Theme",
+        "themes": {
+          "light": "Light",
+          "dark": "Dark",
+          "system": "System"
+        },
+        "numberFormat": "Number Format",
+        "dateFormat": "Date Format"
+      },
+      "notifications": {
+        "email": "Email Notifications",
+        "projectUpdates": "Project Updates",
+        "reports": "Generated Reports",
+        "tips": "Tips and Tutorials"
+      },
+      "security": {
+        "changePassword": "Change Password",
+        "twoFactor": "Two-Factor Authentication",
+        "sessions": "Active Sessions"
+      }
+    }
+  },
+  "formulas": {
+    "vpn": "NPV = \\sum_{t=0}^{n} \\frac{CF_t}{(1+i)^t}",
+    "tir": "0 = \\sum_{t=0}^{n} \\frac{CF_t}{(1+IRR)^t}",
+    "bc": "B/C = \\frac{\\sum PV_{Benefits}}{\\sum PV_{Costs}}",
+    "newtonRaphson": "r_{n+1} = r_n - \\frac{NPV(r_n)}{NPV'(r_n)}",
+    "capm": "MARR = R_f + \\beta(R_m - R_f)",
+    "wacc": "WACC = w_e \\cdot k_e + w_d \\cdot k_d \\cdot (1-T)"
+  }
+}
