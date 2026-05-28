@@ -17,21 +17,21 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
 })
 
-export const metadata: Metadata = {
-  title: "EconoLab - Plataforma de Evaluación de Proyectos Económicos",
-  description:
-    "Análisis profesional de ingeniería económica y viabilidad financiera. Calcula VPN, TIR, TMAR y relación Beneficio/Costo con visualizaciones paso a paso.",
-  keywords: [
-    "VPN",
-    "TIR",
-    "TMAR",
-    "análisis económico",
-    "viabilidad financiera",
-    "ingeniería económica",
-    "flujo de caja",
-  ],
-  authors: [{ name: "EconoLab" }],
-  generator: "v0.app",
+export async function generateMetadata(): Promise<Metadata> {
+  const cookieStore = await cookies()
+  const localeCookie = cookieStore.get("locale")?.value
+  const locale = locales.includes(localeCookie as (typeof locales)[number])
+    ? (localeCookie as (typeof locales)[number])
+    : defaultLocale
+  const messages = (await import(`../messages/${locale}.json`)).default
+
+  return {
+    title: messages.metadata.title,
+    description: messages.metadata.description,
+    keywords: messages.metadata.keywords,
+    authors: [{ name: "EconoLab" }],
+    generator: "v0.app",
+  }
 }
 
 export const viewport: Viewport = {

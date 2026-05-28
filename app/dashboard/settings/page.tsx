@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -26,15 +27,14 @@ import { useTheme } from "next-themes"
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
+  const t = useTranslations("dashboard.settingsPage")
 
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your account and application preferences
-        </p>
+        <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+        <p className="text-muted-foreground">{t("subtitle")}</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -45,29 +45,27 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <User className="h-5 w-5 text-primary" />
-                <CardTitle>Profile</CardTitle>
+                <CardTitle>{t("profile.title")}</CardTitle>
               </div>
-              <CardDescription>
-                Manage your personal information
-              </CardDescription>
+              <CardDescription>{t("profile.description")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
+                  <Label htmlFor="name">{t("profile.name")}</Label>
                   <Input id="name" defaultValue="John Engineer" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t("profile.email")}</Label>
                   <Input id="email" type="email" defaultValue="john@company.com" />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="company">Company</Label>
+                <Label htmlFor="company">{t("profile.company")}</Label>
                 <Input id="company" defaultValue="Engineering Solutions Inc." />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="role">Role</Label>
+                <Label htmlFor="role">{t("profile.role")}</Label>
                 <Input id="role" defaultValue="Financial Analyst" />
               </div>
             </CardContent>
@@ -78,53 +76,49 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Calculator className="h-5 w-5 text-primary" />
-                <CardTitle>Calculation Defaults</CardTitle>
+                <CardTitle>{t("calculations.title")}</CardTitle>
               </div>
-              <CardDescription>
-                Set default values for new project calculations
-              </CardDescription>
+              <CardDescription>{t("calculations.description")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="defaultDiscount">Default Discount Rate (%)</Label>
+                  <Label htmlFor="defaultDiscount">{t("calculations.discountRate")}</Label>
                   <Input id="defaultDiscount" type="number" defaultValue="12" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="defaultPeriods">Default Analysis Periods</Label>
+                  <Label htmlFor="defaultPeriods">{t("calculations.analysisPeriods")}</Label>
                   <Input id="defaultPeriods" type="number" defaultValue="10" />
                 </div>
               </div>
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="space-y-2">
-                  <Label htmlFor="defaultRiskFree">Risk-Free Rate (%)</Label>
+                  <Label htmlFor="defaultRiskFree">{t("calculations.riskFreeRate")}</Label>
                   <Input id="defaultRiskFree" type="number" defaultValue="4" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="defaultInflation">Inflation (%)</Label>
+                  <Label htmlFor="defaultInflation">{t("calculations.inflation")}</Label>
                   <Input id="defaultInflation" type="number" defaultValue="3" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="defaultRiskPremium">Risk Premium (%)</Label>
+                  <Label htmlFor="defaultRiskPremium">{t("calculations.riskPremium")}</Label>
                   <Input id="defaultRiskPremium" type="number" defaultValue="5" />
                 </div>
               </div>
               <Separator />
               <div className="space-y-2">
-                <Label>IRR Calculation Method</Label>
+                <Label>{t("calculations.irrMethod")}</Label>
                 <Select defaultValue="newton">
                   <SelectTrigger>
-                    <SelectValue placeholder="Select method" />
+                    <SelectValue placeholder={t("calculations.selectMethod")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="newton">Newton-Raphson (Recommended)</SelectItem>
-                    <SelectItem value="bisection">Bisection Method</SelectItem>
-                    <SelectItem value="secant">Secant Method</SelectItem>
+                    <SelectItem value="newton">{t("calculations.methods.newton")}</SelectItem>
+                    <SelectItem value="bisection">{t("calculations.methods.bisection")}</SelectItem>
+                    <SelectItem value="secant">{t("calculations.methods.secant")}</SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-muted-foreground">
-                  Newton-Raphson provides faster convergence for most cases
-                </p>
+                <p className="text-xs text-muted-foreground">{t("calculations.methodHelp")}</p>
               </div>
             </CardContent>
           </Card>
@@ -134,53 +128,51 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Globe className="h-5 w-5 text-primary" />
-                <CardTitle>Localization</CardTitle>
+                <CardTitle>{t("localization.title")}</CardTitle>
               </div>
-              <CardDescription>
-                Currency and regional preferences
-              </CardDescription>
+              <CardDescription>{t("localization.description")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label>Currency</Label>
+                  <Label>{t("localization.currency")}</Label>
                   <Select defaultValue="usd">
                     <SelectTrigger>
-                      <SelectValue placeholder="Select currency" />
+                      <SelectValue placeholder={t("localization.selectCurrency")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="usd">USD ($)</SelectItem>
-                      <SelectItem value="eur">EUR (€)</SelectItem>
-                      <SelectItem value="gbp">GBP (£)</SelectItem>
-                      <SelectItem value="mxn">MXN ($)</SelectItem>
-                      <SelectItem value="brl">BRL (R$)</SelectItem>
+                      <SelectItem value="usd">{t("localization.currencies.usd")}</SelectItem>
+                      <SelectItem value="eur">{t("localization.currencies.eur")}</SelectItem>
+                      <SelectItem value="gbp">{t("localization.currencies.gbp")}</SelectItem>
+                      <SelectItem value="mxn">{t("localization.currencies.mxn")}</SelectItem>
+                      <SelectItem value="brl">{t("localization.currencies.brl")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>Number Format</Label>
+                  <Label>{t("localization.numberFormat")}</Label>
                   <Select defaultValue="en-us">
                     <SelectTrigger>
-                      <SelectValue placeholder="Select format" />
+                      <SelectValue placeholder={t("localization.selectNumberFormat")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="en-us">1,234.56 (US)</SelectItem>
-                      <SelectItem value="es">1.234,56 (ES/MX)</SelectItem>
-                      <SelectItem value="de">1.234,56 (DE)</SelectItem>
+                      <SelectItem value="en-us">{t("localization.numberFormats.enUs")}</SelectItem>
+                      <SelectItem value="es">{t("localization.numberFormats.es")}</SelectItem>
+                      <SelectItem value="de">{t("localization.numberFormats.de")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Language</Label>
+                <Label>{t("localization.language")}</Label>
                 <Select defaultValue="en">
                   <SelectTrigger>
-                    <SelectValue placeholder="Select language" />
+                    <SelectValue placeholder={t("localization.selectLanguage")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="es">Español</SelectItem>
-                    <SelectItem value="pt">Português</SelectItem>
+                    <SelectItem value="en">{t("localization.languages.en")}</SelectItem>
+                    <SelectItem value="es">{t("localization.languages.es")}</SelectItem>
+                    <SelectItem value="pt">{t("localization.languages.pt")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -195,22 +187,26 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Palette className="h-5 w-5 text-primary" />
-                <CardTitle>Appearance</CardTitle>
+                <CardTitle>{t("appearance.title")}</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Theme</Label>
+                <Label>{t("appearance.theme")}</Label>
                 <div className="grid grid-cols-3 gap-2">
-                  {["light", "dark", "system"].map((t) => (
+                  {["light", "dark", "system"].map((themeName) => (
                     <Button
-                      key={t}
-                      variant={theme === t ? "default" : "outline"}
+                      key={themeName}
+                      variant={theme === themeName ? "default" : "outline"}
                       size="sm"
-                      onClick={() => setTheme(t)}
+                      onClick={() => setTheme(themeName)}
                       className="capitalize"
                     >
-                      {t}
+                      {themeName === "light"
+                        ? t("appearance.themes.light")
+                        : themeName === "dark"
+                        ? t("appearance.themes.dark")
+                        : t("appearance.themes.system")}
                     </Button>
                   ))}
                 </div>
@@ -223,36 +219,30 @@ export default function SettingsPage() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Bell className="h-5 w-5 text-primary" />
-                <CardTitle>Notifications</CardTitle>
+                <CardTitle>{t("notifications.title")}</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Email Notifications</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Receive analysis completion alerts
-                  </p>
+                  <Label>{t("notifications.email")}</Label>
+                  <p className="text-xs text-muted-foreground">{t("notifications.emailHelp")}</p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Project Updates</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Notify when calculations complete
-                  </p>
+                  <Label>{t("notifications.projectUpdates")}</Label>
+                  <p className="text-xs text-muted-foreground">{t("notifications.projectUpdatesHelp")}</p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Weekly Summary</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Receive weekly project reports
-                  </p>
+                  <Label>{t("notifications.weeklySummary")}</Label>
+                  <p className="text-xs text-muted-foreground">{t("notifications.weeklySummaryHelp")}</p>
                 </div>
                 <Switch />
               </div>
@@ -262,21 +252,21 @@ export default function SettingsPage() {
           {/* Plan Info */}
           <Card>
             <CardHeader>
-              <CardTitle>Current Plan</CardTitle>
+              <CardTitle>{t("plan.title")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="font-medium">Professional</span>
-                <Badge>Active</Badge>
+                <span className="font-medium">{t("plan.name")}</span>
+                <Badge>{t("plan.active")}</Badge>
               </div>
               <div className="space-y-2 text-sm text-muted-foreground">
-                <p>Unlimited projects</p>
-                <p>Advanced calculations</p>
-                <p>PDF & Excel exports</p>
-                <p>Priority support</p>
+                <p>{t("plan.features.projects")}</p>
+                <p>{t("plan.features.calculations")}</p>
+                <p>{t("plan.features.exports")}</p>
+                <p>{t("plan.features.support")}</p>
               </div>
               <Button variant="outline" className="w-full">
-                Manage Subscription
+                {t("plan.manageSubscription")}
               </Button>
             </CardContent>
           </Card>
@@ -287,7 +277,7 @@ export default function SettingsPage() {
       <div className="flex justify-end">
         <Button>
           <Save className="mr-2 h-4 w-4" />
-          Save Changes
+          {t("save")}
         </Button>
       </div>
     </div>

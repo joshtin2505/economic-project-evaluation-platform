@@ -31,7 +31,7 @@ export function LandingFooter() {
               {tNav("howItWorks")}
             </Link>
             <Link href={`/${locale}/dashboard`} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-              Dashboard
+              {t("dashboard")}
             </Link>
           </nav>
 

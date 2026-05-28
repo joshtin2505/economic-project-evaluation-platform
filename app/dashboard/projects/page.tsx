@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -33,20 +34,20 @@ import {
 import { mockProjects } from "@/lib/mock-data"
 
 export default function ProjectsPage() {
+  const t = useTranslations("dashboard.projectsPage")
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Projects</h1>
-          <p className="text-muted-foreground">
-            Manage and analyze your economic evaluation projects
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+          <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
         <Button asChild>
           <Link href="/dashboard/projects/new">
             <Plus className="mr-2 h-4 w-4" />
-            New Project
+            {t("newProject")}
           </Link>
         </Button>
       </div>
@@ -57,18 +58,18 @@ export default function ProjectsPage() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="relative w-full sm:max-w-sm">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input placeholder="Search projects..." className="pl-10" />
+              <Input placeholder={t("searchPlaceholder")} className="pl-10" />
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant="secondary">All ({mockProjects.length})</Badge>
+              <Badge variant="secondary">{t("filters.all", { count: mockProjects.length })}</Badge>
               <Badge variant="outline">
-                Completed ({mockProjects.filter((p) => p.status === "completed").length})
+                {t("filters.completed", { count: mockProjects.filter((p) => p.status === "completed").length })}
               </Badge>
               <Badge variant="outline">
-                Analyzing ({mockProjects.filter((p) => p.status === "analyzing").length})
+                {t("filters.analyzing", { count: mockProjects.filter((p) => p.status === "analyzing").length })}
               </Badge>
               <Badge variant="outline">
-                Draft ({mockProjects.filter((p) => p.status === "draft").length})
+                {t("filters.draft", { count: mockProjects.filter((p) => p.status === "draft").length })}
               </Badge>
             </div>
           </div>
@@ -78,21 +79,19 @@ export default function ProjectsPage() {
       {/* Projects Table */}
       <Card>
         <CardHeader>
-          <CardTitle>All Projects</CardTitle>
-          <CardDescription>
-            Click on a project to view detailed analysis
-          </CardDescription>
+          <CardTitle>{t("table.title")}</CardTitle>
+          <CardDescription>{t("table.description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Project Name</TableHead>
-                <TableHead>Investment</TableHead>
-                <TableHead>NPV</TableHead>
-                <TableHead>IRR</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Updated</TableHead>
+                <TableHead>{t("table.name")}</TableHead>
+                <TableHead>{t("table.investment")}</TableHead>
+                <TableHead>{t("table.npv")}</TableHead>
+                <TableHead>{t("table.irr")}</TableHead>
+                <TableHead>{t("table.status")}</TableHead>
+                <TableHead>{t("table.updated")}</TableHead>
                 <TableHead className="w-12"></TableHead>
               </TableRow>
             </TableHeader>
@@ -156,9 +155,9 @@ export default function ProjectsPage() {
                           : ""
                       }
                     >
-                      {project.status === "completed" && "Completed"}
-                      {project.status === "analyzing" && "Analyzing"}
-                      {project.status === "draft" && "Draft"}
+                      {project.status === "completed" && t("status.completed")}
+                      {project.status === "analyzing" && t("status.analyzing")}
+                      {project.status === "draft" && t("status.draft")}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -177,15 +176,15 @@ export default function ProjectsPage() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem>
                           <Eye className="mr-2 h-4 w-4" />
-                          View Analysis
+                          {t("actions.view")}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Edit className="mr-2 h-4 w-4" />
-                          Edit Project
+                          {t("actions.edit")}
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-destructive">
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
+                          {t("actions.delete")}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -225,26 +224,26 @@ export default function ProjectsPage() {
                       : ""
                   }
                 >
-                  {project.status}
+                  {project.status === "completed" ? t("status.completed") : project.status === "analyzing" ? t("status.analyzing") : t("status.draft")}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-muted-foreground">Investment</p>
+                  <p className="text-xs text-muted-foreground">{t("cards.investment")}</p>
                   <p className="font-mono font-medium">
                     ${project.initialInvestment.toLocaleString()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Periods</p>
-                  <p className="font-medium">{project.periods} years</p>
+                  <p className="text-xs text-muted-foreground">{t("cards.periods")}</p>
+                  <p className="font-medium">{t("cards.years", { count: project.periods })}</p>
                 </div>
                 {project.results && (
                   <>
                     <div>
-                      <p className="text-xs text-muted-foreground">NPV</p>
+                      <p className="text-xs text-muted-foreground">{t("cards.npv")}</p>
                       <p
                         className={`font-mono font-medium ${
                           project.results.npv >= 0 ? "text-success" : "text-destructive"
@@ -254,7 +253,7 @@ export default function ProjectsPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground">IRR</p>
+                      <p className="text-xs text-muted-foreground">{t("cards.irr")}</p>
                       <p className="font-mono font-medium">
                         {(project.results.irr * 100).toFixed(1)}%
                       </p>

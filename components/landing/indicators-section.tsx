@@ -92,11 +92,11 @@ export function IndicatorsSection() {
                 <CardContent>
                   <div className="flex items-center justify-between rounded-lg bg-muted/50 p-4">
                     <div>
-                      <span className="text-xs font-medium text-muted-foreground">Formula</span>
+                      <span className="text-xs font-medium text-muted-foreground">{t("formulaLabel")}</span>
                       <p className="font-mono text-sm font-medium">{indicator.formula}</p>
                     </div>
                     <div className="text-right">
-                      <span className="text-xs font-medium text-muted-foreground">Ejemplo</span>
+                      <span className="text-xs font-medium text-muted-foreground">{t("exampleLabel")}</span>
                       <p className="text-xl font-bold text-primary">{indicator.example}</p>
                     </div>
                   </div>

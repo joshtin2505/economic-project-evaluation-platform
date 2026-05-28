@@ -263,7 +263,7 @@ export default function DashboardPage() {
               <CardDescription>{t('overview.recentCalculationsDescription')}</CardDescription>
             </div>
             <Button variant="outline" size="sm" asChild>
-              <Link href="/dashboard/reports">View All</Link>
+              <Link href="/dashboard/reports">{t('overview.viewAll')}</Link>
             </Button>
           </CardHeader>
           <CardContent>
@@ -290,12 +290,12 @@ export default function DashboardPage() {
                       {calc.status === "positive" ? (
                         <Badge className="bg-success/10 text-success hover:bg-success/20">
                           <CheckCircle2 className="mr-1 h-3 w-3" />
-                          Viable
+                          {t('overview.status.viable')}
                         </Badge>
                       ) : (
                         <Badge variant="destructive" className="bg-destructive/10 text-destructive hover:bg-destructive/20">
                           <AlertCircle className="mr-1 h-3 w-3" />
-                          Not Viable
+                          {t('overview.status.notViable')}
                         </Badge>
                       )}
                     </TableCell>

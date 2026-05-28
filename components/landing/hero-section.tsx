@@ -8,6 +8,7 @@ import { ArrowRight, TrendingUp, BarChart3, Calculator, LineChart } from "lucide
 export function HeroSection() {
   const t = useTranslations("landing.hero")
   const locale = useLocale()
+  const tCommon = useTranslations("common")
 
   return (
     <section className="relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-32">
@@ -54,10 +55,10 @@ export function HeroSection() {
           {/* Stats */}
           <div className="mt-16 grid grid-cols-2 gap-8 sm:grid-cols-4">
             {[
-              { icon: TrendingUp, label: locale === "es" ? "Análisis VPN" : "NPV Analysis", value: locale === "es" ? "Preciso" : "Accurate" },
-              { icon: Calculator, label: locale === "es" ? "Cálculos TIR" : "IRR Calculations", value: locale === "es" ? "Iterativo" : "Iterative" },
-              { icon: BarChart3, label: locale === "es" ? "Flujo de Caja" : "Cash Flow", value: "Visual" },
-              { icon: LineChart, label: locale === "es" ? "Reportes" : "Reports", value: locale === "es" ? "Detallado" : "Detailed" },
+              { icon: TrendingUp, label: t("previewStats.npvLabel"), value: t("previewStats.npvValue") },
+              { icon: Calculator, label: t("previewStats.irrLabel"), value: t("previewStats.irrValue") },
+              { icon: BarChart3, label: t("previewStats.cashFlowLabel"), value: t("previewStats.cashFlowValue") },
+              { icon: LineChart, label: t("previewStats.reportsLabel"), value: t("previewStats.reportsValue") },
             ].map((stat) => (
               <div key={stat.label} className="flex flex-col items-center">
                 <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
@@ -80,15 +81,15 @@ export function HeroSection() {
                 <span className="h-3 w-3 rounded-full bg-warning/60" />
                 <span className="h-3 w-3 rounded-full bg-success/60" />
               </div>
-              <span className="ml-2 text-xs text-muted-foreground">EconoLab Dashboard</span>
+                <span className="ml-2 text-xs text-muted-foreground">{tCommon("appName")} {tCommon("dashboard")}</span>
             </div>
             <div className="grid gap-4 p-4 sm:grid-cols-3 lg:grid-cols-4">
               {/* Mock KPI Cards */}
               {[
-                { label: locale === "es" ? "VPN" : "NPV", value: "$245,830", change: "+12.5%", positive: true },
-                { label: locale === "es" ? "TIR" : "IRR", value: "18.7%", change: "+2.3%", positive: true },
-                { label: "TMAR", value: "12.0%", change: locale === "es" ? "Tasa Base" : "Base Rate", positive: true },
-                { label: "B/C", value: "1.54", change: locale === "es" ? "Viable" : "Feasible", positive: true },
+                  { label: t("previewCards.npvLabel"), value: "$245,830", change: "+12.5%", positive: true },
+                  { label: t("previewCards.irrLabel"), value: "18.7%", change: "+2.3%", positive: true },
+                  { label: t("previewCards.tmarLabel"), value: "12.0%", change: t("previewCards.tmarChange"), positive: true },
+                  { label: t("previewCards.bcLabel"), value: "1.54", change: t("previewCards.bcChange"), positive: true },
               ].map((kpi) => (
                 <div key={kpi.label} className="rounded-xl border border-border/50 bg-background p-4">
                   <span className="text-xs font-medium text-muted-foreground">{kpi.label}</span>

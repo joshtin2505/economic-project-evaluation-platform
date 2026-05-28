@@ -32,6 +32,11 @@
     "spanish": "Español",
     "english": "Inglés"
   },
+  "metadata": {
+    "title": "EconoLab - Plataforma de Evaluación de Proyectos Económicos",
+    "description": "Análisis profesional de ingeniería económica y viabilidad financiera. Calcula VPN, TIR, TMAR y relación Beneficio/Costo con visualizaciones paso a paso.",
+    "keywords": ["VPN", "TIR", "TMAR", "análisis económico", "viabilidad financiera", "ingeniería económica", "flujo de caja"]
+  },
   "landing": {
     "nav": {
       "features": "Características",
@@ -153,6 +158,8 @@
       "overview": "Resumen",
       "projects": "Proyectos",
       "newProject": "Nuevo Proyecto",
+      "main": "Principal",
+      "searchPlaceholder": "Buscar proyectos...",
       "analysis": "Análisis",
       "vpn": "Análisis VPN",
       "tir": "Análisis TIR",
@@ -202,6 +209,10 @@
         "completed": "completados",
         "analyzing": "Analizando",
         "draft": "Borrador"
+       },
+      "status": {
+        "viable": "Viable",
+        "notViable": "No Viable"
       }
     },
     "projects": {
@@ -492,6 +503,578 @@
         "changePassword": "Cambiar Contraseña",
         "twoFactor": "Autenticación de Dos Factores",
         "sessions": "Sesiones Activas"
+      }
+    },
+    "settingsPage": {
+      "title": "Configuración",
+      "subtitle": "Administra tu cuenta y las preferencias de la aplicación",
+      "profile": {
+        "title": "Perfil",
+        "description": "Administra tu información personal",
+        "name": "Nombre Completo",
+        "email": "Correo Electrónico",
+        "company": "Empresa",
+        "role": "Cargo"
+      },
+      "calculations": {
+        "title": "Valores Predeterminados de Cálculo",
+        "description": "Define valores por defecto para nuevos proyectos",
+        "discountRate": "Tasa de Descuento Predeterminada (%)",
+        "analysisPeriods": "Períodos de Análisis Predeterminados",
+        "riskFreeRate": "Tasa Libre de Riesgo (%)",
+        "inflation": "Inflación (%)",
+        "riskPremium": "Prima de Riesgo (%)",
+        "irrMethod": "Método de Cálculo de TIR",
+        "selectMethod": "Selecciona un método",
+        "methods": {
+          "newton": "Newton-Raphson (Recomendado)",
+          "bisection": "Método de Bisección",
+          "secant": "Método de la Secante"
+        },
+        "methodHelp": "Newton-Raphson proporciona una convergencia más rápida en la mayoría de los casos"
+      },
+      "localization": {
+        "title": "Localización",
+        "description": "Preferencias de moneda y región",
+        "currency": "Moneda",
+        "selectCurrency": "Selecciona una moneda",
+        "currencies": {
+          "usd": "USD ($)",
+          "eur": "EUR (€)",
+          "gbp": "GBP (£)",
+          "mxn": "MXN ($)",
+          "brl": "BRL (R$)"
+        },
+        "numberFormat": "Formato de Números",
+        "selectNumberFormat": "Selecciona un formato",
+        "numberFormats": {
+          "enUs": "1,234.56 (US)",
+          "es": "1.234,56 (ES/MX)",
+          "de": "1.234,56 (DE)"
+        },
+        "language": "Idioma",
+        "selectLanguage": "Selecciona un idioma",
+        "languages": {
+          "en": "Inglés",
+          "es": "Español",
+          "pt": "Portugués"
+        }
+      },
+      "appearance": {
+        "title": "Apariencia",
+        "theme": "Tema",
+        "themes": {
+          "light": "Claro",
+          "dark": "Oscuro",
+          "system": "Sistema"
+        }
+      },
+      "notifications": {
+        "title": "Notificaciones",
+        "email": "Notificaciones por Email",
+        "emailHelp": "Recibe alertas cuando terminen los análisis",
+        "projectUpdates": "Actualizaciones de Proyectos",
+        "projectUpdatesHelp": "Notifica cuando terminen los cálculos",
+        "weeklySummary": "Resumen Semanal",
+        "weeklySummaryHelp": "Recibe reportes semanales de proyectos"
+      },
+      "plan": {
+        "title": "Plan Actual",
+        "name": "Profesional",
+        "active": "Activo",
+        "features": {
+          "projects": "Proyectos ilimitados",
+          "calculations": "Cálculos avanzados",
+          "exports": "Exportaciones PDF y Excel",
+          "support": "Soporte prioritario"
+        },
+        "manageSubscription": "Administrar Suscripción"
+      },
+      "save": "Guardar Cambios"
+    },
+    "projectsPage": {
+      "title": "Proyectos",
+      "subtitle": "Gestiona y analiza tus proyectos de evaluación económica",
+      "newProject": "Nuevo Proyecto",
+      "searchPlaceholder": "Buscar proyectos...",
+      "filters": {
+        "all": "Todos ({count})",
+        "completed": "Completados ({count})",
+        "analyzing": "Analizando ({count})",
+        "draft": "Borrador ({count})"
+      },
+      "table": {
+        "title": "Todos los Proyectos",
+        "description": "Haz clic en un proyecto para ver el análisis detallado",
+        "name": "Nombre del Proyecto",
+        "investment": "Inversión",
+        "npv": "VPN",
+        "irr": "TIR",
+        "status": "Estado",
+        "updated": "Actualizado"
+      },
+      "status": {
+        "completed": "Completado",
+        "analyzing": "Analizando",
+        "draft": "Borrador"
+      },
+      "actions": {
+        "view": "Ver Análisis",
+        "edit": "Editar Proyecto",
+        "delete": "Eliminar"
+      },
+      "cards": {
+        "investment": "Inversión",
+        "periods": "Períodos",
+        "years": "{count} años",
+        "npv": "VPN",
+        "irr": "TIR"
+      }
+    },
+    "projectsNewPage": {
+      "title": "Crear Nuevo Proyecto",
+      "subtitle": "Ingresa los detalles y proyecciones de flujo de caja de tu proyecto para el análisis económico.",
+      "projectInfo": {
+        "title": "Información del Proyecto",
+        "description": "Detalles básicos sobre tu proyecto de inversión",
+        "name": "Nombre del Proyecto",
+        "namePlaceholder": "Ej: Instalación de Paneles Solares",
+        "initialInvestment": "Inversión Inicial ($)",
+        "initialInvestmentHelp": "El costo inicial requerido para comenzar el proyecto",
+        "descriptionLabel": "Descripción",
+        "descriptionPlaceholder": "Breve descripción del proyecto..."
+      },
+      "financial": {
+        "title": "Parámetros Financieros",
+        "description": "Configura tasas de descuento y factores económicos",
+        "discountRate": "Tasa de Descuento (%)",
+        "discountRateHelp": "Tasa usada para descontar flujos futuros a valor presente",
+        "inflation": "Inflación (%)",
+        "inflationHelp": "Tasa anual de inflación esperada",
+        "riskPremium": "Prima de Riesgo (%)",
+        "riskPremiumHelp": "Retorno adicional requerido para compensar el riesgo del proyecto",
+        "periods": "Número de Períodos"
+      },
+      "cashFlows": {
+        "title": "Flujos de Caja por Período",
+        "description": "Ingresa los ingresos y egresos esperados para cada año",
+        "addPeriod": "Agregar Período",
+        "period": "Período",
+        "inflows": "Ingresos ($)",
+        "outflows": "Egresos ($)",
+        "netFlow": "Flujo Neto ($)",
+        "year0": "Año 0",
+        "year": "Año {period}",
+        "totalInflows": "Total Ingresos: ",
+        "totalOutflows": "Total Egresos: "
+      },
+      "actions": {
+        "saveDraft": "Guardar como Borrador",
+        "calculate": "Calcular Indicadores"
+      },
+      "preview": {
+        "title": "Vista Previa en Tiempo Real",
+        "description": "Indicadores estimados con base en los datos actuales",
+        "viable": "Viable",
+        "notViable": "No Viable",
+        "npv": "VPN",
+        "npvHelp": "Valor Presente Neto: Suma de flujos descontados",
+        "addsValue": "El proyecto agrega valor",
+        "destroysValue": "El proyecto destruye valor",
+        "irr": "TIR",
+        "aboveTmar": "Por encima de la TMAR",
+        "belowTmar": "Por debajo de la TMAR",
+        "tmar": "TMAR",
+        "tmarFormula": "r + π + β",
+        "bcRatio": "Relación B/C",
+        "bcFeasible": "B/C ≥ 1",
+        "bcNotFeasible": "B/C < 1",
+        "formulaTitle": "Fórmula VPN",
+        "formula": "VPN = -I₀ + Σ FCₜ/(1+r)ᵗ"
+      }
+    },
+    "vpnPage": {
+      "title": "Análisis de Valor Presente Neto",
+      "subtitle": "Calcula el VPN de tus proyectos con metodología paso a paso",
+      "selectProject": "Seleccionar Proyecto",
+      "formulaTitle": "Fórmula del VPN",
+      "formulaDescription": "Suma de flujos descontados menos la inversión inicial",
+      "formula": "VPN = -I₀ + Σ FCₜ / (1 + r)ᵗ",
+      "summary": {
+        "npv": "Valor Presente Neto",
+        "accept": "VPN > 0: Aceptar",
+        "reject": "VPN < 0: Rechazar",
+        "discountRate": "Tasa de Descuento",
+        "discountRateHelp": "Tasa anual usada para descontar",
+        "initialInvestment": "Inversión Inicial",
+        "initialInvestmentHelp": "Capital requerido al inicio",
+        "periods": "Períodos de Análisis",
+        "periodsHelp": "Horizonte del proyecto"
+      },
+      "tabs": {
+        "table": "Tabla de Cálculo",
+        "chart": "Gráfica del VPN",
+        "interpretation": "Interpretación"
+      },
+      "table": {
+        "title": "Cálculos Paso a Paso del Flujo Descontado",
+        "description": "Cada flujo de caja se descuenta usando la fórmula: VP = FC / (1 + r)^t",
+        "period": "Período",
+        "cashFlow": "Flujo de Caja (FC)",
+        "cashFlowHelp": "Flujo neto del período",
+        "discountFactor": "Factor de Descuento",
+        "discountFactorHelp": "1 / (1 + r)^t",
+        "presentValue": "Valor Descontado",
+        "presentValueHelp": "FC × Factor de Descuento",
+        "accumulated": "VPN Acumulado",
+        "initial": "Inicial",
+        "year": "Año {period}",
+        "finalNpv": "VPN Final",
+        "exampleTitle": "Ejemplo de Cálculo (Año 1)",
+        "exampleStep1": "VP₁ = $75,000 / (1 + 0.12)¹",
+        "exampleStep2": "VP₁ = $75,000 / 1.12",
+        "exampleStep3": "VP₁ = $66,964"
+      },
+      "chart": {
+        "title": "VPN Acumulado en el Tiempo",
+        "description": "Observa cómo evoluciona el VPN al descontar y acumular los flujos",
+        "legend": {
+          "accumulated": "VPN acumulado",
+          "breakEven": "Línea de equilibrio"
+        }
+      },
+      "interpretation": {
+        "title": "Interpretación Financiera",
+        "description": "Entendiendo los resultados del VPN y la decisión de inversión",
+        "recommendation": "Recomendación de Inversión: ACEPTAR",
+        "recommendationHelp": "El proyecto tiene un VPN positivo de {npv}, indicando que generará valor sobre la tasa requerida de {rate}%.",
+        "valueCreation": {
+          "title": "Creación de Valor",
+          "description": "Este proyecto creará {npv} en valor presente por encima de la inversión inicial, considerando el valor del dinero en el tiempo."
+        },
+        "breakeven": {
+          "title": "Análisis de Punto de Equilibrio",
+          "description": "El VPN acumulado pasa de negativo a positivo entre el Año 9 y el Año 10, indicando el período de recuperación descontado."
+        },
+        "sensitivity": {
+          "title": "Sensibilidad a la Tasa de Descuento",
+          "description": "Con la tasa de descuento actual de {rate}%, el proyecto sigue siendo rentable. El VPN sería cero con una TIR de {irr}."
+        },
+        "rule": {
+          "title": "Regla de Decisión",
+          "description": "Como el VPN > 0, el proyecto debe aceptarse. Supera el retorno mínimo requerido y agrega valor a la organización."
+        },
+        "whydiscount": {
+          "title": "¿Por qué descontar flujos?",
+          "description": "El dinero recibido en el futuro vale menos que el dinero recibido hoy debido al valor del dinero en el tiempo. Descontar convierte los flujos futuros a su equivalente en valor presente, permitiendo compararlos de forma significativa en distintos momentos. La tasa de descuento refleja el costo de oportunidad del capital y el riesgo asociado con la inversión."
+        }
+      }
+    },
+    "tirPage": {
+      "title": "Análisis de la Tasa Interna de Retorno",
+      "subtitle": "Calcula la TIR usando el método Newton-Raphson",
+      "selectProject": "Seleccionar Proyecto",
+      "formulaTitle": "Definición de la TIR",
+      "formulaDescription": "La tasa que hace que el VPN sea igual a cero, encontrada iterativamente",
+      "formula": "VPN(TIR) = 0",
+      "newtonRaphson": "Método Newton-Raphson",
+      "summary": {
+        "irr": "Tasa Interna de Retorno",
+        "accept": "TIR > TMAR: Aceptar",
+        "reject": "TIR < TMAR: Rechazar",
+        "tmar": "TMAR",
+        "tmarHelp": "Tasa mínima aceptable",
+        "spread": "Margen TIR - TMAR",
+        "spreadHelp": "Margen de seguridad",
+        "iterations": "Iteraciones para Converger",
+        "iterationsHelp": "Método Newton-Raphson"
+      },
+      "charts": {
+        "npv": {
+          "title": "VPN vs Tasa de Descuento",
+          "description": "La TIR es donde la curva cruza cero"
+        },
+        "convergence": {
+          "title": "Ruta de Convergencia",
+          "description": "VPN acercándose a cero mediante iteraciones",
+          "axisLabel": "Iteración"
+        }
+      },
+      "iterations": {
+        "title": "Tabla de Iteraciones Newton-Raphson",
+        "description": "Convergencia paso a paso hacia la Tasa Interna de Retorno",
+        "iteration": "Iteración",
+        "rate": "Tasa (r)",
+        "rateHelp": "Estimación actual de la TIR",
+        "npv": "VPN en r",
+        "npvHelp": "f(r) = VPN calculado en la tasa actual",
+        "derivative": "Derivada",
+        "derivativeHelp": "f'(r) = Pendiente de la función VPN",
+        "adjustment": "Ajuste",
+        "status": "Estado",
+        "converged": "Convergió",
+        "iterating": "Iterando..."
+      },
+      "details": {
+        "title": "Pasos Detallados de Iteración",
+        "description": "Expande cada iteración para ver las operaciones matemáticas",
+        "iterationLabel": "Iteración {iteration}",
+        "final": "Final",
+        "step1": "Paso 1: Calcular VPN en la tasa actual",
+        "step2": "Paso 2: Calcular derivada",
+        "step3": "Paso 3: Aplicar fórmula Newton-Raphson",
+        "converged": "Se cumplió el criterio de convergencia: |VPN| < tolerancia",
+        "increased": "aumentó",
+        "decreased": "disminuyó",
+        "adjustment": "La tasa {direction} en {value}%"
+      },
+      "final": {
+        "title": "Interpretación Final",
+        "description": "La Tasa Interna de Retorno de {irr}% supera la tasa mínima aceptable de retorno (TMAR) de {tmar}%. Esto indica que el proyecto genera retornos suficientes para justificar el riesgo de la inversión. El proyecto debe aceptarse.",
+        "margin": "La TIR proporciona un margen de seguridad de {margin}% sobre el retorno requerido, ofreciendo protección contra errores de estimación y circunstancias imprevistas."
+      }
+    },
+    "benefitCostPage": {
+      "title": "Análisis Costo/Beneficio",
+      "subtitle": "Evalúa la relación entre beneficios y costos del proyecto",
+      "selectProject": "Seleccionar Proyecto",
+      "formulaTitle": "Fórmula de la Relación Costo/Beneficio",
+      "formulaDescription": "Relación entre el valor presente de beneficios y el valor presente de costos",
+      "formula": "B/C = VP(Beneficios) / VP(Costos)",
+      "summary": {
+        "ratio": "Relación B/C",
+        "feasible": "B/C ≥ 1: Factible",
+        "notFeasible": "B/C < 1: No Factible",
+        "pvBenefits": "VP de Beneficios",
+        "pvBenefitsHelp": "Beneficios totales descontados",
+        "pvCosts": "VP de Costos",
+        "pvCostsHelp": "Costos totales descontados",
+        "netBenefit": "Beneficio Neto",
+        "netBenefitHelp": "Beneficios menos Costos"
+      },
+      "comparison": {
+        "title": "Comparación de Beneficios vs Costos",
+        "description": "Representación visual de la relación B/C",
+        "benefits": "Beneficios",
+        "costs": "Costos",
+        "ratioPrefix": "Por cada $1 de costo",
+        "ratioSuffix": "en beneficios se generan"
+      },
+      "tables": {
+        "benefits": {
+          "title": "Desglose de Beneficios",
+          "description": "Beneficios del proyecto categorizados"
+        },
+        "costs": {
+          "title": "Desglose de Costos",
+          "description": "Costos del proyecto categorizados"
+        },
+        "total": "Total: {value}",
+        "category": "Categoría",
+        "nominal": "Nominal",
+        "pv": "VP",
+        "percent": "%"
+      },
+      "feasibility": {
+        "title": "El proyecto es económicamente factible",
+        "description": "Con una relación B/C de {ratio}, el proyecto genera {ratio} en beneficios por cada $1 invertido. Esto supera el umbral mínimo de 1.0, indicando que el proyecto está justificado económicamente y crea valor neto positivo para las partes interesadas."
+      }
+    },
+    "cashFlowPage": {
+      "title": "Análisis de Flujo de Caja",
+      "subtitle": "Visualiza y analiza los flujos de caja del proyecto",
+      "selectProject": "Seleccionar Proyecto",
+      "summary": {
+        "inflows": "Ingresos Totales",
+        "inflowsHelp": "Suma de todos los flujos positivos",
+        "outflows": "Egresos Totales",
+        "outflowsHelp": "Suma de todos los flujos negativos",
+        "net": "Flujo Neto",
+        "netHelp": "Ingresos menos Egresos"
+      },
+      "tabs": {
+        "timeline": "Vista Cronológica",
+        "cumulative": "Vista Acumulada",
+        "waterfall": "Vista Cascada"
+      },
+      "timeline": {
+        "title": "Cronología del Flujo de Caja",
+        "description": "Ingresos y egresos por cada período",
+        "legend": {
+          "inflows": "Ingresos (Ventas, Beneficios)",
+          "outflows": "Egresos (Costos, Gastos)"
+        }
+      },
+      "cumulative": {
+        "title": "Flujo de Caja Acumulado",
+        "description": "Total acumulado de flujos de caja a lo largo del tiempo",
+        "payback": {
+          "title": "Análisis de Recuperación",
+          "description": "El flujo acumulado pasa de negativo a positivo entre el Año 5 y el Año 6, indicando un período de recuperación de aproximadamente 5.2 años. Esto significa que la inversión inicial se recuperará en poco más de 5 años."
+        }
+      },
+      "waterfall": {
+        "title": "Diagrama de Flujo de Caja",
+        "description": "Representación visual de los patrones de movimiento de efectivo",
+        "summary": {
+          "initialInvestment": "Inversión Inicial",
+          "operatingCashFlows": "Flujos Operativos",
+          "finalPosition": "Posición Final"
+        }
+      },
+      "details": {
+        "title": "Detalles por Período",
+        "description": "Desglose detallado de los flujos de caja por período",
+        "netPositive": "Neto +",
+        "netNegative": "Neto -",
+        "inflow": "Ingreso:",
+        "outflow": "Egreso:",
+        "net": "Neto:"
+      }
+    },
+    "reportsPage": {
+      "title": "Reportes",
+      "subtitle": "Genera y exporta reportes completos de análisis financiero",
+      "selectProject": "Seleccionar Proyecto",
+      "exports": {
+        "pdf": {
+          "title": "Reporte PDF",
+          "description": "Documento de análisis completo",
+          "action": "Exportar PDF"
+        },
+        "excel": {
+          "title": "Exportación a Excel",
+          "description": "Hoja de cálculo con los cálculos",
+          "action": "Exportar XLSX"
+        },
+        "csv": {
+          "title": "Datos CSV",
+          "description": "Datos crudos para análisis",
+          "action": "Exportar CSV"
+        },
+        "print": {
+          "title": "Imprimir Reporte",
+          "description": "Versión lista para impresora",
+          "action": "Imprimir"
+        }
+      },
+      "preview": {
+        "title": "Vista Previa del Reporte",
+        "description": "Vista previa del contenido del reporte generado",
+        "badge": "Vista PDF"
+      },
+      "report": {
+        "title": "Reporte de Análisis Económico",
+        "generatedOn": "Generado el {date}"
+      },
+      "sections": {
+        "executiveSummary": "Resumen Ejecutivo",
+        "projectDetails": "Detalles del Proyecto",
+        "recommendation": "Recomendación"
+      },
+      "summary": {
+        "npv": "VPN",
+        "irr": "TIR",
+        "bcRatio": "Relación B/C",
+        "verdict": "Veredicto",
+        "viable": "Viable",
+        "notViable": "No Viable"
+      },
+      "details": {
+        "initialInvestment": "Inversión Inicial:",
+        "analysisPeriod": "Período de Análisis:",
+        "discountRate": "Tasa de Descuento:",
+        "paybackPeriod": "Período de Recuperación:",
+        "profitabilityIndex": "Índice de Rentabilidad:",
+        "tmar": "TMAR:",
+        "years": "{count} años",
+        "yearsShort": "años",
+        "na": "N/A"
+      },
+      "recommendation": {
+        "accept": "Proyecto Recomendado para Inversión",
+        "reject": "Proyecto No Recomendado",
+        "acceptText": "Según el análisis, este proyecto muestra un VPN positivo de {npv} y una TIR de {irr}% que supera la TMAR de {tmar}%. La relación beneficio-costo de {ratio} indica que el proyecto generará {ratio} en beneficios por cada $1 invertido.",
+        "rejectText": "El proyecto no cumple con los criterios mínimos aceptables para inversión según los parámetros actuales."
+      },
+      "footer": {
+        "generatedBy": "Este reporte fue generado por EconoLab - Plataforma de Evaluación de Proyectos Económicos",
+        "confidential": "Confidencial - Solo para uso interno"
+      },
+      "sectionsChecklist": {
+        "title": "Secciones del Reporte",
+        "description": "Personaliza qué secciones incluir en el reporte exportado",
+        "items": {
+          "executiveSummary": "Resumen Ejecutivo",
+          "projectDetails": "Detalles del Proyecto",
+          "cashFlowAnalysis": "Análisis de Flujo de Caja",
+          "npvCalculations": "Cálculos VPN",
+          "irrAnalysis": "Análisis TIR",
+          "benefitCostAnalysis": "Análisis Costo/Beneficio",
+          "sensitivityAnalysis": "Análisis de Sensibilidad",
+          "riskAssessment": "Evaluación de Riesgos",
+          "recommendations": "Recomendaciones"
+        },
+        "included": "Incluido",
+        "optional": "Opcional"
+      }
+    },
+    "tmarPage": {
+      "title": "Configuración TMAR",
+      "subtitle": "Define la Tasa Mínima Aceptable de Retorno para la evaluación de proyectos",
+      "formulaTitle": "Fórmula de la TMAR",
+      "formulaDescription": "Tasa mínima de retorno requerida para justificar una inversión",
+      "formula": "TMAR = r_f + π + β",
+      "calculated": "TMAR Calculada",
+      "rule": "Los proyectos deben tener una TIR por encima de esta tasa para considerarse aceptables",
+      "thresholds": {
+        "low": "Umbral de Bajo Riesgo",
+        "medium": "Umbral de Riesgo Moderado",
+        "high": "Umbral de Alto Riesgo"
+      },
+      "components": {
+        "rate": "Tasa (%)",
+        "riskFree": {
+          "title": "Tasa Libre de Riesgo (r_f)",
+          "description": "Tasa base de retorno de inversiones libres de riesgo",
+          "tooltip": "El retorno teórico de una inversión sin riesgo, típicamente basado en bonos gubernamentales (por ejemplo, letras del tesoro)",
+          "tip": "Valores típicos: 2-5% basados en tasas de bonos gubernamentales"
+        },
+        "inflation": {
+          "title": "Prima de Inflación (π)",
+          "description": "Compensación por expectativas de inflación",
+          "tooltip": "Tasa anual de inflación esperada que erosiona el poder adquisitivo con el tiempo",
+          "tip": "Valores típicos: 2-4% en economías estables"
+        },
+        "riskPremium": {
+          "title": "Prima de Riesgo (β)",
+          "description": "Compensación por el riesgo del proyecto",
+          "tooltip": "Retorno adicional requerido para compensar el riesgo específico del proyecto",
+          "tip": "Varía por proyecto: 3-8% (bajo riesgo) a 15%+ (alto riesgo)"
+        }
+      },
+      "breakdown": {
+        "title": "Desglose de la TMAR",
+        "description": "Representación visual de los componentes de la TMAR",
+        "riskFree": "Tasa Libre de Riesgo",
+        "inflation": "Inflación",
+        "riskPremium": "Prima de Riesgo",
+        "total": "TMAR Total"
+      },
+      "rules": {
+        "title": "Reglas de Decisión",
+        "accept": {
+          "title": "Aceptar Proyecto Cuando:",
+          "irr": "TIR > TMAR ({tmar}%)",
+          "npv": "VPN > 0 (usando TMAR como tasa de descuento)",
+          "bc": "Relación B/C > 1"
+        },
+        "reject": {
+          "title": "Rechazar Proyecto Cuando:",
+          "irr": "TIR < TMAR ({tmar}%)",
+          "npv": "VPN < 0 (usando TMAR como tasa de descuento)",
+          "bc": "Relación B/C < 1"
+        }
       }
     }
   },

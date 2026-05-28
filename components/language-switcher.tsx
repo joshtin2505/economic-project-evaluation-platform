@@ -1,6 +1,6 @@
 "use client"
 
-import { useLocale } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
@@ -18,6 +18,7 @@ const languages = [
 
 export function LanguageSwitcher() {
   const locale = useLocale()
+  const t = useTranslations("common")
   const router = useRouter()
 
   const switchLocale = (newLocale: string) => {
@@ -26,13 +27,14 @@ export function LanguageSwitcher() {
   }
 
   const currentLanguage = languages.find((lang) => lang.code === locale)
+  const currentLanguageLabel = currentLanguage?.code === "es" ? t("spanish") : t("english")
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="gap-2">
           <Globe className="h-4 w-4" />
-          <span className="hidden sm:inline">{currentLanguage?.name}</span>
+          <span className="hidden sm:inline">{currentLanguageLabel}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -43,7 +45,7 @@ export function LanguageSwitcher() {
             className={locale === language.code ? "bg-accent" : ""}
           >
             <span className="mr-2">{language.flag}</span>
-            {language.name}
+            {language.code === "es" ? t("spanish") : t("english")}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

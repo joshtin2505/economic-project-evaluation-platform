@@ -43,11 +43,13 @@ import {
   ReferenceLine,
 } from "recharts"
 import { mockProjects, mockVPNSteps } from "@/lib/mock-data"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 
 export default function VPNAnalysisPage() {
   const [selectedProject, setSelectedProject] = useState(mockProjects[0].id)
   const project = mockProjects.find((p) => p.id === selectedProject) || mockProjects[0]
+  const t = useTranslations("dashboard.vpnPage")
 
   // Chart data for accumulated NPV
   const accumulatedNpvData = mockVPNSteps.map((step) => ({
@@ -62,15 +64,13 @@ export default function VPNAnalysisPage() {
         {/* Page Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">VPN Analysis</h1>
-            <p className="text-muted-foreground">
-              Net Present Value calculation with step-by-step visualization
-            </p>
+            <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+            <p className="text-muted-foreground">{t("subtitle")}</p>
           </div>
           <div className="flex items-center gap-3">
             <Select value={selectedProject} onValueChange={setSelectedProject}>
               <SelectTrigger className="w-[240px]">
-                <SelectValue placeholder="Select project" />
+                <SelectValue placeholder={t("selectProject")} />
               </SelectTrigger>
               <SelectContent>
                 {mockProjects
@@ -96,16 +96,12 @@ export default function VPNAnalysisPage() {
                 <TrendingUp className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold">NPV Formula (Valor Presente Neto)</h3>
-                <p className="text-sm text-muted-foreground">
-                  Sum of discounted cash flows minus initial investment
-                </p>
+                <h3 className="font-semibold">{t("formulaTitle")}</h3>
+                <p className="text-sm text-muted-foreground">{t("formulaDescription")}</p>
               </div>
             </div>
             <div className="rounded-lg border border-primary/20 bg-background px-6 py-3">
-              <p className="font-mono text-lg">
-                NPV = -I₀ + Σ<sub>t=1</sub><sup>n</sup> CF<sub>t</sub> / (1 + r)<sup>t</sup>
-              </p>
+              <p className="font-mono text-lg">{t("formula")}</p>
             </div>
           </CardContent>
         </Card>
@@ -115,7 +111,7 @@ export default function VPNAnalysisPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Net Present Value
+                {t("summary.npv")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -129,7 +125,7 @@ export default function VPNAnalysisPage() {
                     : "mt-2 bg-destructive/10 text-destructive hover:bg-destructive/20"
                 }
               >
-                {project.results && project.results.npv >= 0 ? "NPV > 0: Accept" : "NPV < 0: Reject"}
+                {project.results && project.results.npv >= 0 ? t("summary.accept") : t("summary.reject")}
               </Badge>
             </CardContent>
           </Card>
@@ -137,36 +133,36 @@ export default function VPNAnalysisPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Discount Rate
+                {t("summary.discountRate")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold">{(project.discountRate * 100).toFixed(1)}%</p>
-              <p className="mt-2 text-xs text-muted-foreground">Annual rate used for discounting</p>
+              <p className="mt-2 text-xs text-muted-foreground">{t("summary.discountRateHelp")}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Initial Investment
+                {t("summary.initialInvestment")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold">${project.initialInvestment.toLocaleString()}</p>
-              <p className="mt-2 text-xs text-muted-foreground">Upfront capital required</p>
+              <p className="mt-2 text-xs text-muted-foreground">{t("summary.initialInvestmentHelp")}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Analysis Periods
+                {t("summary.periods")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold">{project.periods} Years</p>
-              <p className="mt-2 text-xs text-muted-foreground">Project time horizon</p>
+              <p className="mt-2 text-xs text-muted-foreground">{t("summary.periodsHelp")}</p>
             </CardContent>
           </Card>
         </div>
@@ -174,66 +170,64 @@ export default function VPNAnalysisPage() {
         {/* Tabs for different views */}
         <Tabs defaultValue="table" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="table">Calculation Table</TabsTrigger>
-            <TabsTrigger value="chart">NPV Chart</TabsTrigger>
-            <TabsTrigger value="interpretation">Interpretation</TabsTrigger>
+            <TabsTrigger value="table">{t("tabs.table")}</TabsTrigger>
+            <TabsTrigger value="chart">{t("tabs.chart")}</TabsTrigger>
+            <TabsTrigger value="interpretation">{t("tabs.interpretation")}</TabsTrigger>
           </TabsList>
 
           {/* Calculation Table */}
           <TabsContent value="table" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Step-by-Step Discounted Cash Flow Calculations</CardTitle>
-                <CardDescription>
-                  Each period&apos;s cash flow is discounted using the formula: PV = CF / (1 + r)^t
-                </CardDescription>
+                <CardTitle>{t("table.title")}</CardTitle>
+                <CardDescription>{t("table.description")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="rounded-lg border">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-24">Period</TableHead>
+                        <TableHead className="w-24">{t("table.period")}</TableHead>
                         <TableHead>
                           <div className="flex items-center gap-1">
-                            Cash Flow (CF)
+                            {t("table.cashFlow")}
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <Info className="h-3 w-3 text-muted-foreground" />
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p>Net cash flow for the period</p>
+                                <p>{t("table.cashFlowHelp")}</p>
                               </TooltipContent>
                             </Tooltip>
                           </div>
                         </TableHead>
                         <TableHead>
                           <div className="flex items-center gap-1">
-                            Discount Factor
+                            {t("table.discountFactor")}
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <Info className="h-3 w-3 text-muted-foreground" />
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p>1 / (1 + r)^t</p>
+                                <p>{t("table.discountFactorHelp")}</p>
                               </TooltipContent>
                             </Tooltip>
                           </div>
                         </TableHead>
                         <TableHead>
                           <div className="flex items-center gap-1">
-                            Discounted Value
+                            {t("table.presentValue")}
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <Info className="h-3 w-3 text-muted-foreground" />
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p>CF × Discount Factor</p>
+                                <p>{t("table.presentValueHelp")}</p>
                               </TooltipContent>
                             </Tooltip>
                           </div>
                         </TableHead>
-                        <TableHead>Accumulated NPV</TableHead>
+                        <TableHead>{t("table.accumulated")}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -243,7 +237,7 @@ export default function VPNAnalysisPage() {
                           className={index === mockVPNSteps.length - 1 ? "bg-muted/30" : ""}
                         >
                           <TableCell className="font-medium">
-                            {step.period === 0 ? "Initial" : `Year ${step.period}`}
+                              {step.period === 0 ? t("table.initial") : t("table.year", { period: step.period })}
                           </TableCell>
                           <TableCell>
                             <span
@@ -275,7 +269,7 @@ export default function VPNAnalysisPage() {
                               ${step.accumulatedNPV.toLocaleString()}
                             </span>
                             {index === mockVPNSteps.length - 1 && (
-                              <Badge className="ml-2 bg-primary/10 text-primary">Final NPV</Badge>
+                              <Badge className="ml-2 bg-primary/10 text-primary">{t("table.finalNpv")}</Badge>
                             )}
                           </TableCell>
                         </TableRow>
@@ -286,18 +280,18 @@ export default function VPNAnalysisPage() {
 
                 {/* Calculation Example */}
                 <div className="mt-6 rounded-lg border border-border/50 bg-muted/30 p-4">
-                  <h4 className="mb-3 font-medium">Calculation Example (Year 1)</h4>
+                  <h4 className="mb-3 font-medium">{t("table.exampleTitle")}</h4>
                   <div className="flex flex-wrap items-center gap-2 text-sm">
                     <span className="rounded bg-background px-2 py-1 font-mono">
-                      PV₁ = $75,000 / (1 + 0.12)¹
+                      {t("table.exampleStep1")}
                     </span>
                     <ArrowRight className="h-4 w-4 text-muted-foreground" />
                     <span className="rounded bg-background px-2 py-1 font-mono">
-                      PV₁ = $75,000 / 1.12
+                      {t("table.exampleStep2")}
                     </span>
                     <ArrowRight className="h-4 w-4 text-muted-foreground" />
                     <span className="rounded bg-success/10 px-2 py-1 font-mono text-success">
-                      PV₁ = $66,964
+                      {t("table.exampleStep3")}
                     </span>
                   </div>
                 </div>
@@ -309,10 +303,8 @@ export default function VPNAnalysisPage() {
           <TabsContent value="chart" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Accumulated NPV Over Time</CardTitle>
-                <CardDescription>
-                  Watch how NPV evolves as cash flows are discounted and accumulated
-                </CardDescription>
+                <CardTitle>{t("chart.title")}</CardTitle>
+                <CardDescription>{t("chart.description")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-[400px]">
@@ -359,11 +351,11 @@ export default function VPNAnalysisPage() {
                 <div className="mt-4 flex items-center justify-center gap-6 text-sm">
                   <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-chart-1" />
-                    <span className="text-muted-foreground">Accumulated NPV</span>
+                    <span className="text-muted-foreground">{t("chart.legend.accumulated")}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="h-0.5 w-6 border-t-2 border-dashed border-muted-foreground" />
-                    <span className="text-muted-foreground">Break-even line</span>
+                    <span className="text-muted-foreground">{t("chart.legend.breakEven")}</span>
                   </div>
                 </div>
               </CardContent>
@@ -374,71 +366,45 @@ export default function VPNAnalysisPage() {
           <TabsContent value="interpretation" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Financial Interpretation</CardTitle>
-                <CardDescription>
-                  Understanding the NPV results and investment decision
-                </CardDescription>
+                <CardTitle>{t("interpretation.title")}</CardTitle>
+                <CardDescription>{t("interpretation.description")}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Decision Summary */}
                 <div className="flex items-start gap-4 rounded-lg border border-success/20 bg-success/5 p-4">
                   <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
                   <div>
-                    <h4 className="font-semibold text-success">Investment Recommendation: ACCEPT</h4>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      The project has a positive NPV of ${project.results?.npv.toLocaleString()}, indicating it will 
-                      generate value above the required return rate of {(project.discountRate * 100).toFixed(1)}%.
-                    </p>
+                    <h4 className="font-semibold text-success">{t("interpretation.recommendation")}</h4>
+                    <p className="mt-1 text-sm text-muted-foreground">{t("interpretation.recommendationHelp", { npv: project.results?.npv.toLocaleString(), rate: (project.discountRate * 100).toFixed(1) })}</p>
                   </div>
                 </div>
 
                 {/* Key Insights */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="rounded-lg border p-4">
-                    <h4 className="text-sm font-medium text-muted-foreground">Value Creation</h4>
+                    <h4 className="text-sm font-medium text-muted-foreground">{t("interpretation.valueCreation.title")}</h4>
                     <p className="mt-2 text-sm">
-                      This project will create <span className="font-semibold text-success">
-                        ${project.results?.npv.toLocaleString()}
-                      </span> in present value terms above the initial investment, 
-                      after accounting for the time value of money.
+                      {t("interpretation.valueCreation.description", { npv: project.results?.npv.toLocaleString() })}
                     </p>
                   </div>
                   <div className="rounded-lg border p-4">
-                    <h4 className="text-sm font-medium text-muted-foreground">Break-even Analysis</h4>
-                    <p className="mt-2 text-sm">
-                      The accumulated NPV crosses from negative to positive between 
-                      <span className="font-semibold"> Year 9 and Year 10</span>, 
-                      indicating the discounted payback period.
-                    </p>
+                    <h4 className="text-sm font-medium text-muted-foreground">{t("interpretation.breakeven.title")}</h4>
+                    <p className="mt-2 text-sm">{t("interpretation.breakeven.description")}</p>
                   </div>
                   <div className="rounded-lg border p-4">
-                    <h4 className="text-sm font-medium text-muted-foreground">Discount Rate Sensitivity</h4>
-                    <p className="mt-2 text-sm">
-                      At the current discount rate of {(project.discountRate * 100).toFixed(1)}%, 
-                      the project remains profitable. The NPV would become zero at an IRR of{" "}
-                      <span className="font-semibold">{((project.results?.irr || 0) * 100).toFixed(1)}%</span>.
-                    </p>
+                    <h4 className="text-sm font-medium text-muted-foreground">{t("interpretation.sensitivity.title")}</h4>
+                    <p className="mt-2 text-sm">{t("interpretation.sensitivity.description", { rate: (project.discountRate * 100).toFixed(1), irr: ((project.results?.irr || 0) * 100).toFixed(1) })}</p>
                   </div>
                   <div className="rounded-lg border p-4">
-                    <h4 className="text-sm font-medium text-muted-foreground">Decision Rule</h4>
-                    <p className="mt-2 text-sm">
-                      Since <span className="font-mono font-semibold">NPV {">"} 0</span>, 
-                      the project should be accepted. It exceeds the minimum required return 
-                      and adds value to the organization.
-                    </p>
+                    <h4 className="text-sm font-medium text-muted-foreground">{t("interpretation.rule.title")}</h4>
+                    <p className="mt-2 text-sm">{t("interpretation.rule.description")}</p>
                   </div>
                 </div>
 
                 {/* Formula Explanation */}
                 <div className="rounded-lg bg-muted/50 p-4">
-                  <h4 className="mb-3 font-medium">Why Discount Cash Flows?</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Money received in the future is worth less than money received today due to the 
-                    time value of money. Discounting converts future cash flows to their present 
-                    value equivalent, allowing for meaningful comparison of cash flows occurring 
-                    at different times. The discount rate reflects the opportunity cost of capital 
-                    and the risk associated with the investment.
-                  </p>
+                  <h4 className="mb-3 font-medium">{t("interpretation.whydiscount.title")}</h4>
+                  <p className="text-sm text-muted-foreground">{t("interpretation.whydiscount.description")}</p>
                 </div>
               </CardContent>
             </Card>

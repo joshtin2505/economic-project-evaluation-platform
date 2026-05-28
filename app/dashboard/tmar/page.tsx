@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
@@ -18,6 +19,7 @@ export default function TMARPage() {
   const [riskFreeRate, setRiskFreeRate] = useState(4)
   const [inflation, setInflation] = useState(3)
   const [riskPremium, setRiskPremium] = useState(5)
+  const t = useTranslations("dashboard.tmarPage")
 
   const tmar = riskFreeRate + inflation + riskPremium
 
@@ -26,10 +28,8 @@ export default function TMARPage() {
       <div className="space-y-6">
         {/* Page Header */}
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">TMAR Configuration</h1>
-          <p className="text-muted-foreground">
-            Configure the Minimum Acceptable Rate of Return for project evaluation
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+          <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
 
         {/* Formula Card */}
@@ -40,14 +40,12 @@ export default function TMARPage() {
                 <Percent className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold">TMAR Formula (Tasa Mínima Aceptable de Rendimiento)</h3>
-                <p className="text-sm text-muted-foreground">
-                  Minimum rate of return required to justify an investment
-                </p>
+                  <h3 className="font-semibold">{t("formulaTitle")}</h3>
+                  <p className="text-sm text-muted-foreground">{t("formulaDescription")}</p>
               </div>
             </div>
             <div className="rounded-lg border border-primary/20 bg-background px-6 py-3">
-              <p className="font-mono text-lg">TMAR = r<sub>f</sub> + π + β</p>
+              <p className="font-mono text-lg">{t("formula")}</p>
             </div>
           </CardContent>
         </Card>
@@ -55,15 +53,13 @@ export default function TMARPage() {
         {/* TMAR Result */}
         <Card className="border-primary/30">
           <CardHeader className="text-center">
-            <CardTitle className="text-lg text-muted-foreground">Calculated TMAR</CardTitle>
+            <CardTitle className="text-lg text-muted-foreground">{t("calculated")}</CardTitle>
           </CardHeader>
           <CardContent className="text-center">
             <p className="text-6xl font-bold text-primary">{tmar.toFixed(1)}%</p>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Projects must have an IRR above this rate to be considered acceptable
-            </p>
+            <p className="mt-4 text-sm text-muted-foreground">{t("rule")}</p>
             <Badge className="mt-4">
-              {tmar < 10 ? "Low Risk Threshold" : tmar < 15 ? "Moderate Risk Threshold" : "High Risk Threshold"}
+              {tmar < 10 ? t("thresholds.low") : tmar < 15 ? t("thresholds.medium") : t("thresholds.high")}
             </Badge>
           </CardContent>
         </Card>
@@ -76,27 +72,22 @@ export default function TMARPage() {
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="h-5 w-5 text-chart-2" />
-                  Risk-Free Rate (r<sub>f</sub>)
+                  {t("components.riskFree.title")}
                 </CardTitle>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Info className="h-4 w-4 text-muted-foreground" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
-                    <p>
-                      The theoretical return of an investment with zero risk, typically based on 
-                      government bond yields (e.g., Treasury bills)
-                    </p>
+                    <p>{t("components.riskFree.tooltip")}</p>
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <CardDescription>
-                Base return rate from risk-free investments
-              </CardDescription>
+              <CardDescription>{t("components.riskFree.description")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label htmlFor="riskFreeRate">Rate (%)</Label>
+                <Label htmlFor="riskFreeRate">{t("components.rate")}</Label>
                 <div className="flex items-center gap-2">
                   <Input
                     id="riskFreeRate"
@@ -124,9 +115,7 @@ export default function TMARPage() {
                 <span>20%</span>
               </div>
               <div className="rounded-lg bg-muted/50 p-3">
-                <p className="text-xs text-muted-foreground">
-                  <strong>Typical values:</strong> 2-5% based on government bond rates
-                </p>
+                <p className="text-xs text-muted-foreground">{t("components.riskFree.tip")}</p>
               </div>
             </CardContent>
           </Card>
@@ -137,26 +126,22 @@ export default function TMARPage() {
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Flame className="h-5 w-5 text-chart-3" />
-                  Inflation Premium (π)
+                  {t("components.inflation.title")}
                 </CardTitle>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Info className="h-4 w-4 text-muted-foreground" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
-                    <p>
-                      Expected annual inflation rate that erodes purchasing power over time
-                    </p>
+                    <p>{t("components.inflation.tooltip")}</p>
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <CardDescription>
-                Compensation for inflation expectations
-              </CardDescription>
+              <CardDescription>{t("components.inflation.description")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label htmlFor="inflation">Rate (%)</Label>
+                <Label htmlFor="inflation">{t("components.rate")}</Label>
                 <div className="flex items-center gap-2">
                   <Input
                     id="inflation"
@@ -184,9 +169,7 @@ export default function TMARPage() {
                 <span>20%</span>
               </div>
               <div className="rounded-lg bg-muted/50 p-3">
-                <p className="text-xs text-muted-foreground">
-                  <strong>Typical values:</strong> 2-4% in stable economies
-                </p>
+                <p className="text-xs text-muted-foreground">{t("components.inflation.tip")}</p>
               </div>
             </CardContent>
           </Card>
@@ -197,26 +180,22 @@ export default function TMARPage() {
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-chart-1" />
-                  Risk Premium (β)
+                  {t("components.riskPremium.title")}
                 </CardTitle>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Info className="h-4 w-4 text-muted-foreground" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
-                    <p>
-                      Additional return required to compensate for project-specific risk
-                    </p>
+                    <p>{t("components.riskPremium.tooltip")}</p>
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <CardDescription>
-                Compensation for project risk
-              </CardDescription>
+              <CardDescription>{t("components.riskPremium.description")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label htmlFor="riskPremium">Rate (%)</Label>
+                <Label htmlFor="riskPremium">{t("components.rate")}</Label>
                 <div className="flex items-center gap-2">
                   <Input
                     id="riskPremium"
@@ -244,9 +223,7 @@ export default function TMARPage() {
                 <span>30%</span>
               </div>
               <div className="rounded-lg bg-muted/50 p-3">
-                <p className="text-xs text-muted-foreground">
-                  <strong>Varies by project:</strong> 3-8% (low risk) to 15%+ (high risk)
-                </p>
+                <p className="text-xs text-muted-foreground">{t("components.riskPremium.tip")}</p>
               </div>
             </CardContent>
           </Card>
@@ -255,13 +232,13 @@ export default function TMARPage() {
         {/* TMAR Breakdown */}
         <Card>
           <CardHeader>
-            <CardTitle>TMAR Breakdown</CardTitle>
-            <CardDescription>Visual representation of TMAR components</CardDescription>
+            <CardTitle>{t("breakdown.title")}</CardTitle>
+            <CardDescription>{t("breakdown.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                <div className="w-32 text-sm font-medium">Risk-Free Rate</div>
+                <div className="w-32 text-sm font-medium">{t("breakdown.riskFree")}</div>
                 <div className="flex-1">
                   <div
                     className="h-8 rounded bg-chart-2"
@@ -271,7 +248,7 @@ export default function TMARPage() {
                 <div className="w-16 text-right font-mono">{riskFreeRate}%</div>
               </div>
               <div className="flex items-center gap-4">
-                <div className="w-32 text-sm font-medium">Inflation</div>
+                <div className="w-32 text-sm font-medium">{t("breakdown.inflation")}</div>
                 <div className="flex-1">
                   <div
                     className="h-8 rounded bg-chart-3"
@@ -281,7 +258,7 @@ export default function TMARPage() {
                 <div className="w-16 text-right font-mono">{inflation}%</div>
               </div>
               <div className="flex items-center gap-4">
-                <div className="w-32 text-sm font-medium">Risk Premium</div>
+                <div className="w-32 text-sm font-medium">{t("breakdown.riskPremium")}</div>
                 <div className="flex-1">
                   <div
                     className="h-8 rounded bg-chart-1"
@@ -291,7 +268,7 @@ export default function TMARPage() {
                 <div className="w-16 text-right font-mono">{riskPremium}%</div>
               </div>
               <div className="flex items-center gap-4 border-t pt-4">
-                <div className="w-32 text-sm font-bold">Total TMAR</div>
+                <div className="w-32 text-sm font-bold">{t("breakdown.total")}</div>
                 <div className="flex-1">
                   <div className="h-8 rounded bg-primary" style={{ width: "100%" }} />
                 </div>
@@ -304,24 +281,24 @@ export default function TMARPage() {
         {/* Usage Guidelines */}
         <Card>
           <CardHeader>
-            <CardTitle>Decision Rules</CardTitle>
+            <CardTitle>{t("rules.title")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-lg border border-success/20 bg-success/5 p-4">
-                <h4 className="font-semibold text-success">Accept Project When:</h4>
+                <h4 className="font-semibold text-success">{t("rules.accept.title")}</h4>
                 <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                  <li>IRR {">"} TMAR ({tmar}%)</li>
-                  <li>NPV {">"} 0 (using TMAR as discount rate)</li>
-                  <li>B/C Ratio {">"} 1</li>
+                  <li>{t("rules.accept.irr", { tmar })}</li>
+                  <li>{t("rules.accept.npv")}</li>
+                  <li>{t("rules.accept.bc")}</li>
                 </ul>
               </div>
               <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4">
-                <h4 className="font-semibold text-destructive">Reject Project When:</h4>
+                <h4 className="font-semibold text-destructive">{t("rules.reject.title")}</h4>
                 <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                  <li>IRR {"<"} TMAR ({tmar}%)</li>
-                  <li>NPV {"<"} 0 (using TMAR as discount rate)</li>
-                  <li>B/C Ratio {"<"} 1</li>
+                  <li>{t("rules.reject.irr", { tmar })}</li>
+                  <li>{t("rules.reject.npv")}</li>
+                  <li>{t("rules.reject.bc")}</li>
                 </ul>
               </div>
             </div>

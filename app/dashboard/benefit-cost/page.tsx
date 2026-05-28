@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -55,6 +56,7 @@ const COLORS = [
 export default function BenefitCostPage() {
   const [selectedProject, setSelectedProject] = useState(mockProjects[0].id)
   const project = mockProjects.find((p) => p.id === selectedProject) || mockProjects[0]
+  const t = useTranslations("dashboard.benefitCostPage")
 
   const totalBenefitsPV = benefitCostData.benefits.reduce((sum, b) => sum + b.pvAmount, 0)
   const totalCostsPV = benefitCostData.costs.reduce((sum, c) => sum + c.pvAmount, 0)
@@ -77,15 +79,13 @@ export default function BenefitCostPage() {
         {/* Page Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Benefit/Cost Analysis</h1>
-            <p className="text-muted-foreground">
-              Compare discounted benefits against costs for project feasibility
-            </p>
+            <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+            <p className="text-muted-foreground">{t("subtitle")}</p>
           </div>
           <div className="flex items-center gap-3">
             <Select value={selectedProject} onValueChange={setSelectedProject}>
               <SelectTrigger className="w-[240px]">
-                <SelectValue placeholder="Select project" />
+                <SelectValue placeholder={t("selectProject")} />
               </SelectTrigger>
               <SelectContent>
                 {mockProjects
@@ -111,16 +111,12 @@ export default function BenefitCostPage() {
                 <Scale className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold">Benefit/Cost Ratio Formula</h3>
-                <p className="text-sm text-muted-foreground">
-                  Ratio of present value of benefits to present value of costs
-                </p>
+                <h3 className="font-semibold">{t("formulaTitle")}</h3>
+                <p className="text-sm text-muted-foreground">{t("formulaDescription")}</p>
               </div>
             </div>
             <div className="rounded-lg border border-primary/20 bg-background px-6 py-3">
-              <p className="font-mono text-lg">
-                B/C = PV(Benefits) / PV(Costs)
-              </p>
+              <p className="font-mono text-lg">{t("formula")}</p>
             </div>
           </CardContent>
         </Card>
@@ -130,7 +126,7 @@ export default function BenefitCostPage() {
           <Card className="border-primary/30">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                B/C Ratio
+                {t("summary.ratio")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -144,7 +140,7 @@ export default function BenefitCostPage() {
                     : "mt-2 bg-destructive/10 text-destructive hover:bg-destructive/20"
                 }
               >
-                {bcRatio >= 1 ? "B/C ≥ 1: Feasible" : "B/C < 1: Not Feasible"}
+                {bcRatio >= 1 ? t("summary.feasible") : t("summary.notFeasible")}
               </Badge>
             </CardContent>
           </Card>
@@ -152,7 +148,7 @@ export default function BenefitCostPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                PV of Benefits
+                {t("summary.pvBenefits")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -161,7 +157,7 @@ export default function BenefitCostPage() {
               </p>
               <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
                 <TrendingUp className="h-3 w-3" />
-                Discounted total benefits
+                {t("summary.pvBenefitsHelp")}
               </div>
             </CardContent>
           </Card>
@@ -169,7 +165,7 @@ export default function BenefitCostPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                PV of Costs
+                {t("summary.pvCosts")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -178,7 +174,7 @@ export default function BenefitCostPage() {
               </p>
               <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
                 <TrendingDown className="h-3 w-3" />
-                Discounted total costs
+                {t("summary.pvCostsHelp")}
               </div>
             </CardContent>
           </Card>
@@ -186,7 +182,7 @@ export default function BenefitCostPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Net Benefit
+                {t("summary.netBenefit")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -195,7 +191,7 @@ export default function BenefitCostPage() {
               </p>
               <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
                 <DollarSign className="h-3 w-3" />
-                Benefits minus Costs
+                {t("summary.netBenefitHelp")}
               </div>
             </CardContent>
           </Card>
@@ -204,8 +200,8 @@ export default function BenefitCostPage() {
         {/* Ratio Visualization */}
         <Card>
           <CardHeader>
-            <CardTitle>Benefit vs Cost Comparison</CardTitle>
-            <CardDescription>Visual representation of the B/C ratio</CardDescription>
+            <CardTitle>{t("comparison.title")}</CardTitle>
+            <CardDescription>{t("comparison.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
@@ -216,14 +212,14 @@ export default function BenefitCostPage() {
                     <span className="font-medium">Benefits</span>
                     <span className="text-success">${totalBenefitsPV.toLocaleString()}</span>
                   </div>
-                  <Progress value={100} className="h-4 bg-muted" />
+                      <span className="font-medium">{t("comparison.benefits")}</span>
                 </div>
                 <div>
                   <div className="mb-2 flex items-center justify-between text-sm">
                     <span className="font-medium">Costs</span>
                     <span className="text-destructive">${totalCostsPV.toLocaleString()}</span>
                   </div>
-                  <Progress
+                      <span className="font-medium">{t("comparison.costs")}</span>
                     value={(totalCostsPV / totalBenefitsPV) * 100}
                     className="h-4 bg-muted"
                   />
@@ -233,11 +229,11 @@ export default function BenefitCostPage() {
               {/* Ratio indicator */}
               <div className="flex items-center justify-center rounded-lg bg-muted/50 p-6">
                 <div className="text-center">
-                  <p className="text-sm text-muted-foreground">For every $1 of cost</p>
+                  <p className="text-sm text-muted-foreground">{t("comparison.ratioPrefix")}</p>
                   <p className="mt-2 text-4xl font-bold text-primary">
                     ${bcRatio.toFixed(2)}
                   </p>
-                  <p className="mt-1 text-sm text-muted-foreground">in benefits is generated</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{t("comparison.ratioSuffix")}</p>
                 </div>
               </div>
             </div>
@@ -251,11 +247,11 @@ export default function BenefitCostPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>Benefits Breakdown</CardTitle>
-                  <CardDescription>Categorized project benefits</CardDescription>
+                  <CardTitle>{t("tables.benefits.title")}</CardTitle>
+                  <CardDescription>{t("tables.benefits.description")}</CardDescription>
                 </div>
                 <Badge variant="outline" className="text-success">
-                  Total: ${totalBenefitsPV.toLocaleString()}
+                  {t("tables.total", { value: totalBenefitsPV.toLocaleString() })}
                 </Badge>
               </div>
             </CardHeader>
@@ -263,10 +259,10 @@ export default function BenefitCostPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Category</TableHead>
-                    <TableHead className="text-right">Nominal</TableHead>
-                    <TableHead className="text-right">PV</TableHead>
-                    <TableHead className="text-right">%</TableHead>
+                    <TableHead>{t("tables.category")}</TableHead>
+                    <TableHead className="text-right">{t("tables.nominal")}</TableHead>
+                    <TableHead className="text-right">{t("tables.pv")}</TableHead>
+                    <TableHead className="text-right">{t("tables.percent")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -334,11 +330,11 @@ export default function BenefitCostPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>Costs Breakdown</CardTitle>
-                  <CardDescription>Categorized project costs</CardDescription>
+                  <CardTitle>{t("tables.costs.title")}</CardTitle>
+                  <CardDescription>{t("tables.costs.description")}</CardDescription>
                 </div>
                 <Badge variant="outline" className="text-destructive">
-                  Total: ${totalCostsPV.toLocaleString()}
+                  {t("tables.total", { value: totalCostsPV.toLocaleString() })}
                 </Badge>
               </div>
             </CardHeader>
@@ -346,10 +342,10 @@ export default function BenefitCostPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Category</TableHead>
-                    <TableHead className="text-right">Nominal</TableHead>
-                    <TableHead className="text-right">PV</TableHead>
-                    <TableHead className="text-right">%</TableHead>
+                    <TableHead>{t("tables.category")}</TableHead>
+                    <TableHead className="text-right">{t("tables.nominal")}</TableHead>
+                    <TableHead className="text-right">{t("tables.pv")}</TableHead>
+                    <TableHead className="text-right">{t("tables.percent")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -419,15 +415,8 @@ export default function BenefitCostPage() {
             <div className="flex items-start gap-4 rounded-lg border border-success/20 bg-success/5 p-4">
               <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
               <div>
-                <h4 className="font-semibold text-success">
-                  Project is Economically Feasible
-                </h4>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  With a B/C ratio of {bcRatio.toFixed(2)}, the project generates $
-                  {bcRatio.toFixed(2)} in benefits for every $1 invested. This exceeds the 
-                  minimum threshold of 1.0, indicating the project is economically justified 
-                  and creates net positive value for stakeholders.
-                </p>
+                <h4 className="font-semibold text-success">{t("feasibility.title")}</h4>
+                <p className="mt-2 text-sm text-muted-foreground">{t("feasibility.description", { ratio: bcRatio.toFixed(2) })}</p>
               </div>
             </div>
           </CardContent>

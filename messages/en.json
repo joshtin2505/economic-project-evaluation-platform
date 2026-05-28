@@ -32,6 +32,11 @@
     "spanish": "Spanish",
     "english": "English"
   },
+  "metadata": {
+    "title": "EconoLab - Economic Project Evaluation Platform",
+    "description": "Professional engineering economics and financial feasibility analysis. Calculate NPV, IRR, MARR, and benefit/cost ratio with step-by-step visualizations.",
+    "keywords": ["NPV", "IRR", "MARR", "economic analysis", "financial feasibility", "engineering economics", "cash flow"]
+  },
   "landing": {
     "nav": {
       "features": "Features",
@@ -153,6 +158,8 @@
       "overview": "Overview",
       "projects": "Projects",
       "newProject": "New Project",
+      "main": "Main",
+      "searchPlaceholder": "Search projects...",
       "analysis": "Analysis",
       "vpn": "NPV Analysis",
       "tir": "IRR Analysis",
@@ -202,7 +209,11 @@
         "completed": "Completed",
         "analyzing": "Analyzing",
         "draft": "Draft"
-       }  
+       },
+      "status": {
+        "viable": "Viable",
+        "notViable": "Not Viable"
+      }
     },
     "projects": {
       "title": "My Projects",
@@ -492,6 +503,578 @@
         "changePassword": "Change Password",
         "twoFactor": "Two-Factor Authentication",
         "sessions": "Active Sessions"
+      }
+    },
+    "settingsPage": {
+      "title": "Settings",
+      "subtitle": "Manage your account and application preferences",
+      "profile": {
+        "title": "Profile",
+        "description": "Manage your personal information",
+        "name": "Full Name",
+        "email": "Email",
+        "company": "Company",
+        "role": "Role"
+      },
+      "calculations": {
+        "title": "Calculation Defaults",
+        "description": "Set default values for new project calculations",
+        "discountRate": "Default Discount Rate (%)",
+        "analysisPeriods": "Default Analysis Periods",
+        "riskFreeRate": "Risk-Free Rate (%)",
+        "inflation": "Inflation (%)",
+        "riskPremium": "Risk Premium (%)",
+        "irrMethod": "IRR Calculation Method",
+        "selectMethod": "Select method",
+        "methods": {
+          "newton": "Newton-Raphson (Recommended)",
+          "bisection": "Bisection Method",
+          "secant": "Secant Method"
+        },
+        "methodHelp": "Newton-Raphson provides faster convergence for most cases"
+      },
+      "localization": {
+        "title": "Localization",
+        "description": "Currency and regional preferences",
+        "currency": "Currency",
+        "selectCurrency": "Select currency",
+        "currencies": {
+          "usd": "USD ($)",
+          "eur": "EUR (€)",
+          "gbp": "GBP (£)",
+          "mxn": "MXN ($)",
+          "brl": "BRL (R$)"
+        },
+        "numberFormat": "Number Format",
+        "selectNumberFormat": "Select format",
+        "numberFormats": {
+          "enUs": "1,234.56 (US)",
+          "es": "1.234,56 (ES/MX)",
+          "de": "1.234,56 (DE)"
+        },
+        "language": "Language",
+        "selectLanguage": "Select language",
+        "languages": {
+          "en": "English",
+          "es": "Spanish",
+          "pt": "Portuguese"
+        }
+      },
+      "appearance": {
+        "title": "Appearance",
+        "theme": "Theme",
+        "themes": {
+          "light": "Light",
+          "dark": "Dark",
+          "system": "System"
+        }
+      },
+      "notifications": {
+        "title": "Notifications",
+        "email": "Email Notifications",
+        "emailHelp": "Receive analysis completion alerts",
+        "projectUpdates": "Project Updates",
+        "projectUpdatesHelp": "Notify when calculations complete",
+        "weeklySummary": "Weekly Summary",
+        "weeklySummaryHelp": "Receive weekly project reports"
+      },
+      "plan": {
+        "title": "Current Plan",
+        "name": "Professional",
+        "active": "Active",
+        "features": {
+          "projects": "Unlimited projects",
+          "calculations": "Advanced calculations",
+          "exports": "PDF & Excel exports",
+          "support": "Priority support"
+        },
+        "manageSubscription": "Manage Subscription"
+      },
+      "save": "Save Changes"
+    },
+    "projectsPage": {
+      "title": "Projects",
+      "subtitle": "Manage and analyze your economic evaluation projects",
+      "newProject": "New Project",
+      "searchPlaceholder": "Search projects...",
+      "filters": {
+        "all": "All ({count})",
+        "completed": "Completed ({count})",
+        "analyzing": "Analyzing ({count})",
+        "draft": "Draft ({count})"
+      },
+      "table": {
+        "title": "All Projects",
+        "description": "Click on a project to view detailed analysis",
+        "name": "Project Name",
+        "investment": "Investment",
+        "npv": "NPV",
+        "irr": "IRR",
+        "status": "Status",
+        "updated": "Updated"
+      },
+      "status": {
+        "completed": "Completed",
+        "analyzing": "Analyzing",
+        "draft": "Draft"
+      },
+      "actions": {
+        "view": "View Analysis",
+        "edit": "Edit Project",
+        "delete": "Delete"
+      },
+      "cards": {
+        "investment": "Investment",
+        "periods": "Periods",
+        "years": "{count} years",
+        "npv": "NPV",
+        "irr": "IRR"
+      }
+    },
+    "projectsNewPage": {
+      "title": "Create New Project",
+      "subtitle": "Enter your project details and cash flow projections for economic analysis.",
+      "projectInfo": {
+        "title": "Project Information",
+        "description": "Basic details about your investment project",
+        "name": "Project Name",
+        "namePlaceholder": "e.g., Solar Panel Installation",
+        "initialInvestment": "Initial Investment ($)",
+        "initialInvestmentHelp": "The upfront cost required to start the project",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Brief description of the project..."
+      },
+      "financial": {
+        "title": "Financial Parameters",
+        "description": "Configure discount rates and economic factors",
+        "discountRate": "Discount Rate (%)",
+        "discountRateHelp": "Rate used to discount future cash flows to present value",
+        "inflation": "Inflation (%)",
+        "inflationHelp": "Expected annual inflation rate",
+        "riskPremium": "Risk Premium (%)",
+        "riskPremiumHelp": "Additional return required to compensate for project risk",
+        "periods": "Number of Periods"
+      },
+      "cashFlows": {
+        "title": "Cash Flows by Period",
+        "description": "Enter expected inflows and outflows for each year",
+        "addPeriod": "Add Period",
+        "period": "Period",
+        "inflows": "Inflows ($)",
+        "outflows": "Outflows ($)",
+        "netFlow": "Net Flow ($)",
+        "year0": "Year 0",
+        "year": "Year {period}",
+        "totalInflows": "Total Inflows: ",
+        "totalOutflows": "Total Outflows: "
+      },
+      "actions": {
+        "saveDraft": "Save as Draft",
+        "calculate": "Calculate Indicators"
+      },
+      "preview": {
+        "title": "Real-time Preview",
+        "description": "Estimated indicators based on current inputs",
+        "viable": "Viable",
+        "notViable": "Not Viable",
+        "npv": "NPV (VPN)",
+        "npvHelp": "Net Present Value: Sum of discounted cash flows",
+        "addsValue": "Project adds value",
+        "destroysValue": "Project destroys value",
+        "irr": "IRR (TIR)",
+        "aboveTmar": "Above TMAR",
+        "belowTmar": "Below TMAR",
+        "tmar": "TMAR",
+        "tmarFormula": "r + π + β",
+        "bcRatio": "B/C Ratio",
+        "bcFeasible": "B/C ≥ 1",
+        "bcNotFeasible": "B/C < 1",
+        "formulaTitle": "NPV Formula",
+        "formula": "NPV = -I₀ + Σ CFₜ/(1+r)ᵗ"
+      }
+    },
+    "vpnPage": {
+      "title": "Net Present Value Analysis",
+      "subtitle": "Calculate NPV of your projects with step-by-step methodology",
+      "selectProject": "Select Project",
+      "formulaTitle": "NPV Formula",
+      "formulaDescription": "Sum of discounted cash flows minus initial investment",
+      "formula": "NPV = -I₀ + Σ CFₜ / (1 + r)ᵗ",
+      "summary": {
+        "npv": "Net Present Value",
+        "accept": "NPV > 0: Accept",
+        "reject": "NPV < 0: Reject",
+        "discountRate": "Discount Rate",
+        "discountRateHelp": "Annual rate used for discounting",
+        "initialInvestment": "Initial Investment",
+        "initialInvestmentHelp": "Upfront capital required",
+        "periods": "Analysis Periods",
+        "periodsHelp": "Project time horizon"
+      },
+      "tabs": {
+        "table": "Calculation Table",
+        "chart": "NPV Chart",
+        "interpretation": "Interpretation"
+      },
+      "table": {
+        "title": "Step-by-Step Discounted Cash Flow Calculations",
+        "description": "Each period's cash flow is discounted using the formula: PV = CF / (1 + r)^t",
+        "period": "Period",
+        "cashFlow": "Cash Flow (CF)",
+        "cashFlowHelp": "Net cash flow for the period",
+        "discountFactor": "Discount Factor",
+        "discountFactorHelp": "1 / (1 + r)^t",
+        "presentValue": "Discounted Value",
+        "presentValueHelp": "CF × Discount Factor",
+        "accumulated": "Accumulated NPV",
+        "initial": "Initial",
+        "year": "Year {period}",
+        "finalNpv": "Final NPV",
+        "exampleTitle": "Calculation Example (Year 1)",
+        "exampleStep1": "PV₁ = $75,000 / (1 + 0.12)¹",
+        "exampleStep2": "PV₁ = $75,000 / 1.12",
+        "exampleStep3": "PV₁ = $66,964"
+      },
+      "chart": {
+        "title": "Accumulated NPV Over Time",
+        "description": "Watch how NPV evolves as cash flows are discounted and accumulated",
+        "legend": {
+          "accumulated": "Accumulated NPV",
+          "breakEven": "Break-even line"
+        }
+      },
+      "interpretation": {
+        "title": "Financial Interpretation",
+        "description": "Understanding the NPV results and investment decision",
+        "recommendation": "Investment Recommendation: ACCEPT",
+        "recommendationHelp": "The project has a positive NPV of {npv}, indicating it will generate value above the required return rate of {rate}%.",
+        "valueCreation": {
+          "title": "Value Creation",
+          "description": "This project will create {npv} in present value terms above the initial investment, after accounting for the time value of money."
+        },
+        "breakeven": {
+          "title": "Break-even Analysis",
+          "description": "The accumulated NPV crosses from negative to positive between Year 9 and Year 10, indicating the discounted payback period."
+        },
+        "sensitivity": {
+          "title": "Discount Rate Sensitivity",
+          "description": "At the current discount rate of {rate}%, the project remains profitable. The NPV would become zero at an IRR of {irr}."
+        },
+        "rule": {
+          "title": "Decision Rule",
+          "description": "Since NPV > 0, the project should be accepted. It exceeds the minimum required return and adds value to the organization."
+        },
+        "whydiscount": {
+          "title": "Why Discount Cash Flows?",
+          "description": "Money received in the future is worth less than money received today due to the time value of money. Discounting converts future cash flows to their present value equivalent, allowing for meaningful comparison of cash flows occurring at different times. The discount rate reflects the opportunity cost of capital and the risk associated with the investment."
+        }
+      }
+    },
+    "tirPage": {
+      "title": "Internal Rate of Return Analysis",
+      "subtitle": "Calculate IRR using Newton-Raphson method",
+      "selectProject": "Select Project",
+      "formulaTitle": "IRR Definition",
+      "formulaDescription": "The rate that makes NPV equal to zero, found iteratively",
+      "formula": "NPV(IRR) = 0",
+      "newtonRaphson": "Newton-Raphson Method",
+      "summary": {
+        "irr": "Internal Rate of Return",
+        "accept": "IRR > TMAR: Accept",
+        "reject": "IRR < TMAR: Reject",
+        "tmar": "TMAR",
+        "tmarHelp": "Minimum acceptable rate",
+        "spread": "IRR - TMAR Spread",
+        "spreadHelp": "Safety margin",
+        "iterations": "Iterations to Converge",
+        "iterationsHelp": "Newton-Raphson method"
+      },
+      "charts": {
+        "npv": {
+          "title": "NPV vs Discount Rate",
+          "description": "IRR is where the curve crosses zero"
+        },
+        "convergence": {
+          "title": "Convergence Path",
+          "description": "NPV approaching zero through iterations",
+          "axisLabel": "Iteration"
+        }
+      },
+      "iterations": {
+        "title": "Newton-Raphson Iteration Table",
+        "description": "Step-by-step convergence to the Internal Rate of Return",
+        "iteration": "Iteration",
+        "rate": "Rate (r)",
+        "rateHelp": "Current estimate of IRR",
+        "npv": "NPV at r",
+        "npvHelp": "f(r) = NPV calculated at current rate",
+        "derivative": "Derivative",
+        "derivativeHelp": "f'(r) = Slope of NPV function",
+        "adjustment": "Adjustment",
+        "status": "Status",
+        "converged": "Converged",
+        "iterating": "Iterating..."
+      },
+      "details": {
+        "title": "Detailed Iteration Steps",
+        "description": "Expand each iteration to see the mathematical operations",
+        "iterationLabel": "Iteration {iteration}",
+        "final": "Final",
+        "step1": "Step 1: Calculate NPV at current rate",
+        "step2": "Step 2: Calculate derivative",
+        "step3": "Step 3: Apply Newton-Raphson formula",
+        "converged": "Convergence criterion met: |NPV| < tolerance",
+        "increased": "increased",
+        "decreased": "decreased",
+        "adjustment": "Rate {direction} by {value}%"
+      },
+      "final": {
+        "title": "Final Interpretation",
+        "description": "The Internal Rate of Return of {irr}% exceeds the minimum acceptable rate of return (TMAR) of {tmar}%. This indicates the project generates sufficient returns to justify the investment risk. The project should be accepted.",
+        "margin": "The IRR provides a safety margin of {margin}% above the required return, offering protection against estimation errors and unforeseen circumstances."
+      }
+    },
+    "benefitCostPage": {
+      "title": "Benefit/Cost Analysis",
+      "subtitle": "Evaluate the relationship between project benefits and costs",
+      "selectProject": "Select Project",
+      "formulaTitle": "Benefit/Cost Ratio Formula",
+      "formulaDescription": "Ratio of present value of benefits to present value of costs",
+      "formula": "B/C = PV(Benefits) / PV(Costs)",
+      "summary": {
+        "ratio": "B/C Ratio",
+        "feasible": "B/C ≥ 1: Feasible",
+        "notFeasible": "B/C < 1: Not Feasible",
+        "pvBenefits": "PV of Benefits",
+        "pvBenefitsHelp": "Discounted total benefits",
+        "pvCosts": "PV of Costs",
+        "pvCostsHelp": "Discounted total costs",
+        "netBenefit": "Net Benefit",
+        "netBenefitHelp": "Benefits minus Costs"
+      },
+      "comparison": {
+        "title": "Benefit vs Cost Comparison",
+        "description": "Visual representation of the B/C ratio",
+        "benefits": "Benefits",
+        "costs": "Costs",
+        "ratioPrefix": "For every $1 of cost",
+        "ratioSuffix": "in benefits is generated"
+      },
+      "tables": {
+        "benefits": {
+          "title": "Benefits Breakdown",
+          "description": "Categorized project benefits"
+        },
+        "costs": {
+          "title": "Costs Breakdown",
+          "description": "Categorized project costs"
+        },
+        "total": "Total: {value}",
+        "category": "Category",
+        "nominal": "Nominal",
+        "pv": "PV",
+        "percent": "%"
+      },
+      "feasibility": {
+        "title": "Project is Economically Feasible",
+        "description": "With a B/C ratio of {ratio}, the project generates {ratio} in benefits for every $1 invested. This exceeds the minimum threshold of 1.0, indicating the project is economically justified and creates net positive value for stakeholders."
+      }
+    },
+    "cashFlowPage": {
+      "title": "Cash Flow Analysis",
+      "subtitle": "Visualize and analyze project cash flows",
+      "selectProject": "Select Project",
+      "summary": {
+        "inflows": "Total Inflows",
+        "inflowsHelp": "Sum of all positive cash flows",
+        "outflows": "Total Outflows",
+        "outflowsHelp": "Sum of all negative cash flows",
+        "net": "Net Cash Flow",
+        "netHelp": "Inflows minus Outflows"
+      },
+      "tabs": {
+        "timeline": "Timeline View",
+        "cumulative": "Cumulative View",
+        "waterfall": "Waterfall View"
+      },
+      "timeline": {
+        "title": "Cash Flow Timeline",
+        "description": "Inflows and outflows for each period",
+        "legend": {
+          "inflows": "Inflows (Revenue, Benefits)",
+          "outflows": "Outflows (Costs, Expenses)"
+        }
+      },
+      "cumulative": {
+        "title": "Cumulative Cash Flow",
+        "description": "Running total of cash flows over time",
+        "payback": {
+          "title": "Payback Analysis",
+          "description": "The cumulative cash flow crosses from negative to positive between Year 5 and Year 6, indicating a payback period of approximately 5.2 years. This means the initial investment will be recovered in just over 5 years."
+        }
+      },
+      "waterfall": {
+        "title": "Cash Flow Diagram",
+        "description": "Visual representation of cash movement patterns",
+        "summary": {
+          "initialInvestment": "Initial Investment",
+          "operatingCashFlows": "Operating Cash Flows",
+          "finalPosition": "Final Position"
+        }
+      },
+      "details": {
+        "title": "Period Details",
+        "description": "Detailed breakdown of cash flows by period",
+        "netPositive": "Net +",
+        "netNegative": "Net -",
+        "inflow": "Inflow:",
+        "outflow": "Outflow:",
+        "net": "Net:"
+      }
+    },
+    "reportsPage": {
+      "title": "Reports",
+      "subtitle": "Generate and export comprehensive financial analysis reports",
+      "selectProject": "Select Project",
+      "exports": {
+        "pdf": {
+          "title": "PDF Report",
+          "description": "Complete analysis document",
+          "action": "Export PDF"
+        },
+        "excel": {
+          "title": "Excel Export",
+          "description": "Spreadsheet with calculations",
+          "action": "Export XLSX"
+        },
+        "csv": {
+          "title": "CSV Data",
+          "description": "Raw data for analysis",
+          "action": "Export CSV"
+        },
+        "print": {
+          "title": "Print Report",
+          "description": "Printer-friendly version",
+          "action": "Print"
+        }
+      },
+      "preview": {
+        "title": "Report Preview",
+        "description": "Preview of the generated report content",
+        "badge": "PDF Preview"
+      },
+      "report": {
+        "title": "Economic Analysis Report",
+        "generatedOn": "Generated on {date}"
+      },
+      "sections": {
+        "executiveSummary": "Executive Summary",
+        "projectDetails": "Project Details",
+        "recommendation": "Recommendation"
+      },
+      "summary": {
+        "npv": "NPV",
+        "irr": "IRR",
+        "bcRatio": "B/C Ratio",
+        "verdict": "Verdict",
+        "viable": "Viable",
+        "notViable": "Not Viable"
+      },
+      "details": {
+        "initialInvestment": "Initial Investment:",
+        "analysisPeriod": "Analysis Period:",
+        "discountRate": "Discount Rate:",
+        "paybackPeriod": "Payback Period:",
+        "profitabilityIndex": "Profitability Index:",
+        "tmar": "TMAR:",
+        "years": "{count} years",
+        "yearsShort": "years",
+        "na": "N/A"
+      },
+      "recommendation": {
+        "accept": "Project Recommended for Investment",
+        "reject": "Project Not Recommended",
+        "acceptText": "Based on the analysis, this project shows a positive NPV of {npv} and an IRR of {irr}% which exceeds the TMAR of {tmar}%. The benefit-cost ratio of {ratio} indicates the project will generate {ratio} in benefits for every $1 invested.",
+        "rejectText": "The project does not meet the minimum acceptable criteria for investment based on the current parameters."
+      },
+      "footer": {
+        "generatedBy": "This report was generated by EconoLab - Economic Project Evaluation Platform",
+        "confidential": "Confidential - For internal use only"
+      },
+      "sectionsChecklist": {
+        "title": "Report Sections",
+        "description": "Customize which sections to include in the exported report",
+        "items": {
+          "executiveSummary": "Executive Summary",
+          "projectDetails": "Project Details",
+          "cashFlowAnalysis": "Cash Flow Analysis",
+          "npvCalculations": "NPV Calculations",
+          "irrAnalysis": "IRR Analysis",
+          "benefitCostAnalysis": "Benefit/Cost Analysis",
+          "sensitivityAnalysis": "Sensitivity Analysis",
+          "riskAssessment": "Risk Assessment",
+          "recommendations": "Recommendations"
+        },
+        "included": "Included",
+        "optional": "Optional"
+      }
+    },
+    "tmarPage": {
+      "title": "MARR Configuration",
+      "subtitle": "Define the Minimum Acceptable Rate of Return for project evaluation",
+      "formulaTitle": "TMAR Formula",
+      "formulaDescription": "Minimum rate of return required to justify an investment",
+      "formula": "TMAR = r_f + π + β",
+      "calculated": "Calculated TMAR",
+      "rule": "Projects must have an IRR above this rate to be considered acceptable",
+      "thresholds": {
+        "low": "Low Risk Threshold",
+        "medium": "Moderate Risk Threshold",
+        "high": "High Risk Threshold"
+      },
+      "components": {
+        "rate": "Rate (%)",
+        "riskFree": {
+          "title": "Risk-Free Rate (r_f)",
+          "description": "Base return rate from risk-free investments",
+          "tooltip": "The theoretical return of an investment with zero risk, typically based on government bond yields (e.g., Treasury bills)",
+          "tip": "Typical values: 2-5% based on government bond rates"
+        },
+        "inflation": {
+          "title": "Inflation Premium (π)",
+          "description": "Compensation for inflation expectations",
+          "tooltip": "Expected annual inflation rate that erodes purchasing power over time",
+          "tip": "Typical values: 2-4% in stable economies"
+        },
+        "riskPremium": {
+          "title": "Risk Premium (β)",
+          "description": "Compensation for project risk",
+          "tooltip": "Additional return required to compensate for project-specific risk",
+          "tip": "Varies by project: 3-8% (low risk) to 15%+ (high risk)"
+        }
+      },
+      "breakdown": {
+        "title": "TMAR Breakdown",
+        "description": "Visual representation of TMAR components",
+        "riskFree": "Risk-Free Rate",
+        "inflation": "Inflation",
+        "riskPremium": "Risk Premium",
+        "total": "Total TMAR"
+      },
+      "rules": {
+        "title": "Decision Rules",
+        "accept": {
+          "title": "Accept Project When:",
+          "irr": "IRR > TMAR ({tmar}%)",
+          "npv": "NPV > 0 (using TMAR as discount rate)",
+          "bc": "B/C Ratio > 1"
+        },
+        "reject": {
+          "title": "Reject Project When:",
+          "irr": "IRR < TMAR ({tmar}%)",
+          "npv": "NPV < 0 (using TMAR as discount rate)",
+          "bc": "B/C Ratio < 1"
+        }
       }
     }
   },

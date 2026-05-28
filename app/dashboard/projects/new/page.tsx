@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useState, useMemo } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -39,6 +40,7 @@ interface CashFlowRow {
 }
 
 export default function NewProjectPage() {
+  const t = useTranslations("dashboard.projectsNewPage")
   const [projectName, setProjectName] = useState("")
   const [description, setDescription] = useState("")
   const [initialInvestment, setInitialInvestment] = useState<number>(500000)
@@ -136,10 +138,8 @@ export default function NewProjectPage() {
       <div className="space-y-6">
         {/* Page Header */}
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Create New Project</h1>
-          <p className="text-muted-foreground">
-            Enter your project details and cash flow projections for economic analysis.
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+          <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">
@@ -148,29 +148,29 @@ export default function NewProjectPage() {
             {/* Project Information */}
             <Card>
               <CardHeader>
-                <CardTitle>Project Information</CardTitle>
-                <CardDescription>Basic details about your investment project</CardDescription>
+                <CardTitle>{t("projectInfo.title")}</CardTitle>
+                <CardDescription>{t("projectInfo.description")}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="projectName">Project Name</Label>
+                    <Label htmlFor="projectName">{t("projectInfo.name")}</Label>
                     <Input
                       id="projectName"
-                      placeholder="e.g., Solar Panel Installation"
+                      placeholder={t("projectInfo.namePlaceholder")}
                       value={projectName}
                       onChange={(e) => setProjectName(e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="initialInvestment" className="flex items-center gap-1">
-                      Initial Investment ($)
+                      {t("projectInfo.initialInvestment")}
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-3 w-3 text-muted-foreground" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>The upfront cost required to start the project</p>
+                          <p>{t("projectInfo.initialInvestmentHelp")}</p>
                         </TooltipContent>
                       </Tooltip>
                     </Label>
@@ -183,10 +183,10 @@ export default function NewProjectPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description">{t("projectInfo.descriptionLabel")}</Label>
                   <Textarea
                     id="description"
-                    placeholder="Brief description of the project..."
+                    placeholder={t("projectInfo.descriptionPlaceholder")}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
@@ -198,20 +198,20 @@ export default function NewProjectPage() {
             {/* Financial Parameters */}
             <Card>
               <CardHeader>
-                <CardTitle>Financial Parameters</CardTitle>
-                <CardDescription>Configure discount rates and economic factors</CardDescription>
+                <CardTitle>{t("financial.title")}</CardTitle>
+                <CardDescription>{t("financial.description")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   <div className="space-y-2">
                     <Label htmlFor="discountRate" className="flex items-center gap-1">
-                      Discount Rate (%)
+                      {t("financial.discountRate")}
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-3 w-3 text-muted-foreground" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>Rate used to discount future cash flows to present value</p>
+                          <p>{t("financial.discountRateHelp")}</p>
                         </TooltipContent>
                       </Tooltip>
                     </Label>
@@ -225,13 +225,13 @@ export default function NewProjectPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="inflation" className="flex items-center gap-1">
-                      Inflation (%)
+                      {t("financial.inflation")}
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-3 w-3 text-muted-foreground" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>Expected annual inflation rate</p>
+                          <p>{t("financial.inflationHelp")}</p>
                         </TooltipContent>
                       </Tooltip>
                     </Label>
@@ -245,13 +245,13 @@ export default function NewProjectPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="riskPremium" className="flex items-center gap-1">
-                      Risk Premium (%)
+                      {t("financial.riskPremium")}
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-3 w-3 text-muted-foreground" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>Additional return required to compensate for project risk</p>
+                          <p>{t("financial.riskPremiumHelp")}</p>
                         </TooltipContent>
                       </Tooltip>
                     </Label>
@@ -264,7 +264,7 @@ export default function NewProjectPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="periods">Number of Periods</Label>
+                    <Label htmlFor="periods">{t("financial.periods")}</Label>
                     <Input
                       id="periods"
                       type="number"
@@ -295,12 +295,12 @@ export default function NewProjectPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                  <CardTitle>Cash Flows by Period</CardTitle>
-                  <CardDescription>Enter expected inflows and outflows for each year</CardDescription>
+                  <CardTitle>{t("cashFlows.title")}</CardTitle>
+                  <CardDescription>{t("cashFlows.description")}</CardDescription>
                 </div>
                 <Button onClick={addPeriod} size="sm">
                   <Plus className="mr-1 h-4 w-4" />
-                  Add Period
+                  {t("cashFlows.addPeriod")}
                 </Button>
               </CardHeader>
               <CardContent>
@@ -308,17 +308,17 @@ export default function NewProjectPage() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-20">Period</TableHead>
-                        <TableHead>Inflows ($)</TableHead>
-                        <TableHead>Outflows ($)</TableHead>
-                        <TableHead>Net Flow ($)</TableHead>
+                        <TableHead className="w-20">{t("cashFlows.period")}</TableHead>
+                        <TableHead>{t("cashFlows.inflows")}</TableHead>
+                        <TableHead>{t("cashFlows.outflows")}</TableHead>
+                        <TableHead>{t("cashFlows.netFlow")}</TableHead>
                         <TableHead className="w-16"></TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {/* Initial Investment Row */}
                       <TableRow className="bg-muted/30">
-                        <TableCell className="font-medium">Year 0</TableCell>
+                        <TableCell className="font-medium">{t("cashFlows.year0")}</TableCell>
                         <TableCell>
                           <span className="text-muted-foreground">-</span>
                         </TableCell>
@@ -337,7 +337,7 @@ export default function NewProjectPage() {
                       {/* Cash Flow Rows */}
                       {cashFlows.map((cf, index) => (
                         <TableRow key={cf.period}>
-                          <TableCell className="font-medium">Year {cf.period}</TableCell>
+                          <TableCell className="font-medium">{t("cashFlows.year", { period: cf.period })}</TableCell>
                           <TableCell>
                             <Input
                               type="number"
@@ -384,13 +384,13 @@ export default function NewProjectPage() {
                 {/* Totals */}
                 <div className="mt-4 flex items-center justify-end gap-6 text-sm">
                   <div>
-                    <span className="text-muted-foreground">Total Inflows: </span>
+                    <span className="text-muted-foreground">{t("cashFlows.totalInflows")}</span>
                     <span className="font-mono font-medium text-success">
                       ${calculations.totalInflows.toLocaleString()}
                     </span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Total Outflows: </span>
+                    <span className="text-muted-foreground">{t("cashFlows.totalOutflows")}</span>
                     <span className="font-mono font-medium text-destructive">
                       ${calculations.totalOutflows.toLocaleString()}
                     </span>
@@ -403,11 +403,11 @@ export default function NewProjectPage() {
             <div className="flex items-center justify-end gap-3">
               <Button variant="outline">
                 <Save className="mr-2 h-4 w-4" />
-                Save as Draft
+                {t("actions.saveDraft")}
               </Button>
               <Button>
                 <Calculator className="mr-2 h-4 w-4" />
-                Calculate Indicators
+                {t("actions.calculate")}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -418,7 +418,7 @@ export default function NewProjectPage() {
             <Card className="sticky top-20">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">Real-time Preview</CardTitle>
+                  <CardTitle className="text-lg">{t("preview.title")}</CardTitle>
                   <Badge
                     variant={calculations.isViable ? "default" : "destructive"}
                     className={
@@ -427,10 +427,10 @@ export default function NewProjectPage() {
                         : "bg-destructive/10 text-destructive hover:bg-destructive/20"
                     }
                   >
-                    {calculations.isViable ? "Viable" : "Not Viable"}
+                    {calculations.isViable ? t("preview.viable") : t("preview.notViable")}
                   </Badge>
                 </div>
-                <CardDescription>Estimated indicators based on current inputs</CardDescription>
+                <CardDescription>{t("preview.description")}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* NPV */}
@@ -438,14 +438,14 @@ export default function NewProjectPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <TrendingUp className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium">NPV (VPN)</span>
+                      <span className="text-sm font-medium">{t("preview.npv")}</span>
                     </div>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Info className="h-3 w-3 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Net Present Value: Sum of discounted cash flows</p>
+                        <p>{t("preview.npvHelp")}</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -456,9 +456,7 @@ export default function NewProjectPage() {
                   >
                     ${calculations.npv.toLocaleString()}
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    {calculations.npv >= 0 ? "Project adds value" : "Project destroys value"}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{calculations.npv >= 0 ? t("preview.addsValue") : t("preview.destroysValue")}</p>
                 </div>
 
                 <Separator />
@@ -466,7 +464,7 @@ export default function NewProjectPage() {
                 {/* IRR */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-sm text-muted-foreground">IRR (TIR)</span>
+                    <span className="text-sm text-muted-foreground">{t("preview.irr")}</span>
                     <p className="text-lg font-semibold">{calculations.irr}%</p>
                   </div>
                   <Badge
@@ -478,26 +476,26 @@ export default function NewProjectPage() {
                     }
                   >
                     {Number(calculations.irr) > Number(calculations.tmar)
-                      ? "Above TMAR"
-                      : "Below TMAR"}
+                      ? t("preview.aboveTmar")
+                      : t("preview.belowTmar")}
                   </Badge>
                 </div>
 
                 {/* TMAR */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-sm text-muted-foreground">TMAR</span>
+                    <span className="text-sm text-muted-foreground">{t("preview.tmar")}</span>
                     <p className="text-lg font-semibold">{calculations.tmar}%</p>
                   </div>
                   <span className="text-xs text-muted-foreground">
-                    r + π + β
+                    {t("preview.tmarFormula")}
                   </span>
                 </div>
 
                 {/* B/C Ratio */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-sm text-muted-foreground">B/C Ratio</span>
+                    <span className="text-sm text-muted-foreground">{t("preview.bcRatio")}</span>
                     <p className="text-lg font-semibold">{calculations.bcRatio}</p>
                   </div>
                   <Badge
@@ -508,7 +506,7 @@ export default function NewProjectPage() {
                         : "border-destructive/50 text-destructive"
                     }
                   >
-                    {Number(calculations.bcRatio) >= 1 ? "B/C ≥ 1" : "B/C < 1"}
+                    {Number(calculations.bcRatio) >= 1 ? t("preview.bcFeasible") : t("preview.bcNotFeasible")}
                   </Badge>
                 </div>
 
@@ -516,9 +514,9 @@ export default function NewProjectPage() {
 
                 {/* Formula Reference */}
                 <div className="rounded-lg border border-border/50 bg-background p-3">
-                  <p className="text-xs font-medium text-muted-foreground">NPV Formula</p>
+                  <p className="text-xs font-medium text-muted-foreground">{t("preview.formulaTitle")}</p>
                   <p className="mt-1 font-mono text-xs">
-                    NPV = -I₀ + Σ CFₜ/(1+r)ᵗ
+                    {t("preview.formula")}
                   </p>
                 </div>
               </CardContent>

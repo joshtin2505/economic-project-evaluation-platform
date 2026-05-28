@@ -48,27 +48,27 @@ import {
 import { cn } from "@/lib/utils"
 import { LanguageSwitcher } from "@/components/language-switcher"
 
-const mainNavItems = [
-  { title: "Overview", href: "/dashboard", icon: LayoutDashboard },
-  { title: "Projects", href: "/dashboard/projects", icon: FolderKanban },
-]
-
-const analysisNavItems = [
-  { title: "VPN Analysis", href: "/dashboard/vpn", icon: TrendingUp },
-  { title: "TIR Analysis", href: "/dashboard/tir", icon: Calculator },
-  { title: "TMAR", href: "/dashboard/tmar", icon: Percent },
-  { title: "Benefit/Cost", href: "/dashboard/benefit-cost", icon: Scale },
-  { title: "Cash Flow", href: "/dashboard/cash-flow", icon: LineChart },
-]
-
-const otherNavItems = [
-  { title: "Reports", href: "/dashboard/reports", icon: FileText },
-  { title: "Settings", href: "/dashboard/settings", icon: Settings },
-]
-
-function getBreadcrumbs(pathname: string) {
+function getBreadcrumbs(pathname: string, tSidebar: any, tCommon: any) {
   const segments = pathname.split("/").filter(Boolean)
-  const breadcrumbs = [{ title: "Dashboard", href: "/dashboard" }]
+  const breadcrumbs = [{ title: tCommon("dashboard"), href: "/dashboard" }]
+
+  const mainNavItems = [
+    { title: tSidebar("overview"), href: "/dashboard", icon: LayoutDashboard },
+    { title: tSidebar("projects"), href: "/dashboard/projects", icon: FolderKanban },
+  ]
+
+  const analysisNavItems = [
+    { title: tSidebar("vpn"), href: "/dashboard/vpn", icon: TrendingUp },
+    { title: tSidebar("tir"), href: "/dashboard/tir", icon: Calculator },
+    { title: tSidebar("tmar"), href: "/dashboard/tmar", icon: Percent },
+    { title: tSidebar("benefitCost"), href: "/dashboard/benefit-cost", icon: Scale },
+    { title: tSidebar("cashFlow"), href: "/dashboard/cash-flow", icon: LineChart },
+  ]
+
+  const otherNavItems = [
+    { title: tSidebar("reports"), href: "/dashboard/reports", icon: FileText },
+    { title: tSidebar("settings"), href: "/dashboard/settings", icon: Settings },
+  ]
 
   if (segments.length > 1) {
     const allItems = [...mainNavItems, ...analysisNavItems, ...otherNavItems]
@@ -76,8 +76,8 @@ function getBreadcrumbs(pathname: string) {
     if (currentItem) {
       breadcrumbs.push({ title: currentItem.title, href: currentItem.href })
     } else if (segments[1] === "projects" && segments[2] === "new") {
-      breadcrumbs.push({ title: "Projects", href: "/dashboard/projects" })
-      breadcrumbs.push({ title: "New Project", href: "/dashboard/projects/new" })
+      breadcrumbs.push({ title: tSidebar("projects"), href: "/dashboard/projects" })
+      breadcrumbs.push({ title: tSidebar("newProject"), href: "/dashboard/projects/new" })
     } else if (segments[1]) {
       const title = segments[1].charAt(0).toUpperCase() + segments[1].slice(1).replace(/-/g, " ")
       breadcrumbs.push({ title, href: pathname })
@@ -91,8 +91,25 @@ function AppSidebar() {
   const pathname = usePathname()
   const locale = useLocale()
   const t = useTranslations("dashboard.sidebar")
+  const tCommon = useTranslations("common")
 
-  const basePath = "/dashboard"
+  const mainNavItems = [
+    { title: t("overview"), href: "/dashboard", icon: LayoutDashboard },
+    { title: t("projects"), href: "/dashboard/projects", icon: FolderKanban },
+  ]
+
+  const analysisNavItems = [
+    { title: t("vpn"), href: "/dashboard/vpn", icon: TrendingUp },
+    { title: t("tir"), href: "/dashboard/tir", icon: Calculator },
+    { title: t("tmar"), href: "/dashboard/tmar", icon: Percent },
+    { title: t("benefitCost"), href: "/dashboard/benefit-cost", icon: Scale },
+    { title: t("cashFlow"), href: "/dashboard/cash-flow", icon: LineChart },
+  ]
+
+  const otherNavItems = [
+    { title: t("reports"), href: "/dashboard/reports", icon: FileText },
+    { title: t("settings"), href: "/dashboard/settings", icon: Settings },
+  ]
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
@@ -107,7 +124,7 @@ function AppSidebar() {
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">EconoLab</span>
                   <span className="text-xs text-sidebar-foreground/60">
-                    {locale === "es" ? "Análisis Económico" : "Economic Analysis"}
+                    {tCommon("tagline")}
                   </span>
                 </div>
               </Link>
@@ -118,7 +135,7 @@ function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>{locale === "es" ? "Principal" : "Main"}</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("main")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainNavItems.map((item) => (
@@ -202,7 +219,9 @@ function AppSidebar() {
 
 function DashboardHeader() {
   const pathname = usePathname()
-  const breadcrumbs = getBreadcrumbs(pathname)
+  const tSidebar = useTranslations("dashboard.sidebar")
+  const tCommon = useTranslations("common")
+  const breadcrumbs = getBreadcrumbs(pathname, tSidebar, tCommon)
 
   return (
     <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b border-border bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -235,7 +254,7 @@ function DashboardHeader() {
           <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search projects..."
+            placeholder={tSidebar("searchPlaceholder")}
             className="h-9 w-64 bg-muted/50 pl-9"
           />
         </div>
