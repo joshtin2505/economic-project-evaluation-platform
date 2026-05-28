@@ -38,6 +38,7 @@ import {
   YAxis,
 } from "recharts"
 import { mockProjects, recentCalculations, financialEvolutionData, cashFlowTimelineData } from "@/lib/mock-data"
+import { useTranslations } from "next-intl"
 
 const kpiCards = [
   {
@@ -84,20 +85,22 @@ export default function DashboardPage() {
   const completedProjects = mockProjects.filter((p) => p.status === "completed").length
   const analyzingProjects = mockProjects.filter((p) => p.status === "analyzing").length
 
+  const t = useTranslations('dashboard')
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Dashboard Overview</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t('overview.title')}</h1>
           <p className="text-muted-foreground">
-            Monitor your economic project portfolio and key financial indicators.
+            {t('overview.subtitle')}
           </p>
         </div>
         <Button asChild>
           <Link href="/dashboard/projects/new">
-            <Plus className="mr-2 h-4 w-4" />
-            New Project
+            <Plus className="h-4 w-4" />
+            {t('projects.new')}
           </Link>
         </Button>
       </div>
@@ -121,13 +124,15 @@ export default function DashboardPage() {
                   className={`flex items-center text-xs font-medium ${
                     kpi.changeType === "positive"
                       ? "text-success"
-                      : kpi.changeType === "negative"
+                      // : kpi.changeType === "negative"
+                      : kpi.changeType === "neutral"
                       ? "text-destructive"
                       : "text-muted-foreground"
                   }`}
                 >
                   {kpi.changeType === "positive" && <ArrowUpRight className="mr-0.5 h-3 w-3" />}
-                  {kpi.changeType === "negative" && <ArrowDownRight className="mr-0.5 h-3 w-3" />}
+                  {/* {kpi.changeType === "negative" && <ArrowDownRight className="mr-0.5 h-3 w-3" />} */}
+                  {kpi.changeType === "neutral" && <ArrowDownRight className="mr-0.5 h-3 w-3" />}
                   {kpi.change}
                 </span>
               </div>
@@ -142,8 +147,8 @@ export default function DashboardPage() {
         {/* Cash Flow Chart */}
         <Card className="lg:col-span-4">
           <CardHeader>
-            <CardTitle>Cash Flow Overview</CardTitle>
-            <CardDescription>Inflows and outflows across all active projects</CardDescription>
+            <CardTitle>{t('overview.cashFlowTrend')}</CardTitle>
+            <CardDescription>{t('overview.cashFlowTrendDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-[300px]">
@@ -194,8 +199,8 @@ export default function DashboardPage() {
         {/* Financial Evolution Chart */}
         <Card className="lg:col-span-3">
           <CardHeader>
-            <CardTitle>NPV Evolution</CardTitle>
-            <CardDescription>Actual vs projected NPV over time</CardDescription>
+            <CardTitle>{t('overview.NPVTrend')}</CardTitle>
+            <CardDescription>{t('overview.NPVTrendDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-[300px]">
@@ -254,8 +259,8 @@ export default function DashboardPage() {
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>Recent Calculations</CardTitle>
-              <CardDescription>Latest economic indicator computations</CardDescription>
+              <CardTitle>{t('overview.recentCalculations')}</CardTitle>
+              <CardDescription>{t('overview.recentCalculationsDescription')}</CardDescription>
             </div>
             <Button variant="outline" size="sm" asChild>
               <Link href="/dashboard/reports">View All</Link>
@@ -265,11 +270,11 @@ export default function DashboardPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Project</TableHead>
-                  <TableHead>Indicator</TableHead>
-                  <TableHead>Value</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>{t('overview.recentCalcsTable.project')}</TableHead>
+                  <TableHead>{t('overview.recentCalcsTable.indicator')}</TableHead>
+                  <TableHead>{t('overview.recentCalcsTable.value')}</TableHead>
+                  <TableHead>{t('overview.recentCalcsTable.date')}</TableHead>
+                  <TableHead>{t('overview.recentCalcsTable.status')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -305,8 +310,8 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>Notifications</CardTitle>
-              <CardDescription>Recent alerts and updates</CardDescription>
+              <CardTitle>{t('overview.notifications')}</CardTitle>
+              <CardDescription>{t('overview.notificationsDescription')}</CardDescription>
             </div>
             <Bell className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -336,26 +341,26 @@ export default function DashboardPage() {
 
             {/* Project Status Summary */}
             <div className="mt-6 rounded-lg bg-muted/50 p-4">
-              <h4 className="text-sm font-medium">Project Status</h4>
+              <h4 className="text-sm font-medium">{t('overview.projectStatesSummary.title')}</h4>
               <div className="mt-3 space-y-2">
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-2 text-muted-foreground">
                     <span className="h-2 w-2 rounded-full bg-success" />
-                    Completed
+                    {t('overview.projectStatesSummary.completed')}
                   </span>
                   <span className="font-medium">{completedProjects}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-2 text-muted-foreground">
                     <span className="h-2 w-2 rounded-full bg-warning" />
-                    Analyzing
+                    {t('overview.projectStatesSummary.analyzing')}
                   </span>
                   <span className="font-medium">{analyzingProjects}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-2 text-muted-foreground">
                     <span className="h-2 w-2 rounded-full bg-muted-foreground" />
-                    Draft
+                    {t('overview.projectStatesSummary.draft')}
                   </span>
                   <span className="font-medium">
                     {mockProjects.length - completedProjects - analyzingProjects}

@@ -182,7 +182,27 @@
       "generateReport": "Generar Reporte",
       "vpnDistribution": "Distribución VPN por Proyecto",
       "tirComparison": "Comparación TIR vs TMAR",
-      "cashFlowTrend": "Tendencia de Flujos de Caja"
+      "cashFlowTrend": "Tendencia de Flujos de Caja",
+      "cashFlowTrendDescription": "Ingresos y egresos a lo largo de todos los proyectos activos",
+      "NPVTrend": "Evolución del VPN",
+      "NPVTrendDescription": "VPN real vs proyectado a lo largo del tiempo",
+      "recentCalculations": "Cálculos Recientes",
+      "recentCalculationsDescription": "Últimos cálculos de indicadores económicos",
+      "recentCalcsTable": {
+        "project": "Proyecto",
+        "indicator": "Indicador",
+        "value": "Valor",
+        "date": "Fecha",
+        "status": "Estado"
+      },
+      "notifications": "Notificaciones",
+      "notificationsDescription": "Alertas y actualizaciones recientes",
+      "projectStatesSummary": {
+        "title": "Estados de Proyectos",
+        "completed": "completados",
+        "analyzing": "Analizando",
+        "draft": "Borrador"
+      }
     },
     "projects": {
       "title": "Mis Proyectos",

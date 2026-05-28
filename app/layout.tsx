@@ -66,7 +66,9 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NextIntlClientProvider locale={locale} messages={messages}>
+          <NextIntlClientProvider
+           locale={locale} messages={messages}
+           >
             {children}
           </NextIntlClientProvider>
         </ThemeProvider>

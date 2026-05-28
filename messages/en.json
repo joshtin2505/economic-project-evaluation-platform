@@ -165,7 +165,7 @@
     },
     "overview": {
       "title": "Dashboard Overview",
-      "subtitle": "Overview of your projects and key metrics",
+      "subtitle": "Monitor your economic project portfolio and key financial indicators",
       "welcome": "Welcome back",
       "welcomeMessage": "Here's a summary of your portfolio activity",
       "stats": {
@@ -182,7 +182,27 @@
       "generateReport": "Generate Report",
       "vpnDistribution": "NPV Distribution by Project",
       "tirComparison": "IRR vs MARR Comparison",
-      "cashFlowTrend": "Cash Flow Trend"
+      "cashFlowTrend": "Cash Flow Overview",
+      "cashFlowTrendDescription": "Inflows and outflows across all active projects",
+      "NPVTrend": "NPV Evolution",
+      "NPVTrendDescription": "Actual vs projected NPV over time",
+      "recentCalculations": "Recent Calculations",
+      "recentCalculationsDescription": "Latest economic indicator computations",
+      "recentCalcsTable": {
+        "project": "Project",
+        "indicator": "Indicator",
+        "value": "Value",
+        "date": "Date",
+        "status": "Status"
+       },
+       "notifications": "Notifications",
+       "notificationsDescription": "Recent alerts and updates",
+       "projectStatesSummary": {
+        "title": "Project Status",
+        "completed": "Completed",
+        "analyzing": "Analyzing",
+        "draft": "Draft"
+       }  
     },
     "projects": {
       "title": "My Projects",
