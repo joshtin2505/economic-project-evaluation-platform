@@ -1,21 +1,40 @@
 "use client"
 
-import { useTranslations } from "next-intl"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
+import { useTranslations } from "next-intl"
 import ProjectForm from "@/components/project-form"
 import { useProjectForm } from "@/lib/hooks/useProjectForm"
 import * as projectService from "@/lib/services/projects"
 import * as auth from "@/lib/supabase/auth"
 import { routes } from "@/lib/routes"
 
-export default function NewProjectPage() {
+interface Props {
+  params: { id: string }
+}
+
+export default function EditProjectPage({ params }: Props) {
+  const { id } = params
   const router = useRouter()
   const t = useTranslations("dashboard.projectsNewPage")
   const form = useProjectForm()
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState<null | "draft" | "calculate">(null)
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await projectService.fetchProjectById(id)
+        console.log()
+        console.log(data)   
+        const flows = await projectService.fetchCashFlows(id)
+        form.setInitialValues(data ?? {}, flows ?? [])
+      } catch (err) {
+        setSubmitError(err instanceof Error ? err.message : "Failed to load project")
+      }
+    }
+    void load()
+  }, [id])
 
   const saveProject = async (mode: "draft" | "calculate") => {
     setSubmitError(null)
@@ -49,7 +68,7 @@ export default function NewProjectPage() {
             : null,
       }
 
-      await projectService.createProjectWithFlows(payload, form.cashFlows)
+      await projectService.updateProjectWithFlows(id, payload, form.cashFlows)
 
       router.push(routes.projects)
       router.refresh()
@@ -59,7 +78,6 @@ export default function NewProjectPage() {
       setIsSaving(null)
     }
   }
-
   return (
     <div className="space-y-6">
       <div>
@@ -67,36 +85,32 @@ export default function NewProjectPage() {
         <p className="text-muted-foreground">{t("subtitle")}</p>
       </div>
 
-      <Card>
-        <CardContent>
-          <ProjectForm
-            t={t}
-            projectName={form.projectName}
-            setProjectName={form.setProjectName}
-            description={form.description}
-            setDescription={form.setDescription}
-            initialInvestment={form.initialInvestment}
-            setInitialInvestment={form.setInitialInvestment}
-            periods={form.periods}
-            setPeriods={form.setPeriods}
-            discountRate={form.discountRate}
-            setDiscountRate={form.setDiscountRate}
-            inflation={form.inflation}
-            setInflation={form.setInflation}
-            riskPremium={form.riskPremium}
-            setRiskPremium={form.setRiskPremium}
-            cashFlows={form.cashFlows}
-            addPeriod={form.addPeriod}
-            removePeriod={form.removePeriod}
-            updateCashFlow={form.updateCashFlow}
-            calculations={form.calculations}
-            isSaving={isSaving}
-            submitError={submitError}
-            onSaveDraft={() => void saveProject("draft")}
-            onCalculate={() => void saveProject("calculate")}
-          />
-        </CardContent>
-      </Card>
+      <ProjectForm
+        t={t}
+        projectName={form.projectName}
+        setProjectName={form.setProjectName}
+        description={form.description}
+        setDescription={form.setDescription}
+        initialInvestment={form.initialInvestment}
+        setInitialInvestment={form.setInitialInvestment}
+        periods={form.periods}
+        setPeriods={form.setPeriods}
+        discountRate={form.discountRate}
+        setDiscountRate={form.setDiscountRate}
+        inflation={form.inflation}
+        setInflation={form.setInflation}
+        riskPremium={form.riskPremium}
+        setRiskPremium={form.setRiskPremium}
+        cashFlows={form.cashFlows}
+        addPeriod={form.addPeriod}
+        removePeriod={form.removePeriod}
+        updateCashFlow={form.updateCashFlow}
+        calculations={form.calculations}
+        isSaving={isSaving}
+        submitError={submitError}
+        onSaveDraft={() => void saveProject("draft")}
+        onCalculate={() => void saveProject("calculate")}
+      />
     </div>
   )
 }

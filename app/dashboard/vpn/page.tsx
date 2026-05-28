@@ -49,7 +49,7 @@ import { useState } from "react"
 export default function VPNAnalysisPage() {
   const [selectedProject, setSelectedProject] = useState(mockProjects[0].id)
   const project = mockProjects.find((p) => p.id === selectedProject) || mockProjects[0]
-  const t = useTranslations("dashboard.vpnPage")
+  const t = useTranslations("dashboard.vpn")
 
   // Chart data for accumulated NPV
   const accumulatedNpvData = mockVPNSteps.map((step) => ({

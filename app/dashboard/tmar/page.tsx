@@ -19,7 +19,7 @@ export default function TMARPage() {
   const [riskFreeRate, setRiskFreeRate] = useState(4)
   const [inflation, setInflation] = useState(3)
   const [riskPremium, setRiskPremium] = useState(5)
-  const t = useTranslations("dashboard.tmarPage")
+  const t = useTranslations("dashboard.tmar")
 
   const tmar = riskFreeRate + inflation + riskPremium
 

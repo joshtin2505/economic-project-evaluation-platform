@@ -27,7 +27,7 @@ import { useState } from "react"
 export default function ReportsPage() {
   const [selectedProject, setSelectedProject] = useState(mockProjects[0].id)
   const project = mockProjects.find((p) => p.id === selectedProject) || mockProjects[0]
-  const t = useTranslations("dashboard.reportsPage")
+  const t = useTranslations("dashboard.reports")
 
   return (
     <div className="space-y-6">

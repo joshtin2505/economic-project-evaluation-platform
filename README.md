@@ -48,6 +48,30 @@ pnpm install
 pnpm dev
 ```
 
+## Setup Supabase (MVP)
+
+1. Crea un proyecto en Supabase.
+2. Copia `.env.example` a `.env.local` y configura:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+```
+
+3. Abre el SQL Editor en Supabase y ejecuta el script:
+
+```sql
+-- archivo en este repo
+supabase/schema.sql
+```
+
+4. En Authentication > Providers, habilita Email.
+5. Inicia la app y accede a `/auth` para registrarte/iniciar sesion.
+
+Notas:
+- El `dashboard` esta protegido por sesion.
+- `projects` y `cash_flows` usan RLS para aislar datos por usuario.
+
 ## Validación
 
 ```bash

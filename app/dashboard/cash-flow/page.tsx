@@ -36,7 +36,7 @@ import { useState } from "react"
 export default function CashFlowPage() {
   const [selectedProject, setSelectedProject] = useState(mockProjects[0].id)
   const project = mockProjects.find((p) => p.id === selectedProject) || mockProjects[0]
-  const t = useTranslations("dashboard.cashFlowPage")
+  const t = useTranslations("dashboard.cashFlow")
 
   // Calculate cumulative cash flow
   const cumulativeData = cashFlowTimelineData.map((cf, index) => {

@@ -1,0 +1,87 @@
+import { createClient as createSupabaseClient } from "@/lib/supabase/client"
+
+export async function fetchProjects() {
+  const supabase = createSupabaseClient()
+  const { data, error } = await supabase
+    .from("projects")
+    .select("id,name,description,initial_investment,periods,status,results,updated_at")
+    .order("updated_at", { ascending: false })
+
+  if (error) throw error
+  return data
+}
+
+export async function fetchProjectById(id: string) {
+  const supabase = createSupabaseClient()
+  const { data, error } = await supabase
+    .from("projects")
+    .select("id,name,description,initial_investment,discount_rate,inflation,risk_premium,periods,results")
+    .eq("id", id)
+    .single()
+
+  if (error) throw error
+  return data
+}
+
+export async function fetchCashFlows(projectId: string) {
+  const supabase = createSupabaseClient()
+  const { data, error } = await supabase
+    .from("cash_flows")
+    .select("period,inflow,outflow")
+    .eq("project_id", projectId)
+    .order("period", { ascending: true })
+
+  if (error) throw error
+  return data
+}
+
+export async function deleteProject(id: string) {
+  const supabase = createSupabaseClient()
+  const { error } = await supabase.from("projects").delete().eq("id", id)
+  if (error) throw error
+  return true
+}
+
+export async function createProjectWithFlows(payload: any, flows: any[]) {
+  const supabase = createSupabaseClient()
+  const { data: project, error: projectError } = await supabase
+    .from("projects")
+    .insert(payload)
+    .select("id")
+    .single()
+
+  if (projectError) throw projectError
+
+  const flowsPayload = flows.map((flow) => ({
+    project_id: project.id,
+    period: flow.period,
+    inflow: flow.inflow,
+    outflow: flow.outflow,
+  }))
+
+  const { error: cashFlowsError } = await supabase.from("cash_flows").insert(flowsPayload)
+  if (cashFlowsError) throw cashFlowsError
+
+  return project
+}
+
+export async function updateProjectWithFlows(id: string, payload: any, flows: any[]) {
+  const supabase = createSupabaseClient()
+  const { error: updateError } = await supabase.from("projects").update(payload).eq("id", id)
+  if (updateError) throw updateError
+
+  const { error: delErr } = await supabase.from("cash_flows").delete().eq("project_id", id)
+  if (delErr) throw delErr
+
+  const flowsPayload = flows.map((flow) => ({
+    project_id: id,
+    period: flow.period,
+    inflow: flow.inflow,
+    outflow: flow.outflow,
+  }))
+
+  const { error: cashFlowsError } = await supabase.from("cash_flows").insert(flowsPayload)
+  if (cashFlowsError) throw cashFlowsError
+
+  return true
+}

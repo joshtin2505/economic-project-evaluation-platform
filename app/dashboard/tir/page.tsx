@@ -59,7 +59,7 @@ import { mockProjects, mockTIRIterations, npvVsRateData } from "@/lib/mock-data"
 export default function TIRAnalysisPage() {
   const [selectedProject, setSelectedProject] = useState(mockProjects[0].id)
   const project = mockProjects.find((p) => p.id === selectedProject) || mockProjects[0]
-  const t = useTranslations("dashboard.tirPage")
+  const t = useTranslations("dashboard.tir")
 
   // Convergence chart data
   const convergenceData = mockTIRIterations.map((iter) => ({

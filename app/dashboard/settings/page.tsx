@@ -27,7 +27,7 @@ import { useTheme } from "next-themes"
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
-  const t = useTranslations("dashboard.settingsPage")
+  const t = useTranslations("dashboard")
 
   return (
     <div className="space-y-6">

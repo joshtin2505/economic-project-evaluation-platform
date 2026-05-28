@@ -56,7 +56,7 @@ const COLORS = [
 export default function BenefitCostPage() {
   const [selectedProject, setSelectedProject] = useState(mockProjects[0].id)
   const project = mockProjects.find((p) => p.id === selectedProject) || mockProjects[0]
-  const t = useTranslations("dashboard.benefitCostPage")
+  const t = useTranslations("dashboard.benefitCost")
 
   const totalBenefitsPV = benefitCostData.benefits.reduce((sum, b) => sum + b.pvAmount, 0)
   const totalCostsPV = benefitCostData.costs.reduce((sum, c) => sum + c.pvAmount, 0)
@@ -209,17 +209,20 @@ export default function BenefitCostPage() {
               <div className="space-y-4">
                 <div>
                   <div className="mb-2 flex items-center justify-between text-sm">
-                    <span className="font-medium">Benefits</span>
+                    <span className="font-medium">{t("comparison.benefits")}</span>
                     <span className="text-success">${totalBenefitsPV.toLocaleString()}</span>
                   </div>
-                      <span className="font-medium">{t("comparison.benefits")}</span>
+                  <Progress
+                    value={100}
+                    className="h-4 bg-muted"
+                  />
                 </div>
                 <div>
                   <div className="mb-2 flex items-center justify-between text-sm">
-                    <span className="font-medium">Costs</span>
+                    <span className="font-medium">{t("comparison.costs")}</span>
                     <span className="text-destructive">${totalCostsPV.toLocaleString()}</span>
                   </div>
-                      <span className="font-medium">{t("comparison.costs")}</span>
+                  <Progress
                     value={(totalCostsPV / totalBenefitsPV) * 100}
                     className="h-4 bg-muted"
                   />

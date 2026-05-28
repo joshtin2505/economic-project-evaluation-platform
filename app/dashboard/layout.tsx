@@ -1,8 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useLocale, useTranslations } from "next-intl"
+import { usePathname, useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import {
   LayoutDashboard,
   FolderKanban,
@@ -17,6 +18,7 @@ import {
   Bell,
   Search,
   Plus,
+  LogOut,
 } from "lucide-react"
 import {
   Sidebar,
@@ -47,6 +49,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { cn } from "@/lib/utils"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import * as auth from "@/lib/supabase/auth"
 
 function getBreadcrumbs(pathname: string, tSidebar: any, tCommon: any) {
   const segments = pathname.split("/").filter(Boolean)
@@ -89,7 +92,6 @@ function getBreadcrumbs(pathname: string, tSidebar: any, tCommon: any) {
 
 function AppSidebar() {
   const pathname = usePathname()
-  const locale = useLocale()
   const t = useTranslations("dashboard.sidebar")
   const tCommon = useTranslations("common")
 
@@ -219,9 +221,23 @@ function AppSidebar() {
 
 function DashboardHeader() {
   const pathname = usePathname()
+  const router = useRouter()
+  const [isSigningOut, setIsSigningOut] = useState(false)
   const tSidebar = useTranslations("dashboard.sidebar")
   const tCommon = useTranslations("common")
   const breadcrumbs = getBreadcrumbs(pathname, tSidebar, tCommon)
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true)
+
+    try {
+      await auth.signOut()
+      router.push("/auth")
+      router.refresh()
+    } finally {
+      setIsSigningOut(false)
+    }
+  }
 
   return (
     <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b border-border bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -259,6 +275,10 @@ function DashboardHeader() {
           />
         </div>
         <LanguageSwitcher />
+        <Button variant="ghost" size="sm" onClick={handleSignOut} disabled={isSigningOut}>
+          <LogOut className="h-4 w-4" />
+          <span className="hidden sm:inline">{tCommon("logout")}</span>
+        </Button>
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-4 w-4" />
           <Badge className="absolute -right-1 -top-1 h-4 w-4 rounded-full p-0 text-[10px]">
