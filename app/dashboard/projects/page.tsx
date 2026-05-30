@@ -35,6 +35,7 @@ import {
 } from "lucide-react"
 import * as projectService from "@/lib/services/projects"
 import { routes } from "@/lib/routes"
+import { formatRatePercent } from "@/lib/utils/project-results"
 
 type ProjectStatus = "draft" | "analyzing" | "completed"
 
@@ -220,7 +221,7 @@ export default function ProjectsPage() {
                     </TableCell>
                     <TableCell>
                       {project.results ? (
-                        <span className="font-mono">{toNumber(project.results.irr).toFixed(2)}%</span>
+                        <span className="font-mono">{formatRatePercent(project.results.irr, 2)}</span>
                       ) : (
                         <span className="text-muted-foreground">-</span>
                       )}
@@ -343,7 +344,7 @@ export default function ProjectsPage() {
                     <div>
                       <p className="text-xs text-muted-foreground">{t("cards.irr")}</p>
                       <p className="font-mono font-medium">
-                        {toNumber(project.results.irr).toFixed(2)}%
+                        {formatRatePercent(project.results.irr, 2)}
                       </p>
                     </div>
                   </>

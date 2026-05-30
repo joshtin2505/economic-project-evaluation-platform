@@ -233,6 +233,8 @@
       "cashFlowTrendDescription": "Inflows and outflows across all active projects",
       "NPVTrend": "NPV Evolution",
       "NPVTrendDescription": "Actual vs projected NPV over time",
+      "npvEvolutionEmptyTitle": "Evolution unavailable",
+      "npvEvolutionEmptyDescription": "At least 2 projects saved in different periods are required to project NPV evolution.",
       "recentCalculations": "Recent Calculations",
       "recentCalculationsDescription": "Latest economic indicator computations",
       "recentCalcsTable": {

@@ -233,6 +233,8 @@
       "cashFlowTrendDescription": "Ingresos y egresos a lo largo de todos los proyectos activos",
       "NPVTrend": "Evolución del VPN",
       "NPVTrendDescription": "VPN real vs proyectado a lo largo del tiempo",
+      "npvEvolutionEmptyTitle": "Evolución no disponible",
+      "npvEvolutionEmptyDescription": "Se requieren al menos 2 proyectos guardados en diferentes periodos para proyectar la evolución del VPN.",
       "recentCalculations": "Cálculos Recientes",
       "recentCalculationsDescription": "Últimos cálculos de indicadores económicos",
       "recentCalcsTable": {

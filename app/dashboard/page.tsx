@@ -5,12 +5,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   AlertCircle,
-  ArrowDownRight,
   ArrowUpRight,
   Bell,
   Calculator,
   CheckCircle2,
   Clock,
+  LineChart,
   Percent,
   Plus,
   Scale,
@@ -36,9 +36,13 @@ import {
   type ProjectRecord,
 } from "@/lib/services/project-analytics";
 import {
-  asPercent,
-  getBenefitCostRatio,
-} from "@/lib/utils/project-results";
+  calculatePortfolioMetrics,
+  canShowNpvEvolutionChart,
+  getActiveProjects,
+  type ProjectWithCashFlows,
+} from "@/lib/services/portfolio-analytics";
+import { formatDecimalRate } from "@/lib/utils/project-results";
+import { formatCompactCurrency } from "@/lib/utils/currency-format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -54,6 +58,13 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import {
   Table,
   TableBody,
@@ -85,12 +96,14 @@ const npvChartConfig = {
   },
 } satisfies ChartConfig;
 
-const toNumber = (value: number | string | null | undefined) =>
-  Number(value ?? 0);
+type KpiChangeType = "positive" | "neutral" | "stored" | "muted";
 
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
+  const [portfolioEntries, setPortfolioEntries] = useState<ProjectWithCashFlows[]>(
+    [],
+  );
   const [featuredProject, setFeaturedProject] = useState<ProjectRecord | null>(
     null,
   );
@@ -110,15 +123,34 @@ export default function DashboardPage() {
           (await projectService.fetchProjects()) as ProjectRecord[];
         setProjects(projectRows);
 
+        const activeProjects = getActiveProjects(projectRows);
+        const entries = await Promise.all(
+          activeProjects.map(async (project) => {
+            const cashFlowRows = await projectService.fetchCashFlows(project.id);
+            return {
+              project,
+              cashFlows: (cashFlowRows ?? []) as CashFlowRecord[],
+            };
+          }),
+        );
+        setPortfolioEntries(entries);
+
         const selectedProject = selectFeaturedProject(projectRows);
         if (selectedProject) {
-          const [projectDetail, cashFlowRows] = await Promise.all([
-            projectService.fetchProjectById(selectedProject.id),
-            projectService.fetchCashFlows(selectedProject.id),
-          ]);
-
-          setFeaturedProject(projectDetail as ProjectRecord);
-          setFeaturedCashFlows((cashFlowRows ?? []) as CashFlowRecord[]);
+          const existing = entries.find(
+            (entry) => entry.project.id === selectedProject.id,
+          );
+          if (existing) {
+            setFeaturedProject(existing.project);
+            setFeaturedCashFlows(existing.cashFlows);
+          } else {
+            const [projectDetail, cashFlowRows] = await Promise.all([
+              projectService.fetchProjectById(selectedProject.id),
+              projectService.fetchCashFlows(selectedProject.id),
+            ]);
+            setFeaturedProject(projectDetail as ProjectRecord);
+            setFeaturedCashFlows((cashFlowRows ?? []) as CashFlowRecord[]);
+          }
         }
       } catch (loadError) {
         setError(
@@ -134,6 +166,11 @@ export default function DashboardPage() {
     void load();
   }, []);
 
+  const portfolioMetrics = useMemo(
+    () => calculatePortfolioMetrics(projects, portfolioEntries),
+    [portfolioEntries, projects],
+  );
+
   const completedProjects = useMemo(
     () => projects.filter((project) => project.status === "completed").length,
     [projects],
@@ -146,99 +183,60 @@ export default function DashboardPage() {
     () => projects.filter((project) => project.status === "draft").length,
     [projects],
   );
-  const completedProjectsWithResults = useMemo(
-    () => projects.filter((project) => project.results),
+
+  const showNpvEvolution = useMemo(
+    () => canShowNpvEvolutionChart(projects),
     [projects],
   );
-
-  const portfolioNpv = useMemo(
-    () =>
-      completedProjectsWithResults.reduce(
-        (sum, project) => sum + toNumber(project.results?.npv),
-        0,
-      ),
-    [completedProjectsWithResults],
-  );
-  const avgIrr = useMemo(() => {
-    if (completedProjectsWithResults.length === 0) return 0;
-    return (
-      completedProjectsWithResults.reduce(
-        (sum, project) => sum + asPercent(project.results?.irr),
-        0,
-      ) / completedProjectsWithResults.length
-    );
-  }, [completedProjectsWithResults]);
-  const avgTmar = useMemo(() => {
-    if (completedProjectsWithResults.length === 0) return 0;
-    return (
-      completedProjectsWithResults.reduce(
-        (sum, project) => sum + asPercent(project.results?.tmar),
-        0,
-      ) / completedProjectsWithResults.length
-    );
-  }, [completedProjectsWithResults]);
-  const avgBcRatio = useMemo(() => {
-    const rows = completedProjectsWithResults.filter(
-      (project) => typeof getBenefitCostRatio(project.results) === "number",
-    );
-    if (rows.length === 0) return 0;
-    return (
-      rows.reduce(
-        (sum, project) => sum + toNumber(getBenefitCostRatio(project.results)),
-        0,
-      ) / rows.length
-    );
-  }, [completedProjectsWithResults]);
 
   const kpiCards = useMemo(
     () => [
       {
         title: "NPV (VPN)",
-        value: `$${portfolioNpv.toLocaleString()}`,
-        change: `${completedProjectsWithResults.length} completed`,
-        changeType: "positive" as const,
+        value: formatCompactCurrency(portfolioMetrics.portfolioNpv),
+        change: `${portfolioMetrics.activeProjectCount} active`,
+        changeType: "positive" as KpiChangeType,
         description: "Portfolio value from saved results",
         icon: TrendingUp,
       },
       {
         title: "Avg. IRR (TIR)",
-        value: `${(avgIrr * 100).toFixed(1)}%`,
-        change:
-          completedProjectsWithResults.length > 0
-            ? "From saved analyses"
-            : "No results yet",
-        changeType:
-          completedProjectsWithResults.length > 0
-            ? ("positive" as const)
-            : ("neutral" as const),
-        description: "Average internal rate from stored projects",
+        value:
+          portfolioMetrics.consolidatedIrrDecimal !== null
+            ? formatDecimalRate(portfolioMetrics.consolidatedIrrDecimal, 2)
+            : "—",
+        change: "Consolidated cash-flow IRR",
+        changeType: "muted" as KpiChangeType,
+        description: "Global IRR on merged active project flows",
         icon: Calculator,
       },
       {
         title: "TMAR",
-        value: `${(avgTmar * 100).toFixed(1)}%`,
+        value:
+          portfolioMetrics.weightedTmarDecimal !== null
+            ? formatDecimalRate(portfolioMetrics.weightedTmarDecimal, 2)
+            : "—",
         change: "Stored with project data",
-        changeType: "neutral" as const,
-        description: "Average minimum acceptable rate",
+        changeType: "stored" as KpiChangeType,
+        description: "Investment-weighted average minimum acceptable rate",
         icon: Percent,
       },
       {
         title: "Avg. B/C Ratio",
-        value: avgBcRatio > 0 ? avgBcRatio.toFixed(2) : "-",
-        change: avgBcRatio >= 1 ? "Feasible" : "Pending",
+        value:
+          portfolioMetrics.avgBcRatio > 0
+            ? portfolioMetrics.avgBcRatio.toFixed(2)
+            : "—",
+        change: portfolioMetrics.avgBcRatio >= 1 ? "Feasible" : "Pending",
         changeType:
-          avgBcRatio >= 1 ? ("positive" as const) : ("neutral" as const),
+          portfolioMetrics.avgBcRatio >= 1
+            ? ("positive" as KpiChangeType)
+            : ("muted" as KpiChangeType),
         description: "Benefit/Cost ratio from saved evaluations",
         icon: Scale,
       },
     ],
-    [
-      avgBcRatio,
-      avgIrr,
-      avgTmar,
-      completedProjectsWithResults.length,
-      portfolioNpv,
-    ],
+    [portfolioMetrics],
   );
 
   const recentCalculations = useMemo(
@@ -250,13 +248,69 @@ export default function DashboardPage() {
     () => buildFinancialEvolutionData(projects),
     [projects],
   );
-  const cashFlowTimelineData = useMemo(
-    () =>
-      featuredProject
+
+  const consolidatedCashFlowTimeline = useMemo(() => {
+    if (portfolioEntries.length === 0) return [];
+
+    const maxPeriod = portfolioEntries.reduce((max, entry) => {
+      const entryMax = entry.cashFlows.reduce(
+        (periodMax, flow) => Math.max(periodMax, flow.period),
+        0,
+      );
+      return Math.max(max, entryMax);
+    }, 0);
+
+    const timeline = [
+      {
+        period: "Year 0",
+        inflow: 0,
+        outflow: portfolioEntries.reduce(
+          (sum, entry) => sum + Number(entry.project.initial_investment ?? 0),
+          0,
+        ),
+      },
+    ];
+
+    for (let period = 1; period <= maxPeriod; period += 1) {
+      let inflow = 0;
+      let outflow = 0;
+
+      portfolioEntries.forEach((entry) => {
+        const flow = entry.cashFlows.find((row) => row.period === period);
+        if (!flow) return;
+        inflow += Number(flow.inflow ?? 0);
+        outflow += Number(flow.outflow ?? 0);
+      });
+
+      timeline.push({
+        period: `Year ${period}`,
+        inflow,
+        outflow,
+      });
+    }
+
+    return timeline;
+  }, [portfolioEntries]);
+
+  const cashFlowTimelineData =
+    consolidatedCashFlowTimeline.length > 0
+      ? consolidatedCashFlowTimeline
+      : featuredProject
         ? buildCashFlowTimeline(featuredProject, featuredCashFlows)
-        : [],
-    [featuredCashFlows, featuredProject],
-  );
+        : [];
+
+  const kpiChangeClass = (changeType: KpiChangeType) => {
+    switch (changeType) {
+      case "positive":
+        return "text-success";
+      case "stored":
+        return "rounded-md bg-amber-500/15 px-1.5 py-0.5 text-amber-100/90 dark:text-amber-200/95";
+      case "muted":
+        return "text-muted-foreground";
+      default:
+        return "text-muted-foreground";
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -302,22 +356,13 @@ export default function DashboardPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="flex items-baseline gap-2">
+              <div className="flex flex-wrap items-baseline gap-2">
                 <span className="text-2xl font-bold">{kpi.value}</span>
                 <span
-                  className={`flex items-center text-xs font-medium ${
-                    kpi.changeType === "positive"
-                      ? "text-success"
-                      : kpi.changeType === "neutral"
-                        ? "text-destructive"
-                        : "text-muted-foreground"
-                  }`}
+                  className={`flex items-center text-xs font-medium ${kpiChangeClass(kpi.changeType)}`}
                 >
                   {kpi.changeType === "positive" && (
                     <ArrowUpRight className="mr-0.5 h-3 w-3" />
-                  )}
-                  {kpi.changeType === "neutral" && (
-                    <ArrowDownRight className="mr-0.5 h-3 w-3" />
                   )}
                   {kpi.change}
                 </span>
@@ -343,7 +388,7 @@ export default function DashboardPage() {
               config={cashFlowChartConfig}
               className="h-75 w-full"
             >
-              <BarChart data={cashFlowTimelineData.slice(0, 8)}>
+              <BarChart data={cashFlowTimelineData.slice(0, 12)}>
                 <CartesianGrid
                   strokeDasharray="3 3"
                   className="stroke-border"
@@ -359,15 +404,15 @@ export default function DashboardPage() {
                   tick={{ fontSize: 12 }}
                   tickLine={false}
                   axisLine={false}
-                  tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  tickFormatter={(value) => formatCompactCurrency(Number(value))}
                   className="text-muted-foreground"
                 />
                 <ChartTooltip
                   content={
                     <ChartTooltipContent
                       hideLabel
-                      formatter={(value: any) => [
-                        `$${Math.abs(Number(value)).toLocaleString()}`,
+                      formatter={(value: number | string) => [
+                        formatCompactCurrency(Math.abs(Number(value))),
                         "",
                       ]}
                     />
@@ -398,56 +443,72 @@ export default function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={npvChartConfig} className="h-75 w-full">
-              <AreaChart data={financialEvolutionData}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  className="stroke-border"
-                />
-                <XAxis
-                  dataKey="month"
-                  tick={{ fontSize: 12 }}
-                  tickLine={false}
-                  axisLine={false}
-                  className="text-muted-foreground"
-                />
-                <YAxis
-                  tick={{ fontSize: 12 }}
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                  className="text-muted-foreground"
-                />
-                <ChartTooltip
-                  content={
-                    <ChartTooltipContent
-                      hideLabel
-                      formatter={(value: any) => [
-                        `$${Number(value).toLocaleString()}`,
-                        "",
-                      ]}
-                    />
-                  }
-                />
-                <Area
-                  type="monotone"
-                  dataKey="npv"
-                  stroke="var(--chart-1)"
-                  fill="oklch(from var(--chart-1) l c h / 0.2)"
-                  strokeWidth={2}
-                  name="Actual NPV"
-                />
-                <Area
-                  type="monotone"
-                  dataKey="projectedNpv"
-                  stroke="var(--chart-3)"
-                  fill="oklch(from var(--chart-3) l c h / 0.2)"
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  name="Projected NPV"
-                />
-              </AreaChart>
-            </ChartContainer>
+            {showNpvEvolution ? (
+              <ChartContainer config={npvChartConfig} className="h-75 w-full">
+                <AreaChart data={financialEvolutionData}>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    className="stroke-border"
+                  />
+                  <XAxis
+                    dataKey="month"
+                    tick={{ fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={false}
+                    className="text-muted-foreground"
+                  />
+                  <YAxis
+                    tick={{ fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) =>
+                      formatCompactCurrency(Number(value))
+                    }
+                    className="text-muted-foreground"
+                  />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        hideLabel
+                        formatter={(value: number | string) => [
+                          formatCompactCurrency(Number(value)),
+                          "",
+                        ]}
+                      />
+                    }
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="npv"
+                    stroke="var(--chart-1)"
+                    fill="oklch(from var(--chart-1) l c h / 0.2)"
+                    strokeWidth={2}
+                    name="Actual NPV"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="projectedNpv"
+                    stroke="var(--chart-3)"
+                    fill="oklch(from var(--chart-3) l c h / 0.2)"
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    name="Projected NPV"
+                  />
+                </AreaChart>
+              </ChartContainer>
+            ) : (
+              <Empty className="h-75 border border-dashed border-border/60 bg-muted/20">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <LineChart className="h-5 w-5 text-primary/80" />
+                  </EmptyMedia>
+                  <EmptyTitle>{t("overview.npvEvolutionEmptyTitle")}</EmptyTitle>
+                  <EmptyDescription>
+                    {t("overview.npvEvolutionEmptyDescription")}
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
+            )}
           </CardContent>
         </Card>
       </div>

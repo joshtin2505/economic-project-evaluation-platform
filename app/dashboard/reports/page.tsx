@@ -343,7 +343,7 @@ export default function ReportsPage() {
                       </span>
                       <span className="font-mono font-medium">
                         {selectedProject.results?.tmar !== undefined
-                          ? `${(selectedProject.results.tmar * 100).toFixed(1)}%`
+                          ? formatRatePercent(selectedProject.results.tmar, 1)
                           : "N/A"}
                       </span>
                     </div>

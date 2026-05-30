@@ -71,7 +71,7 @@ export interface TIRIteration {
   converged: boolean;
 }
 
-import { asPercent } from "@/lib/utils/project-results";
+import { asDecimal, formatDecimalRate } from "@/lib/utils/project-results";
 
 const toNumber = (value: number | string | null | undefined) =>
   Number(value ?? 0);
@@ -198,13 +198,12 @@ export function buildRecentCalculations(
           id: rowsForProject.length + project.id.length + 1000,
           project: project.name,
           indicator: "IRR",
-          value: `${asPercent(project.results.irr).toFixed(1)}%`,
+          value: formatDecimalRate(asDecimal(project.results.irr), 1),
           date: project.updated_at
             ? new Date(project.updated_at).toLocaleDateString()
             : "-",
           status:
-            asPercent(project.results.irr) >=
-            asPercent(project.results.tmar ?? 0)
+            asDecimal(project.results.irr) >= asDecimal(project.results.tmar ?? 0)
               ? "positive"
               : "negative",
         });
@@ -301,7 +300,7 @@ export function buildNpvVsRateData(
 ) {
   const irrPercent =
     typeof project.results?.irr === "number"
-      ? asPercent(project.results.irr)
+      ? asDecimal(project.results.irr) * 100
       : null;
   const baseSamples = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24];
   const samples =
