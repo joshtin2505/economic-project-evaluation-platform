@@ -606,6 +606,28 @@
       "viable": "El proyecto ES ACEPTABLE. Los beneficios superan los costos.",
       "notViable": "El proyecto NO ES ACEPTABLE. Los costos superan los beneficios.",
       "marginal": "El proyecto es MARGINAL. Los beneficios apenas cubren los costos.",
+      "formulaTitle": "Fórmula B/C",
+      "formulaDescription": "Valor presente de los beneficios dividido por el valor presente de los costos.",
+      "formula": "B/C = VP(Beneficios) / VP(Costos)",
+      "comparison": {
+        "title": "Beneficios vs Costos",
+        "description": "Compara los beneficios totales y los costos para evaluar la factibilidad",
+        "benefits": "Beneficios",
+        "costs": "Costos",
+        "ratioPrefix": "Relación",
+        "ratioSuffix": "B/C"
+      },
+      "summary": {
+        "ratio": "Relación B/C",
+        "feasible": "B/C ≥ 1: Factible",
+        "notFeasible": "B/C < 1: No Factible",
+        "pvBenefits": "VP Beneficios",
+        "pvBenefitsHelp": "Suma de beneficios descontados",
+        "pvCosts": "VP Costos",
+        "pvCostsHelp": "Suma de los costos descontados",
+        "netBenefit": "Beneficio Neto",
+        "netBenefitHelp": "Beneficios menos Costos"
+      },
       "breakdown": {
         "title": "Desglose de Cálculo",
         "year": "Año",
@@ -613,6 +635,26 @@
         "costs": "Costos",
         "pvBenefits": "VP Beneficios",
         "pvCosts": "VP Costos"
+      }
+      ,
+      "tables": {
+        "benefits": {
+          "title": "Beneficios",
+          "description": "Detalle de los beneficios proyectados por categoría"
+        },
+        "costs": {
+          "title": "Costos",
+          "description": "Detalle de los costos proyectados por categoría"
+        },
+        "category": "Categoría",
+        "nominal": "Nominal",
+        "pv": "Valor Presente (VP)",
+        "percent": "Porcentaje",
+        "total": "Total"
+      },
+      "feasibility": {
+        "title": "Viabilidad",
+        "description": "Resumen de la viabilidad económica basado en la relación B/C y el VPN"
       }
     },
     "cashFlow": {

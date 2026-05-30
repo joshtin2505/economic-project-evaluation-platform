@@ -606,6 +606,28 @@
       "viable": "The project IS ACCEPTABLE. Benefits exceed costs.",
       "notViable": "The project IS NOT ACCEPTABLE. Costs exceed benefits.",
       "marginal": "The project is MARGINAL. Benefits barely cover costs.",
+      "formulaTitle": "B/C Formula",
+      "formulaDescription": "Present value of benefits divided by present value of costs.",
+      "formula": "B/C = PV(Benefits) / PV(Costs)",
+      "comparison": {
+        "title": "Benefits vs Costs",
+        "description": "Compare total benefits and costs to assess feasibility",
+        "benefits": "Benefits",
+        "costs": "Costs",
+        "ratioPrefix": "Ratio",
+        "ratioSuffix": "B/C"
+      },
+      "summary": {
+        "ratio": "B/C Ratio",
+        "feasible": "B/C ≥ 1: Feasible",
+        "notFeasible": "B/C < 1: Not Feasible",
+        "pvBenefits": "PV Benefits",
+        "pvBenefitsHelp": "Sum of discounted benefits",
+        "pvCosts": "PV Costs",
+        "pvCostsHelp": "Sum of discounted costs",
+        "netBenefit": "Net Benefit",
+        "netBenefitHelp": "Benefits minus Costs"
+      },
       "breakdown": {
         "title": "Calculation Breakdown",
         "year": "Year",
@@ -613,6 +635,26 @@
         "costs": "Costs",
         "pvBenefits": "PV Benefits",
         "pvCosts": "PV Costs"
+      }
+      ,
+      "tables": {
+        "benefits": {
+          "title": "Benefits",
+          "description": "Detailed breakdown of projected benefits by category"
+        },
+        "costs": {
+          "title": "Costs",
+          "description": "Detailed breakdown of projected costs by category"
+        },
+        "category": "Category",
+        "nominal": "Nominal",
+        "pv": "Present Value (PV)",
+        "percent": "Percent",
+        "total": "Total"
+      },
+      "feasibility": {
+        "title": "Feasibility",
+        "description": "Summary of economic feasibility based on B/C ratio and NPV"
       }
     },
     "cashFlow": {
