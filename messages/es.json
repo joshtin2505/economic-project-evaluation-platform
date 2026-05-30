@@ -57,6 +57,24 @@
         "projects": "Proyectos Analizados",
         "accuracy": "Precisión en Cálculos",
         "users": "Usuarios Activos"
+      },
+      "previewStats": {
+        "npvValue": "$245,830",
+        "npvLabel": "VPN",
+        "irrValue": "18.7%",
+        "irrLabel": "TIR",
+        "cashFlowValue": "12",
+        "cashFlowLabel": "Periodos de Flujo",
+        "reportsValue": "24",
+        "reportsLabel": "Reportes"
+      },
+      "previewCards": {
+        "npvLabel": "Valor Presente Neto",
+        "irrLabel": "Tasa Interna de Retorno",
+        "tmarLabel": "TMAR",
+        "tmarChange": "Recomendado",
+        "bcLabel": "Relación Beneficio/Costo",
+        "bcChange": "Tendencia positiva"
       }
     },
     "features": {
@@ -90,6 +108,8 @@
     "indicators": {
       "title": "Indicadores Económicos Clave",
       "subtitle": "Domina las métricas fundamentales de la evaluación de proyectos",
+      "formulaLabel": "Fórmula",
+      "exampleLabel": "Ejemplo",
       "vpn": {
         "name": "Valor Presente Neto",
         "abbr": "VPN",
@@ -152,6 +172,18 @@
       "cookies": "Cookies",
       "rights": "Todos los derechos reservados."
     }
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "createAccount": "Crear Cuenta",
+    "subtitle": "Inicia sesión para continuar evaluando tus proyectos.",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "processing": "Procesando...",
+    "signupSuccess": "Cuenta creada correctamente.",
+    "genericError": "Algo salió mal. Intenta de nuevo.",
+    "haveAccount": "¿Ya tienes cuenta? Inicia sesión",
+    "needAccount": "¿No tienes cuenta? Crea una"
   },
   "dashboard": {
     "sidebar": {

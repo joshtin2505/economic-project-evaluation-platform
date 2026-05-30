@@ -57,6 +57,24 @@
         "projects": "Projects Analyzed",
         "accuracy": "Calculation Accuracy",
         "users": "Active Users"
+      },
+      "previewStats": {
+        "npvValue": "$245,830",
+        "npvLabel": "NPV",
+        "irrValue": "18.7%",
+        "irrLabel": "IRR",
+        "cashFlowValue": "12",
+        "cashFlowLabel": "Cash Flow Periods",
+        "reportsValue": "24",
+        "reportsLabel": "Reports"
+      },
+      "previewCards": {
+        "npvLabel": "Net Present Value",
+        "irrLabel": "Internal Rate of Return",
+        "tmarLabel": "MARR",
+        "tmarChange": "Recommended",
+        "bcLabel": "Benefit/Cost Ratio",
+        "bcChange": "Positive trend"
       }
     },
     "features": {
@@ -90,6 +108,8 @@
     "indicators": {
       "title": "Key Economic Indicators",
       "subtitle": "Master the fundamental metrics of project evaluation",
+      "formulaLabel": "Formula",
+      "exampleLabel": "Example",
       "vpn": {
         "name": "Net Present Value",
         "abbr": "NPV",
@@ -152,6 +172,18 @@
       "cookies": "Cookies",
       "rights": "All rights reserved."
     }
+  },
+  "auth": {
+    "login": "Login",
+    "createAccount": "Create Account",
+    "subtitle": "Sign in to continue evaluating your projects.",
+    "email": "Email",
+    "password": "Password",
+    "processing": "Processing...",
+    "signupSuccess": "Account created successfully.",
+    "genericError": "Something went wrong. Please try again.",
+    "haveAccount": "Already have an account? Log in",
+    "needAccount": "Don't have an account? Create one"
   },
   "dashboard": {
     "sidebar": {
