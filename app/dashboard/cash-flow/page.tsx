@@ -1,60 +1,95 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  LineChart,
-  Download,
-  ArrowUp,
-  ArrowDown,
-  Minus,
-} from "lucide-react"
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
+import { Download, ArrowUp, ArrowDown, Minus } from "lucide-react";
 import {
   Bar,
   BarChart,
   CartesianGrid,
-  ResponsiveContainer,
-  Tooltip as RechartsTooltip,
   XAxis,
   YAxis,
   ReferenceLine,
   ComposedChart,
   Line,
-} from "recharts"
-import { mockProjects, cashFlowTimelineData } from "@/lib/mock-data"
-import { useState } from "react"
+} from "recharts";
+import { mockProjects, cashFlowTimelineData } from "@/lib/mock-data";
+import { useState } from "react";
+import { useTranslations } from "next-intl";
+
+const timelineChartConfig = {
+  inflow: {
+    label: "Inflows",
+    color: "var(--chart-2)",
+  },
+  outflow: {
+    label: "Outflows",
+    color: "var(--chart-5)",
+  },
+} satisfies ChartConfig;
+
+const cumulativeChartConfig = {
+  netFlow: {
+    label: "Net Flow",
+    color: "oklch(from var(--chart-1) l c h / 0.5)",
+  },
+  cumulative: {
+    label: "Cumulative",
+    color: "var(--primary)",
+  },
+} satisfies ChartConfig;
 
 export default function CashFlowPage() {
-  const [selectedProject, setSelectedProject] = useState(mockProjects[0].id)
-  const project = mockProjects.find((p) => p.id === selectedProject) || mockProjects[0]
-  const t = useTranslations("dashboard.cashFlow")
+  const [selectedProject, setSelectedProject] = useState(mockProjects[0].id);
+  const project =
+    mockProjects.find((p) => p.id === selectedProject) || mockProjects[0];
+  const t = useTranslations("dashboard.cashFlow");
 
   // Calculate cumulative cash flow
   const cumulativeData = cashFlowTimelineData.map((cf, index) => {
-    const netFlow = cf.inflow + cf.outflow // outflow is already negative
+    const netFlow = cf.inflow + cf.outflow; // outflow is already negative
     const previousCumulative =
       index === 0
         ? 0
-        : cashFlowTimelineData.slice(0, index).reduce((sum, prev) => sum + prev.inflow + prev.outflow, 0)
+        : cashFlowTimelineData
+            .slice(0, index)
+            .reduce((sum, prev) => sum + prev.inflow + prev.outflow, 0);
     return {
       ...cf,
       netFlow,
       cumulative: previousCumulative + netFlow,
-    }
-  })
+    };
+  });
 
-  const totalInflows = cashFlowTimelineData.reduce((sum, cf) => sum + cf.inflow, 0)
-  const totalOutflows = Math.abs(cashFlowTimelineData.reduce((sum, cf) => sum + cf.outflow, 0))
-  const netTotal = totalInflows - totalOutflows
+  const totalInflows = cashFlowTimelineData.reduce(
+    (sum, cf) => sum + cf.inflow,
+    0,
+  );
+  const totalOutflows = Math.abs(
+    cashFlowTimelineData.reduce((sum, cf) => sum + cf.outflow, 0),
+  );
+  const netTotal = totalInflows - totalOutflows;
 
   return (
     <div className="space-y-6">
@@ -66,7 +101,7 @@ export default function CashFlowPage() {
         </div>
         <div className="flex items-center gap-3">
           <Select value={selectedProject} onValueChange={setSelectedProject}>
-            <SelectTrigger className="w-[240px]">
+            <SelectTrigger className="w-60">
               <SelectValue placeholder={t("selectProject")} />
             </SelectTrigger>
             <SelectContent>
@@ -96,7 +131,9 @@ export default function CashFlowPage() {
             <p className="text-2xl font-bold text-success">
               ${totalInflows.toLocaleString()}
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">{t("summary.inflowsHelp")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("summary.inflowsHelp")}
+            </p>
           </CardContent>
         </Card>
 
@@ -111,7 +148,9 @@ export default function CashFlowPage() {
             <p className="text-2xl font-bold text-destructive">
               ${totalOutflows.toLocaleString()}
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">{t("summary.outflowsHelp")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("summary.outflowsHelp")}
+            </p>
           </CardContent>
         </Card>
 
@@ -123,10 +162,14 @@ export default function CashFlowPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className={`text-2xl font-bold ${netTotal >= 0 ? "text-success" : "text-destructive"}`}>
+            <p
+              className={`text-2xl font-bold ${netTotal >= 0 ? "text-success" : "text-destructive"}`}
+            >
               ${netTotal.toLocaleString()}
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">{t("summary.netHelp")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("summary.netHelp")}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -147,58 +190,68 @@ export default function CashFlowPage() {
               <CardDescription>{t("timeline.description")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={cashFlowTimelineData} barGap={2}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                    <XAxis
-                      dataKey="period"
-                      tick={{ fontSize: 12 }}
-                      tickLine={false}
-                      axisLine={false}
-                      className="text-muted-foreground"
-                    />
-                    <YAxis
-                      tick={{ fontSize: 12 }}
-                      tickLine={false}
-                      axisLine={false}
-                      tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                      className="text-muted-foreground"
-                    />
-                    <RechartsTooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                      }}
-                      formatter={(value: number) => [`$${Math.abs(value).toLocaleString()}`, ""]}
-                    />
-                    <ReferenceLine y={0} stroke="hsl(var(--muted-foreground))" />
-                    <Bar
-                      dataKey="inflow"
-                      fill="hsl(var(--chart-2))"
-                      radius={[4, 4, 0, 0]}
-                      name="Inflows"
-                    />
-                    <Bar
-                      dataKey="outflow"
-                      fill="hsl(var(--chart-5))"
-                      radius={[0, 0, 4, 4]}
-                      name="Outflows"
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              <ChartContainer
+                config={timelineChartConfig}
+                className="h-100 w-full"
+              >
+                <BarChart data={cashFlowTimelineData} barGap={2}>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    className="stroke-border"
+                  />
+                  <XAxis
+                    dataKey="period"
+                    tick={{ fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={false}
+                    className="text-muted-foreground"
+                  />
+                  <YAxis
+                    tick={{ fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                    className="text-muted-foreground"
+                  />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        formatter={(value: any) => [
+                          `$${Math.abs(Number(value)).toLocaleString()}`,
+                          "",
+                        ]}
+                      />
+                    }
+                  />
+                  <ReferenceLine y={0} stroke="hsl(var(--muted-foreground))" />
+                  <Bar
+                    dataKey="inflow"
+                    fill="var(--color-inflow)"
+                    radius={[4, 4, 0, 0]}
+                    name="Inflows"
+                  />
+                  <Bar
+                    dataKey="outflow"
+                    fill="var(--color-outflow)"
+                    radius={[0, 0, 4, 4]}
+                    name="Outflows"
+                  />
+                </BarChart>
+              </ChartContainer>
 
               {/* Legend */}
               <div className="mt-4 flex items-center justify-center gap-8 text-sm">
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded bg-chart-2" />
-                  <span className="text-muted-foreground">{t("timeline.legend.inflows")}</span>
+                  <span className="text-muted-foreground">
+                    {t("timeline.legend.inflows")}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded bg-chart-5" />
-                  <span className="text-muted-foreground">{t("timeline.legend.outflows")}</span>
+                  <span className="text-muted-foreground">
+                    {t("timeline.legend.outflows")}
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -213,55 +266,67 @@ export default function CashFlowPage() {
               <CardDescription>{t("cumulative.description")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart data={cumulativeData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                    <XAxis
-                      dataKey="period"
-                      tick={{ fontSize: 12 }}
-                      tickLine={false}
-                      axisLine={false}
-                      className="text-muted-foreground"
-                    />
-                    <YAxis
-                      tick={{ fontSize: 12 }}
-                      tickLine={false}
-                      axisLine={false}
-                      tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                      className="text-muted-foreground"
-                    />
-                    <RechartsTooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                      }}
-                      formatter={(value: number) => [`$${value.toLocaleString()}`, ""]}
-                    />
-                    <ReferenceLine y={0} stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" />
-                    <Bar
-                      dataKey="netFlow"
-                      fill="hsl(var(--chart-1) / 0.5)"
-                      radius={[4, 4, 0, 0]}
-                      name="Net Flow"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="cumulative"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth={2}
-                      dot={{ fill: "hsl(var(--primary))", r: 4 }}
-                      name="Cumulative"
-                    />
-                  </ComposedChart>
-                </ResponsiveContainer>
-              </div>
+              <ChartContainer
+                config={cumulativeChartConfig}
+                className="h-100 w-full"
+              >
+                <ComposedChart data={cumulativeData}>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    className="stroke-border"
+                  />
+                  <XAxis
+                    dataKey="period"
+                    tick={{ fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={false}
+                    className="text-muted-foreground"
+                  />
+                  <YAxis
+                    tick={{ fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                    className="text-muted-foreground"
+                  />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        formatter={(value) => [
+                          `$${Number(value).toLocaleString()}`,
+                          "",
+                        ]}
+                      />
+                    }
+                  />
+                  <ReferenceLine
+                    y={0}
+                    stroke="hsl(var(--muted-foreground))"
+                    strokeDasharray="3 3"
+                  />
+                  <Bar
+                    dataKey="netFlow"
+                    fill="var(--color-netFlow)"
+                    radius={[4, 4, 0, 0]}
+                    name="Net Flow"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="cumulative"
+                    stroke="var(--color-cumulative)"
+                    strokeWidth={2}
+                    dot={{ fill: "var(--color-cumulative)", r: 4 }}
+                    name="Cumulative"
+                  />
+                </ComposedChart>
+              </ChartContainer>
 
               {/* Payback Analysis */}
               <div className="mt-4 rounded-lg bg-muted/50 p-4">
                 <h4 className="font-medium">{t("cumulative.payback.title")}</h4>
-                <p className="mt-2 text-sm text-muted-foreground">{t("cumulative.payback.description")}</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {t("cumulative.payback.description")}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -282,10 +347,13 @@ export default function CashFlowPage() {
 
                 <div className="relative flex justify-between">
                   {cumulativeData.slice(0, 8).map((cf, index) => {
-                    const isPositive = cf.netFlow >= 0
-                    const height = Math.min(Math.abs(cf.netFlow) / 5000, 100)
+                    const isPositive = cf.netFlow >= 0;
+                    const height = Math.min(Math.abs(cf.netFlow) / 5000, 100);
                     return (
-                      <div key={cf.period} className="flex flex-col items-center">
+                      <div
+                        key={cf.period}
+                        className="flex flex-col items-center"
+                      >
                         {/* Bar above or below line */}
                         <div
                           className={`relative flex items-end justify-center ${
@@ -330,7 +398,7 @@ export default function CashFlowPage() {
                           </p>
                         </div>
                       </div>
-                    )
+                    );
                   })}
                 </div>
               </div>
@@ -338,20 +406,32 @@ export default function CashFlowPage() {
               {/* Summary */}
               <div className="mt-8 grid gap-4 sm:grid-cols-3">
                 <div className="rounded-lg border p-4 text-center">
-                  <p className="text-sm text-muted-foreground">{t("waterfall.summary.initialInvestment")}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("waterfall.summary.initialInvestment")}
+                  </p>
                   <p className="mt-1 text-xl font-bold text-destructive">
                     -${project.initialInvestment.toLocaleString()}
                   </p>
                 </div>
                 <div className="rounded-lg border p-4 text-center">
-                  <p className="text-sm text-muted-foreground">{t("waterfall.summary.operatingCashFlows")}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("waterfall.summary.operatingCashFlows")}
+                  </p>
                   <p className="mt-1 text-xl font-bold text-success">
-                    +${(totalInflows - (totalOutflows - project.initialInvestment)).toLocaleString()}
+                    +$
+                    {(
+                      totalInflows -
+                      (totalOutflows - project.initialInvestment)
+                    ).toLocaleString()}
                   </p>
                 </div>
                 <div className="rounded-lg border p-4 text-center">
-                  <p className="text-sm text-muted-foreground">{t("waterfall.summary.finalPosition")}</p>
-                  <p className={`mt-1 text-xl font-bold ${netTotal >= 0 ? "text-success" : "text-destructive"}`}>
+                  <p className="text-sm text-muted-foreground">
+                    {t("waterfall.summary.finalPosition")}
+                  </p>
+                  <p
+                    className={`mt-1 text-xl font-bold ${netTotal >= 0 ? "text-success" : "text-destructive"}`}
+                  >
                     ${netTotal.toLocaleString()}
                   </p>
                 </div>
@@ -375,22 +455,32 @@ export default function CashFlowPage() {
                   <span className="font-medium">{cf.period}</span>
                   <Badge
                     variant="outline"
-                    className={cf.netFlow >= 0 ? "text-success" : "text-destructive"}
+                    className={
+                      cf.netFlow >= 0 ? "text-success" : "text-destructive"
+                    }
                   >
-                    {cf.netFlow >= 0 ? t("details.netPositive") : t("details.netNegative")}
+                    {cf.netFlow >= 0
+                      ? t("details.netPositive")
+                      : t("details.netNegative")}
                   </Badge>
                 </div>
                 <div className="mt-3 space-y-1 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t("details.inflow")}</span>
+                    <span className="text-muted-foreground">
+                      {t("details.inflow")}
+                    </span>
                     <span className="font-mono text-success">
                       +${cf.inflow.toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t("details.outflow")}</span>
+                    <span className="text-muted-foreground">
+                      {t("details.outflow")}
+                    </span>
                     <span className="font-mono text-destructive">
-                      {cf.outflow === 0 ? "$0" : `-$${Math.abs(cf.outflow).toLocaleString()}`}
+                      {cf.outflow === 0
+                        ? "$0"
+                        : `-$${Math.abs(cf.outflow).toLocaleString()}`}
                     </span>
                   </div>
                   <div className="border-t pt-1">
@@ -412,5 +502,5 @@ export default function CashFlowPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

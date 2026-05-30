@@ -1,8 +1,14 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,7 +16,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
   TrendingUp,
   TrendingDown,
@@ -24,21 +30,52 @@ import {
   CheckCircle2,
   AlertCircle,
   Clock,
-} from "lucide-react"
-import Link from "next/link"
+} from "lucide-react";
+import Link from "next/link";
 import {
   Area,
   AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
   XAxis,
   YAxis,
-} from "recharts"
-import { mockProjects, recentCalculations, financialEvolutionData, cashFlowTimelineData } from "@/lib/mock-data"
-import { useTranslations } from "next-intl"
+} from "recharts";
+import {
+  mockProjects,
+  recentCalculations,
+  financialEvolutionData,
+  cashFlowTimelineData,
+} from "@/lib/mock-data";
+import { useTranslations } from "next-intl";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
+
+const cashFlowChartConfig = {
+  inflow: {
+    label: "Inflows",
+    color: "hsl(var(--chart-2))",
+  },
+  outflow: {
+    label: "Outflows",
+    color: "hsl(var(--chart-5))",
+  },
+} satisfies ChartConfig;
+
+const npvChartConfig = {
+  npv: {
+    label: "Actual NPV",
+    color: "hsl(var(--chart-1))",
+  },
+  projectedNpv: {
+    label: "Projected NPV",
+    color: "hsl(var(--chart-3))",
+  },
+} satisfies ChartConfig;
 
 const kpiCards = [
   {
@@ -73,34 +110,53 @@ const kpiCards = [
     description: "Benefit/Cost ratio",
     icon: Scale,
   },
-]
+];
 
 const notifications = [
-  { id: 1, type: "success", message: "Solar Panel project analysis completed", time: "2h ago" },
-  { id: 2, type: "warning", message: "Office Renovation NPV below threshold", time: "5h ago" },
-  { id: 3, type: "info", message: "New Product Line draft saved", time: "1d ago" },
-]
+  {
+    id: 1,
+    type: "success",
+    message: "Solar Panel project analysis completed",
+    time: "2h ago",
+  },
+  {
+    id: 2,
+    type: "warning",
+    message: "Office Renovation NPV below threshold",
+    time: "5h ago",
+  },
+  {
+    id: 3,
+    type: "info",
+    message: "New Product Line draft saved",
+    time: "1d ago",
+  },
+];
 
 export default function DashboardPage() {
-  const completedProjects = mockProjects.filter((p) => p.status === "completed").length
-  const analyzingProjects = mockProjects.filter((p) => p.status === "analyzing").length
+  const completedProjects = mockProjects.filter(
+    (p) => p.status === "completed",
+  ).length;
+  const analyzingProjects = mockProjects.filter(
+    (p) => p.status === "analyzing",
+  ).length;
 
-  const t = useTranslations('dashboard')
+  const t = useTranslations("dashboard");
 
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t('overview.title')}</h1>
-          <p className="text-muted-foreground">
-            {t('overview.subtitle')}
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight">
+            {t("overview.title")}
+          </h1>
+          <p className="text-muted-foreground">{t("overview.subtitle")}</p>
         </div>
         <Button asChild>
           <Link href="/dashboard/projects/new">
             <Plus className="h-4 w-4" />
-            {t('projects.new')}
+            {t("projects.new")}
           </Link>
         </Button>
       </div>
@@ -124,19 +180,25 @@ export default function DashboardPage() {
                   className={`flex items-center text-xs font-medium ${
                     kpi.changeType === "positive"
                       ? "text-success"
-                      // : kpi.changeType === "negative"
-                      : kpi.changeType === "neutral"
-                      ? "text-destructive"
-                      : "text-muted-foreground"
+                      : // : kpi.changeType === "negative"
+                        kpi.changeType === "neutral"
+                        ? "text-destructive"
+                        : "text-muted-foreground"
                   }`}
                 >
-                  {kpi.changeType === "positive" && <ArrowUpRight className="mr-0.5 h-3 w-3" />}
+                  {kpi.changeType === "positive" && (
+                    <ArrowUpRight className="mr-0.5 h-3 w-3" />
+                  )}
                   {/* {kpi.changeType === "negative" && <ArrowDownRight className="mr-0.5 h-3 w-3" />} */}
-                  {kpi.changeType === "neutral" && <ArrowDownRight className="mr-0.5 h-3 w-3" />}
+                  {kpi.changeType === "neutral" && (
+                    <ArrowDownRight className="mr-0.5 h-3 w-3" />
+                  )}
                   {kpi.change}
                 </span>
               </div>
-              <p className="mt-1 text-xs text-muted-foreground">{kpi.description}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {kpi.description}
+              </p>
             </CardContent>
           </Card>
         ))}
@@ -147,108 +209,125 @@ export default function DashboardPage() {
         {/* Cash Flow Chart */}
         <Card className="lg:col-span-4">
           <CardHeader>
-            <CardTitle>{t('overview.cashFlowTrend')}</CardTitle>
-            <CardDescription>{t('overview.cashFlowTrendDescription')}</CardDescription>
+            <CardTitle>{t("overview.cashFlowTrend")}</CardTitle>
+            <CardDescription>
+              {t("overview.cashFlowTrendDescription")}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={cashFlowTimelineData.slice(0, 8)}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis
-                    dataKey="period"
-                    tick={{ fontSize: 12 }}
-                    tickLine={false}
-                    axisLine={false}
-                    className="text-muted-foreground"
-                  />
-                  <YAxis
-                    tick={{ fontSize: 12 }}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                    className="text-muted-foreground"
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
-                    }}
-                    labelStyle={{ color: "hsl(var(--foreground))" }}
-                    formatter={(value: number) => [`$${value.toLocaleString()}`, ""]}
-                  />
-                  <Bar
-                    dataKey="inflow"
-                    fill="hsl(var(--chart-2))"
-                    radius={[4, 4, 0, 0]}
-                    name="Inflows"
-                  />
-                  <Bar
-                    dataKey="outflow"
-                    fill="hsl(var(--chart-5))"
-                    radius={[4, 4, 0, 0]}
-                    name="Outflows"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <ChartContainer
+              config={cashFlowChartConfig}
+              className="h-[300px] w-full"
+            >
+              <BarChart data={cashFlowTimelineData.slice(0, 8)}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  className="stroke-border"
+                />
+                <XAxis
+                  dataKey="period"
+                  tick={{ fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  className="text-muted-foreground"
+                />
+                <YAxis
+                  tick={{ fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  className="text-muted-foreground"
+                />
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      hideLabel
+                      // formatter={(value: number) => [
+                      //   `$${value.toLocaleString()}`,
+                      //   "",
+                      // ]}
+                    />
+                  }
+                />
+                <Bar
+                  dataKey="inflow"
+                  fill="var(--chart-1)"
+                  radius={[4, 4, 0, 0]}
+                  name="Inflows"
+                />
+                <Bar
+                  dataKey="outflow"
+                  fill="var(--chart-2)"
+                  radius={[4, 4, 0, 0]}
+                  name="Outflows"
+                />
+              </BarChart>
+            </ChartContainer>
           </CardContent>
         </Card>
 
         {/* Financial Evolution Chart */}
         <Card className="lg:col-span-3">
           <CardHeader>
-            <CardTitle>{t('overview.NPVTrend')}</CardTitle>
-            <CardDescription>{t('overview.NPVTrendDescription')}</CardDescription>
+            <CardTitle>{t("overview.NPVTrend")}</CardTitle>
+            <CardDescription>
+              {t("overview.NPVTrendDescription")}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={financialEvolutionData}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis
-                    dataKey="month"
-                    tick={{ fontSize: 12 }}
-                    tickLine={false}
-                    axisLine={false}
-                    className="text-muted-foreground"
-                  />
-                  <YAxis
-                    tick={{ fontSize: 12 }}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                    className="text-muted-foreground"
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
-                    }}
-                    formatter={(value: number) => [`$${value.toLocaleString()}`, ""]}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="npv"
-                    stroke="hsl(var(--chart-1))"
-                    fill="hsl(var(--chart-1) / 0.2)"
-                    strokeWidth={2}
-                    name="Actual NPV"
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="projectedNpv"
-                    stroke="hsl(var(--chart-3))"
-                    fill="hsl(var(--chart-3) / 0.1)"
-                    strokeWidth={2}
-                    strokeDasharray="5 5"
-                    name="Projected NPV"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
+            <ChartContainer
+              config={npvChartConfig}
+              className="h-[300px] w-full"
+            >
+              <AreaChart data={financialEvolutionData}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  className="stroke-border"
+                />
+                <XAxis
+                  dataKey="month"
+                  tick={{ fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  className="text-muted-foreground"
+                />
+                <YAxis
+                  tick={{ fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  className="text-muted-foreground"
+                />
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      hideLabel
+                      // formatter={(value: number) => [
+                      //   `$${value.toLocaleString()}`,
+                      //   "",
+                      // ]}
+                    />
+                  }
+                />
+                <Area
+                  type="monotone"
+                  dataKey="npv"
+                  stroke="var(--chart-1)"
+                  fill="oklch(from var(--chart-1) l c h / 0.2)"
+                  strokeWidth={2}
+                  name="Actual NPV"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="projectedNpv"
+                  stroke="var(--chart-3)"
+                  fill="oklch(from var(--chart-3) l c h / 0.2)"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  name="Projected NPV"
+                />
+              </AreaChart>
+            </ChartContainer>
           </CardContent>
         </Card>
       </div>
@@ -259,43 +338,56 @@ export default function DashboardPage() {
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>{t('overview.recentCalculations')}</CardTitle>
-              <CardDescription>{t('overview.recentCalculationsDescription')}</CardDescription>
+              <CardTitle>{t("overview.recentCalculations")}</CardTitle>
+              <CardDescription>
+                {t("overview.recentCalculationsDescription")}
+              </CardDescription>
             </div>
             <Button variant="outline" size="sm" asChild>
-              <Link href="/dashboard/reports">{t('overview.viewAll')}</Link>
+              <Link href="/dashboard/reports">{t("overview.viewAll")}</Link>
             </Button>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('overview.recentCalcsTable.project')}</TableHead>
-                  <TableHead>{t('overview.recentCalcsTable.indicator')}</TableHead>
-                  <TableHead>{t('overview.recentCalcsTable.value')}</TableHead>
-                  <TableHead>{t('overview.recentCalcsTable.date')}</TableHead>
-                  <TableHead>{t('overview.recentCalcsTable.status')}</TableHead>
+                  <TableHead>
+                    {t("overview.recentCalcsTable.project")}
+                  </TableHead>
+                  <TableHead>
+                    {t("overview.recentCalcsTable.indicator")}
+                  </TableHead>
+                  <TableHead>{t("overview.recentCalcsTable.value")}</TableHead>
+                  <TableHead>{t("overview.recentCalcsTable.date")}</TableHead>
+                  <TableHead>{t("overview.recentCalcsTable.status")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {recentCalculations.map((calc) => (
                   <TableRow key={calc.id}>
-                    <TableCell className="font-medium">{calc.project}</TableCell>
+                    <TableCell className="font-medium">
+                      {calc.project}
+                    </TableCell>
                     <TableCell>
                       <Badge variant="secondary">{calc.indicator}</Badge>
                     </TableCell>
                     <TableCell className="font-mono">{calc.value}</TableCell>
-                    <TableCell className="text-muted-foreground">{calc.date}</TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {calc.date}
+                    </TableCell>
                     <TableCell>
                       {calc.status === "positive" ? (
                         <Badge className="bg-success/10 text-success hover:bg-success/20">
                           <CheckCircle2 className="mr-1 h-3 w-3" />
-                          {t('overview.status.viable')}
+                          {t("overview.status.viable")}
                         </Badge>
                       ) : (
-                        <Badge variant="destructive" className="bg-destructive/10 text-destructive hover:bg-destructive/20">
+                        <Badge
+                          variant="destructive"
+                          className="bg-destructive/10 text-destructive hover:bg-destructive/20"
+                        >
                           <AlertCircle className="mr-1 h-3 w-3" />
-                          {t('overview.status.notViable')}
+                          {t("overview.status.notViable")}
                         </Badge>
                       )}
                     </TableCell>
@@ -310,8 +402,10 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>{t('overview.notifications')}</CardTitle>
-              <CardDescription>{t('overview.notificationsDescription')}</CardDescription>
+              <CardTitle>{t("overview.notifications")}</CardTitle>
+              <CardDescription>
+                {t("overview.notificationsDescription")}
+              </CardDescription>
             </div>
             <Bell className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -332,8 +426,12 @@ export default function DashboardPage() {
                     <Clock className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                   )}
                   <div className="flex-1 space-y-1">
-                    <p className="text-sm leading-tight">{notification.message}</p>
-                    <p className="text-xs text-muted-foreground">{notification.time}</p>
+                    <p className="text-sm leading-tight">
+                      {notification.message}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {notification.time}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -341,29 +439,33 @@ export default function DashboardPage() {
 
             {/* Project Status Summary */}
             <div className="mt-6 rounded-lg bg-muted/50 p-4">
-              <h4 className="text-sm font-medium">{t('overview.projectStatesSummary.title')}</h4>
+              <h4 className="text-sm font-medium">
+                {t("overview.projectStatesSummary.title")}
+              </h4>
               <div className="mt-3 space-y-2">
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-2 text-muted-foreground">
                     <span className="h-2 w-2 rounded-full bg-success" />
-                    {t('overview.projectStatesSummary.completed')}
+                    {t("overview.projectStatesSummary.completed")}
                   </span>
                   <span className="font-medium">{completedProjects}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-2 text-muted-foreground">
                     <span className="h-2 w-2 rounded-full bg-warning" />
-                    {t('overview.projectStatesSummary.analyzing')}
+                    {t("overview.projectStatesSummary.analyzing")}
                   </span>
                   <span className="font-medium">{analyzingProjects}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-2 text-muted-foreground">
                     <span className="h-2 w-2 rounded-full bg-muted-foreground" />
-                    {t('overview.projectStatesSummary.draft')}
+                    {t("overview.projectStatesSummary.draft")}
                   </span>
                   <span className="font-medium">
-                    {mockProjects.length - completedProjects - analyzingProjects}
+                    {mockProjects.length -
+                      completedProjects -
+                      analyzingProjects}
                   </span>
                 </div>
               </div>
@@ -372,5 +474,5 @@ export default function DashboardPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

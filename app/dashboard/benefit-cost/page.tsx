@@ -1,9 +1,15 @@
-"use client"
+"use client";
 
-import { useTranslations } from "next-intl"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { useTranslations } from "next-intl";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,21 +17,27 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Progress } from "@/components/ui/progress"
+} from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 import {
   Scale,
   Info,
@@ -34,44 +46,63 @@ import {
   TrendingUp,
   TrendingDown,
   DollarSign,
-} from "lucide-react"
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip as RechartsTooltip,
-  Legend,
-} from "recharts"
-import { mockProjects, benefitCostData } from "@/lib/mock-data"
-import { useState } from "react"
+} from "lucide-react";
+import { PieChart, Pie, Cell } from "recharts";
+import { mockProjects, benefitCostData } from "@/lib/mock-data";
+import { useState } from "react";
 
 const COLORS = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-]
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+];
+
+const benefitsChartConfig = benefitCostData.benefits.reduce(
+  (config, benefit, index) => {
+    config[benefit.category] = {
+      label: benefit.category,
+      color: COLORS[index % COLORS.length],
+    };
+    return config;
+  },
+  {} as ChartConfig,
+);
+
+const costsChartConfig = benefitCostData.costs.reduce((config, cost, index) => {
+  config[cost.category] = {
+    label: cost.category,
+    color: COLORS[index % COLORS.length],
+  };
+  return config;
+}, {} as ChartConfig);
 
 export default function BenefitCostPage() {
-  const [selectedProject, setSelectedProject] = useState(mockProjects[0].id)
-  const project = mockProjects.find((p) => p.id === selectedProject) || mockProjects[0]
-  const t = useTranslations("dashboard.benefitCost")
+  const [selectedProject, setSelectedProject] = useState(mockProjects[0].id);
+  const project =
+    mockProjects.find((p) => p.id === selectedProject) || mockProjects[0];
+  const t = useTranslations("dashboard.benefitCost");
 
-  const totalBenefitsPV = benefitCostData.benefits.reduce((sum, b) => sum + b.pvAmount, 0)
-  const totalCostsPV = benefitCostData.costs.reduce((sum, c) => sum + c.pvAmount, 0)
-  const bcRatio = totalBenefitsPV / totalCostsPV
-  const netBenefit = totalBenefitsPV - totalCostsPV
+  const totalBenefitsPV = benefitCostData.benefits.reduce(
+    (sum, b) => sum + b.pvAmount,
+    0,
+  );
+  const totalCostsPV = benefitCostData.costs.reduce(
+    (sum, c) => sum + c.pvAmount,
+    0,
+  );
+  const bcRatio = totalBenefitsPV / totalCostsPV;
+  const netBenefit = totalBenefitsPV - totalCostsPV;
 
   const benefitsPieData = benefitCostData.benefits.map((b) => ({
     name: b.category,
     value: b.pvAmount,
-  }))
+  }));
 
   const costsPieData = benefitCostData.costs.map((c) => ({
     name: c.category,
     value: c.pvAmount,
-  }))
+  }));
 
   return (
     <TooltipProvider>
@@ -84,7 +115,7 @@ export default function BenefitCostPage() {
           </div>
           <div className="flex items-center gap-3">
             <Select value={selectedProject} onValueChange={setSelectedProject}>
-              <SelectTrigger className="w-[240px]">
+              <SelectTrigger className="w-60">
                 <SelectValue placeholder={t("selectProject")} />
               </SelectTrigger>
               <SelectContent>
@@ -112,7 +143,9 @@ export default function BenefitCostPage() {
               </div>
               <div>
                 <h3 className="font-semibold">{t("formulaTitle")}</h3>
-                <p className="text-sm text-muted-foreground">{t("formulaDescription")}</p>
+                <p className="text-sm text-muted-foreground">
+                  {t("formulaDescription")}
+                </p>
               </div>
             </div>
             <div className="rounded-lg border border-primary/20 bg-background px-6 py-3">
@@ -130,7 +163,9 @@ export default function BenefitCostPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className={`text-3xl font-bold ${bcRatio >= 1 ? "text-success" : "text-destructive"}`}>
+              <p
+                className={`text-3xl font-bold ${bcRatio >= 1 ? "text-success" : "text-destructive"}`}
+              >
                 {bcRatio.toFixed(2)}
               </p>
               <Badge
@@ -140,7 +175,9 @@ export default function BenefitCostPage() {
                     : "mt-2 bg-destructive/10 text-destructive hover:bg-destructive/20"
                 }
               >
-                {bcRatio >= 1 ? t("summary.feasible") : t("summary.notFeasible")}
+                {bcRatio >= 1
+                  ? t("summary.feasible")
+                  : t("summary.notFeasible")}
               </Badge>
             </CardContent>
           </Card>
@@ -186,7 +223,9 @@ export default function BenefitCostPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className={`text-2xl font-bold ${netBenefit >= 0 ? "text-success" : "text-destructive"}`}>
+              <p
+                className={`text-2xl font-bold ${netBenefit >= 0 ? "text-success" : "text-destructive"}`}
+              >
                 ${netBenefit.toLocaleString()}
               </p>
               <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
@@ -209,18 +248,21 @@ export default function BenefitCostPage() {
               <div className="space-y-4">
                 <div>
                   <div className="mb-2 flex items-center justify-between text-sm">
-                    <span className="font-medium">{t("comparison.benefits")}</span>
-                    <span className="text-success">${totalBenefitsPV.toLocaleString()}</span>
+                    <span className="font-medium">
+                      {t("comparison.benefits")}
+                    </span>
+                    <span className="text-success">
+                      ${totalBenefitsPV.toLocaleString()}
+                    </span>
                   </div>
-                  <Progress
-                    value={100}
-                    className="h-4 bg-muted"
-                  />
+                  <Progress value={100} className="h-4 bg-muted" />
                 </div>
                 <div>
                   <div className="mb-2 flex items-center justify-between text-sm">
                     <span className="font-medium">{t("comparison.costs")}</span>
-                    <span className="text-destructive">${totalCostsPV.toLocaleString()}</span>
+                    <span className="text-destructive">
+                      ${totalCostsPV.toLocaleString()}
+                    </span>
                   </div>
                   <Progress
                     value={(totalCostsPV / totalBenefitsPV) * 100}
@@ -232,11 +274,15 @@ export default function BenefitCostPage() {
               {/* Ratio indicator */}
               <div className="flex items-center justify-center rounded-lg bg-muted/50 p-6">
                 <div className="text-center">
-                  <p className="text-sm text-muted-foreground">{t("comparison.ratioPrefix")}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("comparison.ratioPrefix")}
+                  </p>
                   <p className="mt-2 text-4xl font-bold text-primary">
                     ${bcRatio.toFixed(2)}
                   </p>
-                  <p className="mt-1 text-sm text-muted-foreground">{t("comparison.ratioSuffix")}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {t("comparison.ratioSuffix")}
+                  </p>
                 </div>
               </div>
             </div>
@@ -251,10 +297,14 @@ export default function BenefitCostPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>{t("tables.benefits.title")}</CardTitle>
-                  <CardDescription>{t("tables.benefits.description")}</CardDescription>
+                  <CardDescription>
+                    {t("tables.benefits.description")}
+                  </CardDescription>
                 </div>
                 <Badge variant="outline" className="text-success">
-                  {t("tables.total", { value: totalBenefitsPV.toLocaleString() })}
+                  {t("tables.total", {
+                    value: totalBenefitsPV.toLocaleString(),
+                  })}
                 </Badge>
               </div>
             </CardHeader>
@@ -263,9 +313,15 @@ export default function BenefitCostPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>{t("tables.category")}</TableHead>
-                    <TableHead className="text-right">{t("tables.nominal")}</TableHead>
-                    <TableHead className="text-right">{t("tables.pv")}</TableHead>
-                    <TableHead className="text-right">{t("tables.percent")}</TableHead>
+                    <TableHead className="text-right">
+                      {t("tables.nominal")}
+                    </TableHead>
+                    <TableHead className="text-right">
+                      {t("tables.pv")}
+                    </TableHead>
+                    <TableHead className="text-right">
+                      {t("tables.percent")}
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -275,7 +331,9 @@ export default function BenefitCostPage() {
                         <div className="flex items-center gap-2">
                           <div
                             className="h-3 w-3 rounded-full"
-                            style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                            style={{
+                              backgroundColor: COLORS[index % COLORS.length],
+                            }}
                           />
                           {benefit.category}
                         </div>
@@ -287,7 +345,10 @@ export default function BenefitCostPage() {
                         ${benefit.pvAmount.toLocaleString()}
                       </TableCell>
                       <TableCell className="text-right text-muted-foreground">
-                        {((benefit.pvAmount / totalBenefitsPV) * 100).toFixed(1)}%
+                        {((benefit.pvAmount / totalBenefitsPV) * 100).toFixed(
+                          1,
+                        )}
+                        %
                       </TableCell>
                     </TableRow>
                   ))}
@@ -295,36 +356,44 @@ export default function BenefitCostPage() {
               </Table>
 
               {/* Pie Chart */}
-              <div className="mt-4 h-[200px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={benefitsPieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={50}
-                      outerRadius={80}
-                      dataKey="value"
-                      label={({ name, percent }) =>
-                        `${name}: ${(percent * 100).toFixed(0)}%`
-                      }
-                      labelLine={false}
-                    >
-                      {benefitsPieData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <RechartsTooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                      }}
-                      formatter={(value: number) => [`$${value.toLocaleString()}`, "PV"]}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+              <ChartContainer
+                config={benefitsChartConfig}
+                className="mt-4 h-50 w-full"
+              >
+                <PieChart>
+                  <Pie
+                    data={benefitsPieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={80}
+                    dataKey="value"
+                    label={({ name, percent }) =>
+                      `${name}: ${(percent * 100).toFixed(0)}%`
+                    }
+                    labelLine={false}
+                  >
+                    {benefitsPieData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${entry.name}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        hideLabel
+                        cursor={false}
+                        // formatter={(value) => [
+                        //   `$${Number(value).toLocaleString()}`,
+                        //   "PV",
+                        // ]}
+                      />
+                    }
+                  />
+                </PieChart>
+              </ChartContainer>
             </CardContent>
           </Card>
 
@@ -334,7 +403,9 @@ export default function BenefitCostPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>{t("tables.costs.title")}</CardTitle>
-                  <CardDescription>{t("tables.costs.description")}</CardDescription>
+                  <CardDescription>
+                    {t("tables.costs.description")}
+                  </CardDescription>
                 </div>
                 <Badge variant="outline" className="text-destructive">
                   {t("tables.total", { value: totalCostsPV.toLocaleString() })}
@@ -346,9 +417,15 @@ export default function BenefitCostPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>{t("tables.category")}</TableHead>
-                    <TableHead className="text-right">{t("tables.nominal")}</TableHead>
-                    <TableHead className="text-right">{t("tables.pv")}</TableHead>
-                    <TableHead className="text-right">{t("tables.percent")}</TableHead>
+                    <TableHead className="text-right">
+                      {t("tables.nominal")}
+                    </TableHead>
+                    <TableHead className="text-right">
+                      {t("tables.pv")}
+                    </TableHead>
+                    <TableHead className="text-right">
+                      {t("tables.percent")}
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -358,7 +435,9 @@ export default function BenefitCostPage() {
                         <div className="flex items-center gap-2">
                           <div
                             className="h-3 w-3 rounded-full"
-                            style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                            style={{
+                              backgroundColor: COLORS[index % COLORS.length],
+                            }}
                           />
                           {cost.category}
                         </div>
@@ -378,36 +457,44 @@ export default function BenefitCostPage() {
               </Table>
 
               {/* Pie Chart */}
-              <div className="mt-4 h-[200px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={costsPieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={50}
-                      outerRadius={80}
-                      dataKey="value"
-                      label={({ name, percent }) =>
-                        `${name}: ${(percent * 100).toFixed(0)}%`
-                      }
-                      labelLine={false}
-                    >
-                      {costsPieData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <RechartsTooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                      }}
-                      formatter={(value: number) => [`$${value.toLocaleString()}`, "PV"]}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+              <ChartContainer
+                config={costsChartConfig}
+                className="mt-4 h-50 w-full"
+              >
+                <PieChart>
+                  <Pie
+                    data={costsPieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={80}
+                    dataKey="value"
+                    label={({ name, percent }) =>
+                      `${name}: ${(percent * 100).toFixed(0)}%`
+                    }
+                    labelLine={false}
+                  >
+                    {costsPieData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${entry.name}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        hideLabel
+                        cursor={false}
+                        // formatter={(value) => [
+                        //   `$${Number(value).toLocaleString()}`,
+                        //   "PV",
+                        // ]}
+                      />
+                    }
+                  />
+                </PieChart>
+              </ChartContainer>
             </CardContent>
           </Card>
         </div>
@@ -418,13 +505,17 @@ export default function BenefitCostPage() {
             <div className="flex items-start gap-4 rounded-lg border border-success/20 bg-success/5 p-4">
               <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
               <div>
-                <h4 className="font-semibold text-success">{t("feasibility.title")}</h4>
-                <p className="mt-2 text-sm text-muted-foreground">{t("feasibility.description", { ratio: bcRatio.toFixed(2) })}</p>
+                <h4 className="font-semibold text-success">
+                  {t("feasibility.title")}
+                </h4>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {t("feasibility.description", { ratio: bcRatio.toFixed(2) })}
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
     </TooltipProvider>
-  )
+  );
 }

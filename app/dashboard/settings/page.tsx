@@ -267,12 +267,13 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          {/* Notifications */}
+          {/* Notifications,  */}
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Bell className="h-5 w-5 text-primary" />
                 <CardTitle>{t("notifications.title")}</CardTitle>
+                <CardDescription>Comming soon</CardDescription>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -283,7 +284,7 @@ export default function SettingsPage() {
                     {t("notifications.emailHelp")}
                   </p>
                 </div>
-                <Switch defaultChecked />
+                <Switch disabled />
               </div>
               <Separator />
               <div className="flex items-center justify-between">
@@ -293,7 +294,7 @@ export default function SettingsPage() {
                     {t("notifications.projectUpdatesHelp")}
                   </p>
                 </div>
-                <Switch defaultChecked />
+                <Switch disabled />
               </div>
               <Separator />
               <div className="flex items-center justify-between">
@@ -303,13 +304,13 @@ export default function SettingsPage() {
                     {t("notifications.weeklySummaryHelp")}
                   </p>
                 </div>
-                <Switch />
+                <Switch disabled />
               </div>
             </CardContent>
           </Card>
 
-          {/* Plan Info */}
-          <Card>
+          {/* Plan Info, hidden temporarily */}
+          <Card hidden>
             <CardHeader>
               <CardTitle>{t("plan.title")}</CardTitle>
             </CardHeader>
@@ -332,8 +333,8 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Save Button */}
-      <div className="flex justify-end">
+      {/* Save Button, hidden temporarily */}
+      <div className="flex justify-end" hidden>
         <Button>
           <Save className="mr-2 h-4 w-4" />
           {t("save")}

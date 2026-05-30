@@ -1,8 +1,14 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,53 +16,69 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 import {
   TrendingUp,
   Info,
   Download,
   CheckCircle2,
   ArrowRight,
-} from "lucide-react"
+} from "lucide-react";
 import {
   Area,
   AreaChart,
   CartesianGrid,
-  ResponsiveContainer,
-  Tooltip as RechartsTooltip,
   XAxis,
   YAxis,
   ReferenceLine,
-} from "recharts"
-import { mockProjects, mockVPNSteps } from "@/lib/mock-data"
-import { useTranslations } from "next-intl"
-import { useState } from "react"
+} from "recharts";
+import { mockProjects, mockVPNSteps } from "@/lib/mock-data";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+
+const chartConfig = {
+  npv: {
+    label: "Accumulated NPV",
+    color: "hsl(var(--chart-1))",
+  },
+  discountedValue: {
+    label: "Discounted Value",
+    color: "hsl(var(--chart-3))",
+  },
+} satisfies ChartConfig;
 
 export default function VPNAnalysisPage() {
-  const [selectedProject, setSelectedProject] = useState(mockProjects[0].id)
-  const project = mockProjects.find((p) => p.id === selectedProject) || mockProjects[0]
-  const t = useTranslations("dashboard.vpn")
+  const [selectedProject, setSelectedProject] = useState(mockProjects[0].id);
+  const project =
+    mockProjects.find((p) => p.id === selectedProject) || mockProjects[0];
+  const t = useTranslations("dashboard.vpn");
 
   // Chart data for accumulated NPV
   const accumulatedNpvData = mockVPNSteps.map((step) => ({
     period: `Year ${step.period}`,
     npv: step.accumulatedNPV,
     discountedValue: step.discountedValue,
-  }))
+  }));
 
   return (
     <TooltipProvider>
@@ -69,7 +91,7 @@ export default function VPNAnalysisPage() {
           </div>
           <div className="flex items-center gap-3">
             <Select value={selectedProject} onValueChange={setSelectedProject}>
-              <SelectTrigger className="w-[240px]">
+              <SelectTrigger className="w-60">
                 <SelectValue placeholder={t("selectProject")} />
               </SelectTrigger>
               <SelectContent>
@@ -97,7 +119,9 @@ export default function VPNAnalysisPage() {
               </div>
               <div>
                 <h3 className="font-semibold">{t("formulaTitle")}</h3>
-                <p className="text-sm text-muted-foreground">{t("formulaDescription")}</p>
+                <p className="text-sm text-muted-foreground">
+                  {t("formulaDescription")}
+                </p>
               </div>
             </div>
             <div className="rounded-lg border border-primary/20 bg-background px-6 py-3">
@@ -115,7 +139,9 @@ export default function VPNAnalysisPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className={`text-2xl font-bold ${project.results && project.results.npv >= 0 ? "text-success" : "text-destructive"}`}>
+              <p
+                className={`text-2xl font-bold ${project.results && project.results.npv >= 0 ? "text-success" : "text-destructive"}`}
+              >
                 ${project.results?.npv.toLocaleString()}
               </p>
               <Badge
@@ -125,7 +151,9 @@ export default function VPNAnalysisPage() {
                     : "mt-2 bg-destructive/10 text-destructive hover:bg-destructive/20"
                 }
               >
-                {project.results && project.results.npv >= 0 ? t("summary.accept") : t("summary.reject")}
+                {project.results && project.results.npv >= 0
+                  ? t("summary.accept")
+                  : t("summary.reject")}
               </Badge>
             </CardContent>
           </Card>
@@ -137,8 +165,12 @@ export default function VPNAnalysisPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold">{(project.discountRate * 100).toFixed(1)}%</p>
-              <p className="mt-2 text-xs text-muted-foreground">{t("summary.discountRateHelp")}</p>
+              <p className="text-2xl font-bold">
+                {(project.discountRate * 100).toFixed(1)}%
+              </p>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t("summary.discountRateHelp")}
+              </p>
             </CardContent>
           </Card>
 
@@ -149,8 +181,12 @@ export default function VPNAnalysisPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold">${project.initialInvestment.toLocaleString()}</p>
-              <p className="mt-2 text-xs text-muted-foreground">{t("summary.initialInvestmentHelp")}</p>
+              <p className="text-2xl font-bold">
+                ${project.initialInvestment.toLocaleString()}
+              </p>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t("summary.initialInvestmentHelp")}
+              </p>
             </CardContent>
           </Card>
 
@@ -162,7 +198,9 @@ export default function VPNAnalysisPage() {
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold">{project.periods} Years</p>
-              <p className="mt-2 text-xs text-muted-foreground">{t("summary.periodsHelp")}</p>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t("summary.periodsHelp")}
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -172,7 +210,9 @@ export default function VPNAnalysisPage() {
           <TabsList>
             <TabsTrigger value="table">{t("tabs.table")}</TabsTrigger>
             <TabsTrigger value="chart">{t("tabs.chart")}</TabsTrigger>
-            <TabsTrigger value="interpretation">{t("tabs.interpretation")}</TabsTrigger>
+            <TabsTrigger value="interpretation">
+              {t("tabs.interpretation")}
+            </TabsTrigger>
           </TabsList>
 
           {/* Calculation Table */}
@@ -187,7 +227,9 @@ export default function VPNAnalysisPage() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-24">{t("table.period")}</TableHead>
+                        <TableHead className="w-24">
+                          {t("table.period")}
+                        </TableHead>
                         <TableHead>
                           <div className="flex items-center gap-1">
                             {t("table.cashFlow")}
@@ -234,15 +276,23 @@ export default function VPNAnalysisPage() {
                       {mockVPNSteps.map((step, index) => (
                         <TableRow
                           key={step.period}
-                          className={index === mockVPNSteps.length - 1 ? "bg-muted/30" : ""}
+                          className={
+                            index === mockVPNSteps.length - 1
+                              ? "bg-muted/30"
+                              : ""
+                          }
                         >
                           <TableCell className="font-medium">
-                              {step.period === 0 ? t("table.initial") : t("table.year", { period: step.period })}
+                            {step.period === 0
+                              ? t("table.initial")
+                              : t("table.year", { period: step.period })}
                           </TableCell>
                           <TableCell>
                             <span
                               className={`font-mono ${
-                                step.cashFlow >= 0 ? "text-success" : "text-destructive"
+                                step.cashFlow >= 0
+                                  ? "text-success"
+                                  : "text-destructive"
                               }`}
                             >
                               ${step.cashFlow.toLocaleString()}
@@ -254,7 +304,9 @@ export default function VPNAnalysisPage() {
                           <TableCell>
                             <span
                               className={`font-mono ${
-                                step.discountedValue >= 0 ? "text-success" : "text-destructive"
+                                step.discountedValue >= 0
+                                  ? "text-success"
+                                  : "text-destructive"
                               }`}
                             >
                               ${step.discountedValue.toLocaleString()}
@@ -263,13 +315,17 @@ export default function VPNAnalysisPage() {
                           <TableCell>
                             <span
                               className={`font-mono font-semibold ${
-                                step.accumulatedNPV >= 0 ? "text-success" : "text-destructive"
+                                step.accumulatedNPV >= 0
+                                  ? "text-success"
+                                  : "text-destructive"
                               }`}
                             >
                               ${step.accumulatedNPV.toLocaleString()}
                             </span>
                             {index === mockVPNSteps.length - 1 && (
-                              <Badge className="ml-2 bg-primary/10 text-primary">{t("table.finalNpv")}</Badge>
+                              <Badge className="ml-2 bg-primary/10 text-primary">
+                                {t("table.finalNpv")}
+                              </Badge>
                             )}
                           </TableCell>
                         </TableRow>
@@ -280,7 +336,9 @@ export default function VPNAnalysisPage() {
 
                 {/* Calculation Example */}
                 <div className="mt-6 rounded-lg border border-border/50 bg-muted/30 p-4">
-                  <h4 className="mb-3 font-medium">{t("table.exampleTitle")}</h4>
+                  <h4 className="mb-3 font-medium">
+                    {t("table.exampleTitle")}
+                  </h4>
                   <div className="flex flex-wrap items-center gap-2 text-sm">
                     <span className="rounded bg-background px-2 py-1 font-mono">
                       {t("table.exampleStep1")}
@@ -307,55 +365,67 @@ export default function VPNAnalysisPage() {
                 <CardDescription>{t("chart.description")}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-[400px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={accumulatedNpvData}>
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                      <XAxis
-                        dataKey="period"
-                        tick={{ fontSize: 12 }}
-                        tickLine={false}
-                        axisLine={false}
-                        className="text-muted-foreground"
-                      />
-                      <YAxis
-                        tick={{ fontSize: 12 }}
-                        tickLine={false}
-                        axisLine={false}
-                        tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                        className="text-muted-foreground"
-                      />
-                      <RechartsTooltip
-                        contentStyle={{
-                          backgroundColor: "hsl(var(--card))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                        }}
-                        labelStyle={{ color: "hsl(var(--foreground))" }}
-                        formatter={(value: number) => [`$${value.toLocaleString()}`, ""]}
-                      />
-                      <ReferenceLine y={0} stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" />
-                      <Area
-                        type="monotone"
-                        dataKey="npv"
-                        stroke="hsl(var(--chart-1))"
-                        fill="hsl(var(--chart-1) / 0.2)"
-                        strokeWidth={2}
-                        name="Accumulated NPV"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+                <ChartContainer config={chartConfig} className="h-100 w-full">
+                  <AreaChart data={accumulatedNpvData}>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-border"
+                    />
+                    <XAxis
+                      dataKey="period"
+                      tick={{ fontSize: 12 }}
+                      tickLine={false}
+                      axisLine={false}
+                      className="text-muted-foreground"
+                    />
+                    <YAxis
+                      tick={{ fontSize: 12 }}
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={(value) =>
+                        `$${(value / 1000).toFixed(0)}k`
+                      }
+                      className="text-muted-foreground"
+                    />
+                    <ChartTooltip
+                      content={
+                        <ChartTooltipContent
+                          formatter={(value) => [
+                            `$${Number(value).toLocaleString()}`,
+                            "",
+                          ]}
+                        />
+                      }
+                    />
+                    <ReferenceLine
+                      y={0}
+                      stroke="hsl(var(--muted-foreground))"
+                      strokeDasharray="3 3"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="npv"
+                      stroke="var(--color-npv)"
+                      fill="hsl(var(--chart-1) / 0.2)"
+                      strokeWidth={2}
+                      name="Accumulated NPV"
+                    />
+                  </AreaChart>
+                </ChartContainer>
 
                 {/* Chart Legend */}
                 <div className="mt-4 flex items-center justify-center gap-6 text-sm">
                   <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-chart-1" />
-                    <span className="text-muted-foreground">{t("chart.legend.accumulated")}</span>
+                    <span className="text-muted-foreground">
+                      {t("chart.legend.accumulated")}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="h-0.5 w-6 border-t-2 border-dashed border-muted-foreground" />
-                    <span className="text-muted-foreground">{t("chart.legend.breakEven")}</span>
+                    <span className="text-muted-foreground">
+                      {t("chart.legend.breakEven")}
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -367,44 +437,76 @@ export default function VPNAnalysisPage() {
             <Card>
               <CardHeader>
                 <CardTitle>{t("interpretation.title")}</CardTitle>
-                <CardDescription>{t("interpretation.description")}</CardDescription>
+                <CardDescription>
+                  {t("interpretation.description")}
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Decision Summary */}
                 <div className="flex items-start gap-4 rounded-lg border border-success/20 bg-success/5 p-4">
                   <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
                   <div>
-                    <h4 className="font-semibold text-success">{t("interpretation.recommendation")}</h4>
-                    <p className="mt-1 text-sm text-muted-foreground">{t("interpretation.recommendationHelp", { npv: project.results?.npv.toLocaleString(), rate: (project.discountRate * 100).toFixed(1) })}</p>
+                    <h4 className="font-semibold text-success">
+                      {t("interpretation.recommendation")}
+                    </h4>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {t("interpretation.recommendationHelp", {
+                        npv: project.results?.npv.toLocaleString(),
+                        rate: (project.discountRate * 100).toFixed(1),
+                      })}
+                    </p>
                   </div>
                 </div>
 
                 {/* Key Insights */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="rounded-lg border p-4">
-                    <h4 className="text-sm font-medium text-muted-foreground">{t("interpretation.valueCreation.title")}</h4>
+                    <h4 className="text-sm font-medium text-muted-foreground">
+                      {t("interpretation.valueCreation.title")}
+                    </h4>
                     <p className="mt-2 text-sm">
-                      {t("interpretation.valueCreation.description", { npv: project.results?.npv.toLocaleString() })}
+                      {t("interpretation.valueCreation.description", {
+                        npv: project.results?.npv.toLocaleString(),
+                      })}
                     </p>
                   </div>
                   <div className="rounded-lg border p-4">
-                    <h4 className="text-sm font-medium text-muted-foreground">{t("interpretation.breakeven.title")}</h4>
-                    <p className="mt-2 text-sm">{t("interpretation.breakeven.description")}</p>
+                    <h4 className="text-sm font-medium text-muted-foreground">
+                      {t("interpretation.breakeven.title")}
+                    </h4>
+                    <p className="mt-2 text-sm">
+                      {t("interpretation.breakeven.description")}
+                    </p>
                   </div>
                   <div className="rounded-lg border p-4">
-                    <h4 className="text-sm font-medium text-muted-foreground">{t("interpretation.sensitivity.title")}</h4>
-                    <p className="mt-2 text-sm">{t("interpretation.sensitivity.description", { rate: (project.discountRate * 100).toFixed(1), irr: ((project.results?.irr || 0) * 100).toFixed(1) })}</p>
+                    <h4 className="text-sm font-medium text-muted-foreground">
+                      {t("interpretation.sensitivity.title")}
+                    </h4>
+                    <p className="mt-2 text-sm">
+                      {t("interpretation.sensitivity.description", {
+                        rate: (project.discountRate * 100).toFixed(1),
+                        irr: ((project.results?.irr || 0) * 100).toFixed(1),
+                      })}
+                    </p>
                   </div>
                   <div className="rounded-lg border p-4">
-                    <h4 className="text-sm font-medium text-muted-foreground">{t("interpretation.rule.title")}</h4>
-                    <p className="mt-2 text-sm">{t("interpretation.rule.description")}</p>
+                    <h4 className="text-sm font-medium text-muted-foreground">
+                      {t("interpretation.rule.title")}
+                    </h4>
+                    <p className="mt-2 text-sm">
+                      {t("interpretation.rule.description")}
+                    </p>
                   </div>
                 </div>
 
                 {/* Formula Explanation */}
                 <div className="rounded-lg bg-muted/50 p-4">
-                  <h4 className="mb-3 font-medium">{t("interpretation.whydiscount.title")}</h4>
-                  <p className="text-sm text-muted-foreground">{t("interpretation.whydiscount.description")}</p>
+                  <h4 className="mb-3 font-medium">
+                    {t("interpretation.whydiscount.title")}
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    {t("interpretation.whydiscount.description")}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -412,5 +514,5 @@ export default function VPNAnalysisPage() {
         </Tabs>
       </div>
     </TooltipProvider>
-  )
+  );
 }

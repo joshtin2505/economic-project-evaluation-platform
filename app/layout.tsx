@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { defaultLocale, locales } from "@/i18n/request";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import Providers from "./providers";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -61,16 +62,9 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            <TooltipProvider>{children}</TooltipProvider>
-          </NextIntlClientProvider>
-        </ThemeProvider>
+        <Providers locale={locale} messages={messages}>
+          {children}
+        </Providers>
         {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>
