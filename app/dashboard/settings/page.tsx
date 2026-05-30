@@ -1,33 +1,32 @@
-"use client"
+"use client";
 
-import { useTranslations } from "next-intl"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
+import { useTranslations } from "next-intl";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
-import {
-  User,
-  Bell,
-  Palette,
-  Calculator,
-  Globe,
-  Save,
-} from "lucide-react"
-import { useTheme } from "next-themes"
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { User, Bell, Palette, Calculator, Globe, Save } from "lucide-react";
+import { useTheme } from "next-themes";
 
 export default function SettingsPage() {
-  const { theme, setTheme } = useTheme()
-  const t = useTranslations("dashboard")
+  const { theme, setTheme } = useTheme();
+  const t = useTranslations("dashboard");
 
   return (
     <div className="space-y-6">
@@ -57,7 +56,11 @@ export default function SettingsPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">{t("profile.email")}</Label>
-                  <Input id="email" type="email" defaultValue="john@company.com" />
+                  <Input
+                    id="email"
+                    type="email"
+                    defaultValue="john@company.com"
+                  />
                 </div>
               </div>
               <div className="space-y-2">
@@ -83,26 +86,40 @@ export default function SettingsPage() {
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="defaultDiscount">{t("calculations.discountRate")}</Label>
+                  <Label htmlFor="defaultDiscount">
+                    {t("calculations.discountRate")}
+                  </Label>
                   <Input id="defaultDiscount" type="number" defaultValue="12" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="defaultPeriods">{t("calculations.analysisPeriods")}</Label>
+                  <Label htmlFor="defaultPeriods">
+                    {t("calculations.analysisPeriods")}
+                  </Label>
                   <Input id="defaultPeriods" type="number" defaultValue="10" />
                 </div>
               </div>
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="space-y-2">
-                  <Label htmlFor="defaultRiskFree">{t("calculations.riskFreeRate")}</Label>
+                  <Label htmlFor="defaultRiskFree">
+                    {t("calculations.riskFreeRate")}
+                  </Label>
                   <Input id="defaultRiskFree" type="number" defaultValue="4" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="defaultInflation">{t("calculations.inflation")}</Label>
+                  <Label htmlFor="defaultInflation">
+                    {t("calculations.inflation")}
+                  </Label>
                   <Input id="defaultInflation" type="number" defaultValue="3" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="defaultRiskPremium">{t("calculations.riskPremium")}</Label>
-                  <Input id="defaultRiskPremium" type="number" defaultValue="5" />
+                  <Label htmlFor="defaultRiskPremium">
+                    {t("calculations.riskPremium")}
+                  </Label>
+                  <Input
+                    id="defaultRiskPremium"
+                    type="number"
+                    defaultValue="5"
+                  />
                 </div>
               </div>
               <Separator />
@@ -113,12 +130,20 @@ export default function SettingsPage() {
                     <SelectValue placeholder={t("calculations.selectMethod")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="newton">{t("calculations.methods.newton")}</SelectItem>
-                    <SelectItem value="bisection">{t("calculations.methods.bisection")}</SelectItem>
-                    <SelectItem value="secant">{t("calculations.methods.secant")}</SelectItem>
+                    <SelectItem value="newton">
+                      {t("calculations.methods.newton")}
+                    </SelectItem>
+                    <SelectItem value="bisection">
+                      {t("calculations.methods.bisection")}
+                    </SelectItem>
+                    <SelectItem value="secant">
+                      {t("calculations.methods.secant")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-muted-foreground">{t("calculations.methodHelp")}</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("calculations.methodHelp")}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -138,14 +163,26 @@ export default function SettingsPage() {
                   <Label>{t("localization.currency")}</Label>
                   <Select defaultValue="usd">
                     <SelectTrigger>
-                      <SelectValue placeholder={t("localization.selectCurrency")} />
+                      <SelectValue
+                        placeholder={t("localization.selectCurrency")}
+                      />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="usd">{t("localization.currencies.usd")}</SelectItem>
-                      <SelectItem value="eur">{t("localization.currencies.eur")}</SelectItem>
-                      <SelectItem value="gbp">{t("localization.currencies.gbp")}</SelectItem>
-                      <SelectItem value="mxn">{t("localization.currencies.mxn")}</SelectItem>
-                      <SelectItem value="brl">{t("localization.currencies.brl")}</SelectItem>
+                      <SelectItem value="usd">
+                        {t("localization.currencies.usd")}
+                      </SelectItem>
+                      <SelectItem value="eur">
+                        {t("localization.currencies.eur")}
+                      </SelectItem>
+                      <SelectItem value="gbp">
+                        {t("localization.currencies.gbp")}
+                      </SelectItem>
+                      <SelectItem value="mxn">
+                        {t("localization.currencies.mxn")}
+                      </SelectItem>
+                      <SelectItem value="brl">
+                        {t("localization.currencies.brl")}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -153,12 +190,20 @@ export default function SettingsPage() {
                   <Label>{t("localization.numberFormat")}</Label>
                   <Select defaultValue="en-us">
                     <SelectTrigger>
-                      <SelectValue placeholder={t("localization.selectNumberFormat")} />
+                      <SelectValue
+                        placeholder={t("localization.selectNumberFormat")}
+                      />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="en-us">{t("localization.numberFormats.enUs")}</SelectItem>
-                      <SelectItem value="es">{t("localization.numberFormats.es")}</SelectItem>
-                      <SelectItem value="de">{t("localization.numberFormats.de")}</SelectItem>
+                      <SelectItem value="en-us">
+                        {t("localization.numberFormats.enUs")}
+                      </SelectItem>
+                      <SelectItem value="es">
+                        {t("localization.numberFormats.es")}
+                      </SelectItem>
+                      <SelectItem value="de">
+                        {t("localization.numberFormats.de")}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -167,12 +212,20 @@ export default function SettingsPage() {
                 <Label>{t("localization.language")}</Label>
                 <Select defaultValue="en">
                   <SelectTrigger>
-                    <SelectValue placeholder={t("localization.selectLanguage")} />
+                    <SelectValue
+                      placeholder={t("localization.selectLanguage")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="en">{t("localization.languages.en")}</SelectItem>
-                    <SelectItem value="es">{t("localization.languages.es")}</SelectItem>
-                    <SelectItem value="pt">{t("localization.languages.pt")}</SelectItem>
+                    <SelectItem value="en">
+                      {t("localization.languages.en")}
+                    </SelectItem>
+                    <SelectItem value="es">
+                      {t("localization.languages.es")}
+                    </SelectItem>
+                    <SelectItem value="pt">
+                      {t("localization.languages.pt")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -205,8 +258,8 @@ export default function SettingsPage() {
                       {themeName === "light"
                         ? t("appearance.themes.light")
                         : themeName === "dark"
-                        ? t("appearance.themes.dark")
-                        : t("appearance.themes.system")}
+                          ? t("appearance.themes.dark")
+                          : t("appearance.themes.system")}
                     </Button>
                   ))}
                 </div>
@@ -226,7 +279,9 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>{t("notifications.email")}</Label>
-                  <p className="text-xs text-muted-foreground">{t("notifications.emailHelp")}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("notifications.emailHelp")}
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -234,7 +289,9 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>{t("notifications.projectUpdates")}</Label>
-                  <p className="text-xs text-muted-foreground">{t("notifications.projectUpdatesHelp")}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("notifications.projectUpdatesHelp")}
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -242,7 +299,9 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>{t("notifications.weeklySummary")}</Label>
-                  <p className="text-xs text-muted-foreground">{t("notifications.weeklySummaryHelp")}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("notifications.weeklySummaryHelp")}
+                  </p>
                 </div>
                 <Switch />
               </div>
@@ -281,5 +340,5 @@ export default function SettingsPage() {
         </Button>
       </div>
     </div>
-  )
+  );
 }

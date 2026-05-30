@@ -537,6 +537,91 @@
         "sessions": "Active Sessions"
       }
     },
+    "title": "Settings",
+    "subtitle": "Manage your account and application preferences",
+    "profile": {
+      "title": "Profile",
+      "description": "Manage your personal information",
+      "name": "Full Name",
+      "email": "Email",
+      "company": "Company",
+      "role": "Role"
+    },
+    "calculations": {
+      "title": "Calculation Defaults",
+      "description": "Set default values for new project calculations",
+      "discountRate": "Default Discount Rate (%)",
+      "analysisPeriods": "Default Analysis Periods",
+      "riskFreeRate": "Risk-Free Rate (%)",
+      "inflation": "Inflation (%)",
+      "riskPremium": "Risk Premium (%)",
+      "irrMethod": "IRR Calculation Method",
+      "selectMethod": "Select method",
+      "methods": {
+        "newton": "Newton-Raphson (Recommended)",
+        "bisection": "Bisection Method",
+        "secant": "Secant Method"
+      },
+      "methodHelp": "Newton-Raphson provides faster convergence for most cases"
+    },
+    "localization": {
+      "title": "Localization",
+      "description": "Currency and regional preferences",
+      "currency": "Currency",
+      "selectCurrency": "Select currency",
+      "currencies": {
+        "usd": "USD ($)",
+        "eur": "EUR (€)",
+        "gbp": "GBP (£)",
+        "mxn": "MXN ($)",
+        "brl": "BRL (R$)"
+      },
+      "numberFormat": "Number Format",
+      "selectNumberFormat": "Select format",
+      "numberFormats": {
+        "enUs": "1,234.56 (US)",
+        "es": "1.234,56 (ES/MX)",
+        "de": "1.234,56 (DE)"
+      },
+      "language": "Language",
+      "selectLanguage": "Select language",
+      "languages": {
+        "en": "English",
+        "es": "Spanish",
+        "pt": "Portuguese"
+      }
+    },
+    "appearance": {
+      "title": "Appearance",
+      "theme": "Theme",
+      "themes": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "email": "Email Notifications",
+      "emailHelp": "Receive analysis completion alerts",
+      "projectUpdates": "Project Updates",
+      "projectUpdatesHelp": "Notify when calculations complete",
+      "weeklySummary": "Weekly Summary",
+      "weeklySummaryHelp": "Receive weekly project reports"
+    },
+    "plan": {
+      "title": "Current Plan",
+      "name": "Professional",
+      "active": "Active",
+      "features": {
+        "projects": "Unlimited projects",
+        "calculations": "Advanced calculations",
+        "exports": "PDF & Excel exports",
+        "support": "Priority support"
+      },
+      "manageSubscription": "Manage Subscription"
+    },
+    "save": "Save Changes",
     "settingsPage": {
       "title": "Settings",
       "subtitle": "Manage your account and application preferences",

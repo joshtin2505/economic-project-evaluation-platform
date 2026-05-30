@@ -537,6 +537,91 @@
         "sessions": "Sesiones Activas"
       }
     },
+    "title": "Configuración",
+    "subtitle": "Gestiona tu cuenta y preferencias de la aplicación",
+    "profile": {
+      "title": "Perfil",
+      "description": "Gestiona tu información personal",
+      "name": "Nombre completo",
+      "email": "Correo electrónico",
+      "company": "Empresa",
+      "role": "Rol"
+    },
+    "calculations": {
+      "title": "Valores por defecto de Cálculo",
+      "description": "Define valores por defecto para los cálculos de nuevos proyectos",
+      "discountRate": "Tasa de descuento por defecto (%)",
+      "analysisPeriods": "Períodos de análisis por defecto",
+      "riskFreeRate": "Tasa libre de riesgo (%)",
+      "inflation": "Inflación (%)",
+      "riskPremium": "Prima de riesgo (%)",
+      "irrMethod": "Método de cálculo TIR",
+      "selectMethod": "Selecciona método",
+      "methods": {
+        "newton": "Newton-Raphson (Recomendado)",
+        "bisection": "Método de Bisección",
+        "secant": "Método de la Secante"
+      },
+      "methodHelp": "Newton-Raphson ofrece convergencia más rápida en la mayoría de los casos"
+    },
+    "localization": {
+      "title": "Localización",
+      "description": "Preferencias de moneda y región",
+      "currency": "Moneda",
+      "selectCurrency": "Selecciona moneda",
+      "currencies": {
+        "usd": "USD ($)",
+        "eur": "EUR (€)",
+        "gbp": "GBP (£)",
+        "mxn": "MXN ($)",
+        "brl": "BRL (R$)"
+      },
+      "numberFormat": "Formato numérico",
+      "selectNumberFormat": "Selecciona formato",
+      "numberFormats": {
+        "enUs": "1,234.56 (US)",
+        "es": "1.234,56 (ES/MX)",
+        "de": "1.234,56 (DE)"
+      },
+      "language": "Idioma",
+      "selectLanguage": "Selecciona idioma",
+      "languages": {
+        "en": "Inglés",
+        "es": "Español",
+        "pt": "Portugués"
+      }
+    },
+    "appearance": {
+      "title": "Apariencia",
+      "theme": "Tema",
+      "themes": {
+        "light": "Claro",
+        "dark": "Oscuro",
+        "system": "Sistema"
+      }
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "email": "Notificaciones por correo",
+      "emailHelp": "Recibe alertas al completar análisis",
+      "projectUpdates": "Actualizaciones de proyectos",
+      "projectUpdatesHelp": "Notificar cuando los cálculos se completen",
+      "weeklySummary": "Resumen semanal",
+      "weeklySummaryHelp": "Recibe reportes semanales de proyectos"
+    },
+    "plan": {
+      "title": "Plan Actual",
+      "name": "Profesional",
+      "active": "Activo",
+      "features": {
+        "projects": "Proyectos ilimitados",
+        "calculations": "Cálculos avanzados",
+        "exports": "Exportaciones PDF y Excel",
+        "support": "Soporte prioritario"
+      },
+      "manageSubscription": "Administrar suscripción"
+    },
+    "save": "Guardar cambios",
     "settingsPage": {
       "title": "Configuración",
       "subtitle": "Administra tu cuenta y las preferencias de la aplicación",
