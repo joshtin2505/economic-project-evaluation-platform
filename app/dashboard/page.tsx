@@ -1,37 +1,21 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  TrendingUp,
-  TrendingDown,
-  Calculator,
-  Percent,
-  Scale,
-  ArrowUpRight,
-  ArrowDownRight,
-  Plus,
-  Bell,
-  CheckCircle2,
-  AlertCircle,
-  Clock,
-} from "lucide-react";
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
+import {
+  AlertCircle,
+  ArrowDownRight,
+  ArrowUpRight,
+  Bell,
+  Calculator,
+  CheckCircle2,
+  Clock,
+  Percent,
+  Plus,
+  Scale,
+  TrendingUp,
+} from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -41,19 +25,39 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import * as projectService from "@/lib/services/projects";
 import {
-  mockProjects,
-  recentCalculations,
-  financialEvolutionData,
-  cashFlowTimelineData,
-} from "@/lib/mock-data";
-import { useTranslations } from "next-intl";
+  buildCashFlowTimeline,
+  buildFinancialEvolutionData,
+  buildNotifications,
+  buildRecentCalculations,
+  selectFeaturedProject,
+  type CashFlowRecord,
+  type ProjectRecord,
+} from "@/lib/services/project-analytics";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const cashFlowChartConfig = {
   inflow: {
@@ -77,75 +81,196 @@ const npvChartConfig = {
   },
 } satisfies ChartConfig;
 
-const kpiCards = [
-  {
-    title: "NPV (VPN)",
-    value: "$635,330",
-    change: "+12.5%",
-    changeType: "positive" as const,
-    description: "Total portfolio NPV",
-    icon: TrendingUp,
-  },
-  {
-    title: "Avg. IRR (TIR)",
-    value: "16.2%",
-    change: "+2.3%",
-    changeType: "positive" as const,
-    description: "Average internal rate",
-    icon: Calculator,
-  },
-  {
-    title: "TMAR",
-    value: "12.0%",
-    change: "Base Rate",
-    changeType: "neutral" as const,
-    description: "Minimum acceptable rate",
-    icon: Percent,
-  },
-  {
-    title: "Avg. B/C Ratio",
-    value: "1.27",
-    change: "Feasible",
-    changeType: "positive" as const,
-    description: "Benefit/Cost ratio",
-    icon: Scale,
-  },
-];
-
-const notifications = [
-  {
-    id: 1,
-    type: "success",
-    message: "Solar Panel project analysis completed",
-    time: "2h ago",
-  },
-  {
-    id: 2,
-    type: "warning",
-    message: "Office Renovation NPV below threshold",
-    time: "5h ago",
-  },
-  {
-    id: 3,
-    type: "info",
-    message: "New Product Line draft saved",
-    time: "1d ago",
-  },
-];
+const toNumber = (value: number | string | null | undefined) =>
+  Number(value ?? 0);
 
 export default function DashboardPage() {
-  const completedProjects = mockProjects.filter(
-    (p) => p.status === "completed",
-  ).length;
-  const analyzingProjects = mockProjects.filter(
-    (p) => p.status === "analyzing",
-  ).length;
-
   const t = useTranslations("dashboard");
+  const [projects, setProjects] = useState<ProjectRecord[]>([]);
+  const [featuredProject, setFeaturedProject] = useState<ProjectRecord | null>(
+    null,
+  );
+  const [featuredCashFlows, setFeaturedCashFlows] = useState<CashFlowRecord[]>(
+    [],
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const projectRows =
+          (await projectService.fetchProjects()) as ProjectRecord[];
+        setProjects(projectRows);
+
+        const selectedProject = selectFeaturedProject(projectRows);
+        if (selectedProject) {
+          const [projectDetail, cashFlowRows] = await Promise.all([
+            projectService.fetchProjectById(selectedProject.id),
+            projectService.fetchCashFlows(selectedProject.id),
+          ]);
+
+          setFeaturedProject(projectDetail as ProjectRecord);
+          setFeaturedCashFlows((cashFlowRows ?? []) as CashFlowRecord[]);
+        }
+      } catch (loadError) {
+        setError(
+          loadError instanceof Error
+            ? loadError.message
+            : "Failed to load dashboard data",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void load();
+  }, []);
+
+  const completedProjects = useMemo(
+    () => projects.filter((project) => project.status === "completed").length,
+    [projects],
+  );
+  const analyzingProjects = useMemo(
+    () => projects.filter((project) => project.status === "analyzing").length,
+    [projects],
+  );
+  const draftProjects = useMemo(
+    () => projects.filter((project) => project.status === "draft").length,
+    [projects],
+  );
+  const completedProjectsWithResults = useMemo(
+    () => projects.filter((project) => project.results),
+    [projects],
+  );
+
+  const portfolioNpv = useMemo(
+    () =>
+      completedProjectsWithResults.reduce(
+        (sum, project) => sum + toNumber(project.results?.npv),
+        0,
+      ),
+    [completedProjectsWithResults],
+  );
+  const avgIrr = useMemo(() => {
+    if (completedProjectsWithResults.length === 0) return 0;
+    return (
+      completedProjectsWithResults.reduce(
+        (sum, project) => sum + toNumber(project.results?.irr),
+        0,
+      ) / completedProjectsWithResults.length
+    );
+  }, [completedProjectsWithResults]);
+  const avgTmar = useMemo(() => {
+    if (completedProjectsWithResults.length === 0) return 0;
+    return (
+      completedProjectsWithResults.reduce(
+        (sum, project) => sum + toNumber(project.results?.tmar),
+        0,
+      ) / completedProjectsWithResults.length
+    );
+  }, [completedProjectsWithResults]);
+  const avgBcRatio = useMemo(() => {
+    const rows = completedProjectsWithResults.filter(
+      (project) => typeof project.results?.benefitCostRatio === "number",
+    );
+    if (rows.length === 0) return 0;
+    return (
+      rows.reduce(
+        (sum, project) => sum + toNumber(project.results?.benefitCostRatio),
+        0,
+      ) / rows.length
+    );
+  }, [completedProjectsWithResults]);
+
+  const kpiCards = useMemo(
+    () => [
+      {
+        title: "NPV (VPN)",
+        value: `$${portfolioNpv.toLocaleString()}`,
+        change: `${completedProjectsWithResults.length} completed`,
+        changeType: "positive" as const,
+        description: "Portfolio value from saved results",
+        icon: TrendingUp,
+      },
+      {
+        title: "Avg. IRR (TIR)",
+        value: `${(avgIrr * 100).toFixed(1)}%`,
+        change:
+          completedProjectsWithResults.length > 0
+            ? "From saved analyses"
+            : "No results yet",
+        changeType:
+          completedProjectsWithResults.length > 0
+            ? ("positive" as const)
+            : ("neutral" as const),
+        description: "Average internal rate from stored projects",
+        icon: Calculator,
+      },
+      {
+        title: "TMAR",
+        value: `${(avgTmar * 100).toFixed(1)}%`,
+        change: "Stored with project data",
+        changeType: "neutral" as const,
+        description: "Average minimum acceptable rate",
+        icon: Percent,
+      },
+      {
+        title: "Avg. B/C Ratio",
+        value: avgBcRatio > 0 ? avgBcRatio.toFixed(2) : "-",
+        change: avgBcRatio >= 1 ? "Feasible" : "Pending",
+        changeType:
+          avgBcRatio >= 1 ? ("positive" as const) : ("neutral" as const),
+        description: "Benefit/Cost ratio from saved evaluations",
+        icon: Scale,
+      },
+    ],
+    [
+      avgBcRatio,
+      avgIrr,
+      avgTmar,
+      completedProjectsWithResults.length,
+      portfolioNpv,
+    ],
+  );
+
+  const recentCalculations = useMemo(
+    () => buildRecentCalculations(projects),
+    [projects],
+  );
+  const notifications = useMemo(() => buildNotifications(projects), [projects]);
+  const financialEvolutionData = useMemo(
+    () => buildFinancialEvolutionData(projects),
+    [projects],
+  );
+  const cashFlowTimelineData = useMemo(
+    () =>
+      featuredProject
+        ? buildCashFlowTimeline(featuredProject, featuredCashFlows)
+        : [],
+    [featuredCashFlows, featuredProject],
+  );
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {error && (
+        <Card className="border-destructive/40">
+          <CardContent className="py-3 text-sm text-destructive">
+            {error}
+          </CardContent>
+        </Card>
+      )}
+      {isLoading && !error && (
+        <Card>
+          <CardContent className="py-3 text-sm text-muted-foreground">
+            Loading dashboard data...
+          </CardContent>
+        </Card>
+      )}
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
@@ -161,7 +286,6 @@ export default function DashboardPage() {
         </Button>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {kpiCards.map((kpi) => (
           <Card key={kpi.title} className="overflow-hidden">
@@ -180,8 +304,7 @@ export default function DashboardPage() {
                   className={`flex items-center text-xs font-medium ${
                     kpi.changeType === "positive"
                       ? "text-success"
-                      : // : kpi.changeType === "negative"
-                        kpi.changeType === "neutral"
+                      : kpi.changeType === "neutral"
                         ? "text-destructive"
                         : "text-muted-foreground"
                   }`}
@@ -189,7 +312,6 @@ export default function DashboardPage() {
                   {kpi.changeType === "positive" && (
                     <ArrowUpRight className="mr-0.5 h-3 w-3" />
                   )}
-                  {/* {kpi.changeType === "negative" && <ArrowDownRight className="mr-0.5 h-3 w-3" />} */}
                   {kpi.changeType === "neutral" && (
                     <ArrowDownRight className="mr-0.5 h-3 w-3" />
                   )}
@@ -204,9 +326,7 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Charts Row */}
       <div className="grid gap-4 lg:grid-cols-7">
-        {/* Cash Flow Chart */}
         <Card className="lg:col-span-4">
           <CardHeader>
             <CardTitle>{t("overview.cashFlowTrend")}</CardTitle>
@@ -217,7 +337,7 @@ export default function DashboardPage() {
           <CardContent>
             <ChartContainer
               config={cashFlowChartConfig}
-              className="h-[300px] w-full"
+              className="h-75 w-full"
             >
               <BarChart data={cashFlowTimelineData.slice(0, 8)}>
                 <CartesianGrid
@@ -242,10 +362,10 @@ export default function DashboardPage() {
                   content={
                     <ChartTooltipContent
                       hideLabel
-                      // formatter={(value: number) => [
-                      //   `$${value.toLocaleString()}`,
-                      //   "",
-                      // ]}
+                      formatter={(value: any) => [
+                        `$${Math.abs(Number(value)).toLocaleString()}`,
+                        "",
+                      ]}
                     />
                   }
                 />
@@ -266,7 +386,6 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Financial Evolution Chart */}
         <Card className="lg:col-span-3">
           <CardHeader>
             <CardTitle>{t("overview.NPVTrend")}</CardTitle>
@@ -275,10 +394,7 @@ export default function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer
-              config={npvChartConfig}
-              className="h-[300px] w-full"
-            >
+            <ChartContainer config={npvChartConfig} className="h-75 w-full">
               <AreaChart data={financialEvolutionData}>
                 <CartesianGrid
                   strokeDasharray="3 3"
@@ -302,10 +418,10 @@ export default function DashboardPage() {
                   content={
                     <ChartTooltipContent
                       hideLabel
-                      // formatter={(value: number) => [
-                      //   `$${value.toLocaleString()}`,
-                      //   "",
-                      // ]}
+                      formatter={(value: any) => [
+                        `$${Number(value).toLocaleString()}`,
+                        "",
+                      ]}
                     />
                   }
                 />
@@ -332,9 +448,7 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Bottom Row */}
       <div className="grid gap-4 lg:grid-cols-3">
-        {/* Recent Calculations */}
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
@@ -398,7 +512,6 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Notifications Panel */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
@@ -437,7 +550,6 @@ export default function DashboardPage() {
               ))}
             </div>
 
-            {/* Project Status Summary */}
             <div className="mt-6 rounded-lg bg-muted/50 p-4">
               <h4 className="text-sm font-medium">
                 {t("overview.projectStatesSummary.title")}
@@ -462,11 +574,7 @@ export default function DashboardPage() {
                     <span className="h-2 w-2 rounded-full bg-muted-foreground" />
                     {t("overview.projectStatesSummary.draft")}
                   </span>
-                  <span className="font-medium">
-                    {mockProjects.length -
-                      completedProjects -
-                      analyzingProjects}
-                  </span>
+                  <span className="font-medium">{draftProjects}</span>
                 </div>
               </div>
             </div>
