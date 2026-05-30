@@ -35,7 +35,15 @@
   "metadata": {
     "title": "EconoLab - Plataforma de Evaluación de Proyectos Económicos",
     "description": "Análisis profesional de ingeniería económica y viabilidad financiera. Calcula VPN, TIR, TMAR y relación Beneficio/Costo con visualizaciones paso a paso.",
-    "keywords": ["VPN", "TIR", "TMAR", "análisis económico", "viabilidad financiera", "ingeniería económica", "flujo de caja"]
+    "keywords": [
+      "VPN",
+      "TIR",
+      "TMAR",
+      "análisis económico",
+      "viabilidad financiera",
+      "ingeniería económica",
+      "flujo de caja"
+    ]
   },
   "landing": {
     "nav": {
@@ -241,7 +249,7 @@
         "completed": "completados",
         "analyzing": "Analizando",
         "draft": "Borrador"
-       },
+      },
       "status": {
         "viable": "Viable",
         "notViable": "No Viable"
@@ -421,6 +429,87 @@
         }
       }
     },
+    "tmar": {
+      "title": "Configuración de TMAR",
+      "subtitle": "Define la Tasa Mínima Aceptable de Rendimiento",
+      "current": "TMAR Actual",
+      "methods": {
+        "title": "Métodos de Cálculo",
+        "simple": "Tasa Simple",
+        "simpleDesc": "Define directamente el valor de la TMAR",
+        "capm": "Modelo CAPM",
+        "capmDesc": "Capital Asset Pricing Model",
+        "wacc": "Costo Promedio Ponderado",
+        "waccDesc": "Weighted Average Cost of Capital"
+      },
+      "capm": {
+        "riskFree": "Tasa Libre de Riesgo (%)",
+        "marketReturn": "Rendimiento del Mercado (%)",
+        "beta": "Beta del Proyecto",
+        "formula": "Fórmula CAPM"
+      },
+      "wacc": {
+        "equityWeight": "Proporción de Capital Propio (%)",
+        "equityCost": "Costo del Capital Propio (%)",
+        "debtWeight": "Proporción de Deuda (%)",
+        "debtCost": "Costo de la Deuda (%)",
+        "taxRate": "Tasa de Impuestos (%)",
+        "formula": "Fórmula WACC"
+      },
+      "save": "Guardar TMAR",
+      "history": "Historial de TMAR",
+      "formulaTitle": "Fórmulas TMAR",
+      "formulaDescription": "Componentes y descomposición de la TMAR utilizada en el análisis",
+      "formula": "TMAR = Tasa Libre de Riesgo + Prima de Riesgo + Inflación",
+      "calculated": "TMAR Calculada",
+      "rule": "Regla: Suma de componentes para obtener TMAR",
+      "thresholds": {
+        "low": "Baja",
+        "medium": "Moderada",
+        "high": "Alta"
+      },
+      "components": {
+        "riskFree": {
+          "title": "Tasa Libre de Riesgo",
+          "description": "Tasa de retorno de activos sin riesgo como referencia",
+          "tooltip": "Usar bonos gubernamentales de largo plazo como proxy"
+        },
+        "inflation": {
+          "title": "Inflación",
+          "description": "Expectativa de inflación anual",
+          "tooltip": "Proyectar según datos macroeconómicos locales"
+        },
+        "riskPremium": {
+          "title": "Prima de Riesgo",
+          "description": "Prima por riesgo específico del proyecto/sector",
+          "tooltip": "Considerar beta y condiciones del mercado"
+        },
+        "rate": "Tasa (%)"
+      },
+      "breakdown": {
+        "title": "Desglose de Componentes",
+        "description": "Contribución de cada componente a la TMAR",
+        "riskFree": "Libre de Riesgo",
+        "inflation": "Inflación",
+        "riskPremium": "Prima de Riesgo",
+        "total": "TMAR Total"
+      },
+      "rules": {
+        "title": "Reglas de Decisión",
+        "accept": {
+          "title": "Criterios de Aceptación",
+          "irr": "TIR > TMAR",
+          "npv": "VPN > 0",
+          "bc": "B/C ≥ 1"
+        },
+        "reject": {
+          "title": "Criterios de Rechazo",
+          "irr": "TIR < TMAR",
+          "npv": "VPN < 0",
+          "bc": "B/C < 1"
+        }
+      }
+    },
     "tir": {
       "title": "Análisis de Tasa Interna de Retorno",
       "subtitle": "Calcula la TIR usando el método de Newton-Raphson",
@@ -548,36 +637,7 @@
         "notRecovered": "No se recupera"
       }
     },
-    "tmar": {
-      "title": "Configuración de TMAR",
-      "subtitle": "Define la Tasa Mínima Aceptable de Rendimiento",
-      "current": "TMAR Actual",
-      "methods": {
-        "title": "Métodos de Cálculo",
-        "simple": "Tasa Simple",
-        "simpleDesc": "Define directamente el valor de la TMAR",
-        "capm": "Modelo CAPM",
-        "capmDesc": "Capital Asset Pricing Model",
-        "wacc": "Costo Promedio Ponderado",
-        "waccDesc": "Weighted Average Cost of Capital"
-      },
-      "capm": {
-        "riskFree": "Tasa Libre de Riesgo (%)",
-        "marketReturn": "Rendimiento del Mercado (%)",
-        "beta": "Beta del Proyecto",
-        "formula": "Fórmula CAPM"
-      },
-      "wacc": {
-        "equityWeight": "Proporción de Capital Propio (%)",
-        "equityCost": "Costo del Capital Propio (%)",
-        "debtWeight": "Proporción de Deuda (%)",
-        "debtCost": "Costo de la Deuda (%)",
-        "taxRate": "Tasa de Impuestos (%)",
-        "formula": "Fórmula WACC"
-      },
-      "save": "Guardar TMAR",
-      "history": "Historial de TMAR"
-    },
+
     "reports": {
       "title": "Reportes",
       "subtitle": "Genera informes profesionales de tus análisis",

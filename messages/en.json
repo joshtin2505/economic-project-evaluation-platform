@@ -35,7 +35,15 @@
   "metadata": {
     "title": "EconoLab - Economic Project Evaluation Platform",
     "description": "Professional engineering economics and financial feasibility analysis. Calculate NPV, IRR, MARR, and benefit/cost ratio with step-by-step visualizations.",
-    "keywords": ["NPV", "IRR", "MARR", "economic analysis", "financial feasibility", "engineering economics", "cash flow"]
+    "keywords": [
+      "NPV",
+      "IRR",
+      "MARR",
+      "economic analysis",
+      "financial feasibility",
+      "engineering economics",
+      "cash flow"
+    ]
   },
   "landing": {
     "nav": {
@@ -233,15 +241,15 @@
         "value": "Value",
         "date": "Date",
         "status": "Status"
-       },
-       "notifications": "Notifications",
-       "notificationsDescription": "Recent alerts and updates",
-       "projectStatesSummary": {
+      },
+      "notifications": "Notifications",
+      "notificationsDescription": "Recent alerts and updates",
+      "projectStatesSummary": {
         "title": "Project Status",
         "completed": "Completed",
         "analyzing": "Analyzing",
         "draft": "Draft"
-       },
+      },
       "status": {
         "viable": "Viable",
         "notViable": "Not Viable"
@@ -421,6 +429,87 @@
         }
       }
     },
+    "tmar": {
+      "title": "MARR Configuration",
+      "subtitle": "Define the Minimum Acceptable Rate of Return",
+      "current": "Current MARR",
+      "methods": {
+        "title": "Calculation Methods",
+        "simple": "Simple Rate",
+        "simpleDesc": "Directly define the MARR value",
+        "capm": "CAPM Model",
+        "capmDesc": "Capital Asset Pricing Model",
+        "wacc": "Weighted Average Cost",
+        "waccDesc": "Weighted Average Cost of Capital"
+      },
+      "capm": {
+        "riskFree": "Risk-Free Rate (%)",
+        "marketReturn": "Market Return (%)",
+        "beta": "Project Beta",
+        "formula": "CAPM Formula"
+      },
+      "wacc": {
+        "equityWeight": "Equity Weight (%)",
+        "equityCost": "Cost of Equity (%)",
+        "debtWeight": "Debt Weight (%)",
+        "debtCost": "Cost of Debt (%)",
+        "taxRate": "Tax Rate (%)",
+        "formula": "WACC Formula"
+      },
+      "save": "Save MARR",
+      "history": "MARR History",
+      "formulaTitle": "TMAR Formulas",
+      "formulaDescription": "Components and decomposition of the TMAR used in analysis",
+      "formula": "TMAR = Risk-free rate + Risk premium + Inflation",
+      "calculated": "Calculated TMAR",
+      "rule": "Rule: sum components to obtain TMAR",
+      "thresholds": {
+        "low": "Low",
+        "medium": "Moderate",
+        "high": "High"
+      },
+      "components": {
+        "riskFree": {
+          "title": "Risk-free Rate",
+          "description": "Return rate of risk-free assets used as reference",
+          "tooltip": "Use long-term government bonds as a proxy"
+        },
+        "inflation": {
+          "title": "Inflation",
+          "description": "Expected annual inflation",
+          "tooltip": "Project according to local macroeconomic data"
+        },
+        "riskPremium": {
+          "title": "Risk Premium",
+          "description": "Premium for project/sector specific risk",
+          "tooltip": "Consider beta and market conditions"
+        },
+        "rate": "Rate (%)"
+      },
+      "breakdown": {
+        "title": "Component Breakdown",
+        "description": "Contribution of each component to the TMAR",
+        "riskFree": "Risk-free",
+        "inflation": "Inflation",
+        "riskPremium": "Risk Premium",
+        "total": "Total TMAR"
+      },
+      "rules": {
+        "title": "Decision Rules",
+        "accept": {
+          "title": "Acceptance Criteria",
+          "irr": "IRR > TMAR",
+          "npv": "NPV > 0",
+          "bc": "B/C ≥ 1"
+        },
+        "reject": {
+          "title": "Rejection Criteria",
+          "irr": "IRR < TMAR",
+          "npv": "NPV < 0",
+          "bc": "B/C < 1"
+        }
+      }
+    },
     "tir": {
       "title": "Internal Rate of Return Analysis",
       "subtitle": "Calculate IRR using Newton-Raphson method",
@@ -547,36 +636,6 @@
         "years": "years",
         "notRecovered": "Not recovered"
       }
-    },
-    "tmar": {
-      "title": "MARR Configuration",
-      "subtitle": "Define the Minimum Acceptable Rate of Return",
-      "current": "Current MARR",
-      "methods": {
-        "title": "Calculation Methods",
-        "simple": "Simple Rate",
-        "simpleDesc": "Directly define the MARR value",
-        "capm": "CAPM Model",
-        "capmDesc": "Capital Asset Pricing Model",
-        "wacc": "Weighted Average Cost",
-        "waccDesc": "Weighted Average Cost of Capital"
-      },
-      "capm": {
-        "riskFree": "Risk-Free Rate (%)",
-        "marketReturn": "Market Return (%)",
-        "beta": "Project Beta",
-        "formula": "CAPM Formula"
-      },
-      "wacc": {
-        "equityWeight": "Equity Weight (%)",
-        "equityCost": "Cost of Equity (%)",
-        "debtWeight": "Debt Weight (%)",
-        "debtCost": "Cost of Debt (%)",
-        "taxRate": "Tax Rate (%)",
-        "formula": "WACC Formula"
-      },
-      "save": "Save MARR",
-      "history": "MARR History"
     },
     "reports": {
       "title": "Reports",
