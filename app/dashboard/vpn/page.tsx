@@ -59,11 +59,11 @@ import { useState } from "react";
 const chartConfig = {
   npv: {
     label: "Accumulated NPV",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
   discountedValue: {
     label: "Discounted Value",
-    color: "hsl(var(--chart-3))",
+    color: "var(--chart-3)",
   },
 } satisfies ChartConfig;
 
@@ -399,14 +399,14 @@ export default function VPNAnalysisPage() {
                     />
                     <ReferenceLine
                       y={0}
-                      stroke="hsl(var(--muted-foreground))"
+                      stroke="var(--chart-5)"
                       strokeDasharray="3 3"
                     />
                     <Area
                       type="monotone"
                       dataKey="npv"
-                      stroke="var(--color-npv)"
-                      fill="hsl(var(--chart-1) / 0.2)"
+                      stroke="var(--chart-1)"
+                      fill="oklch(from var(--chart-1) l c h / 0.5)"
                       strokeWidth={2}
                       name="Accumulated NPV"
                     />
@@ -451,7 +451,7 @@ export default function VPNAnalysisPage() {
                     </h4>
                     <p className="mt-1 text-sm text-muted-foreground">
                       {t("interpretation.recommendationHelp", {
-                        npv: project.results?.npv.toLocaleString(),
+                        npv: (project.results?.npv ?? 0).toLocaleString(),
                         rate: (project.discountRate * 100).toFixed(1),
                       })}
                     </p>
@@ -466,7 +466,7 @@ export default function VPNAnalysisPage() {
                     </h4>
                     <p className="mt-2 text-sm">
                       {t("interpretation.valueCreation.description", {
-                        npv: project.results?.npv.toLocaleString(),
+                        npv: (project.results?.npv ?? 0).toLocaleString(),
                       })}
                     </p>
                   </div>

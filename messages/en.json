@@ -347,31 +347,78 @@
       "title": "Net Present Value Analysis",
       "subtitle": "Calculate NPV of your projects with step-by-step methodology",
       "selectProject": "Select Project",
-      "selectProjectPlaceholder": "Choose a project to analyze",
-      "parameters": "Analysis Parameters",
-      "discountRate": "Discount Rate (%)",
-      "calculate": "Calculate NPV",
-      "results": "Analysis Results",
-      "vpnValue": "Net Present Value",
-      "interpretation": "Interpretation",
-      "viable": "The project IS VIABLE. Positive NPV indicates it generates value above the required rate.",
-      "notViable": "The project IS NOT VIABLE. Negative NPV indicates it destroys value.",
-      "steps": {
-        "title": "Calculation Procedure",
-        "formula": "NPV Formula",
-        "step": "Step",
-        "year": "Year",
-        "cashFlow": "Cash Flow",
-        "presentValue": "Present Value",
-        "discountFactor": "Discount Factor",
-        "calculation": "Calculation",
-        "total": "Total NPV"
+      "selectProjectPlaceholder": "Select Project",
+      "formulaTitle": "NPV Formula",
+      "formulaDescription": "Sum of discounted cash flows minus initial investment",
+      "formula": "NPV = -I₀ + Σ CFₜ / (1 + r)ᵗ",
+      "summary": {
+        "npv": "Net Present Value",
+        "accept": "NPV > 0: Accept",
+        "reject": "NPV < 0: Reject",
+        "discountRate": "Discount Rate",
+        "discountRateHelp": "Annual rate used for discounting",
+        "initialInvestment": "Initial Investment",
+        "initialInvestmentHelp": "Upfront capital required",
+        "periods": "Analysis Periods",
+        "periodsHelp": "Project time horizon"
       },
-      "sensitivity": {
-        "title": "Sensitivity Analysis",
-        "description": "See how NPV changes with different discount rates",
-        "rate": "Rate",
-        "vpn": "NPV"
+      "tabs": {
+        "table": "Calculation Table",
+        "chart": "NPV Chart",
+        "interpretation": "Interpretation"
+      },
+      "table": {
+        "title": "Step-by-Step Discounted Cash Flow Calculations",
+        "description": "Each period's cash flow is discounted using the formula: PV = CF / (1 + r)^t",
+        "period": "Period",
+        "cashFlow": "Cash Flow (CF)",
+        "cashFlowHelp": "Net cash flow for the period",
+        "discountFactor": "Discount Factor",
+        "discountFactorHelp": "1 / (1 + r)^t",
+        "presentValue": "Discounted Value",
+        "presentValueHelp": "CF × Discount Factor",
+        "accumulated": "Accumulated NPV",
+        "initial": "Initial",
+        "year": "Year {period}",
+        "finalNpv": "Final NPV",
+        "exampleTitle": "Calculation Example (Year 1)",
+        "exampleStep1": "PV₁ = $75,000 / (1 + 0.12)¹",
+        "exampleStep2": "PV₁ = $75,000 / 1.12",
+        "exampleStep3": "PV₁ = $66,964"
+      },
+      "chart": {
+        "title": "Accumulated NPV Over Time",
+        "description": "Watch how NPV evolves as cash flows are discounted and accumulated",
+        "legend": {
+          "accumulated": "Accumulated NPV",
+          "breakEven": "Break-even line"
+        }
+      },
+      "interpretation": {
+        "title": "Financial Interpretation",
+        "description": "Understanding the NPV results and investment decision",
+        "recommendation": "Investment Recommendation: ACCEPT",
+        "recommendationHelp": "The project has a positive NPV of {npv}, indicating it will generate value above the required return rate of {rate}%.",
+        "valueCreation": {
+          "title": "Value Creation",
+          "description": "This project will create {npv} in present value terms above the initial investment, after accounting for the time value of money."
+        },
+        "breakeven": {
+          "title": "Break-even Analysis",
+          "description": "The accumulated NPV crosses from negative to positive between Year 9 and Year 10, indicating the discounted payback period."
+        },
+        "sensitivity": {
+          "title": "Discount Rate Sensitivity",
+          "description": "At the current discount rate of {rate}%, the project remains profitable. The NPV would become zero at an IRR of {irr}."
+        },
+        "rule": {
+          "title": "Decision Rule",
+          "description": "Since NPV > 0, the project should be accepted. It exceeds the minimum required return and adds value to the organization."
+        },
+        "whydiscount": {
+          "title": "Why Discount Cash Flows?",
+          "description": "Money received in the future is worth less than money received today due to the time value of money. Discounting converts future cash flows to their present value equivalent, allowing for meaningful comparison of cash flows occurring at different times. The discount rate reflects the opportunity cost of capital and the risk associated with the investment."
+        }
       }
     },
     "tir": {
@@ -390,20 +437,71 @@
       "interpretation": "Interpretation",
       "viable": "The project IS PROFITABLE. IRR exceeds the required MARR.",
       "notViable": "The project IS NOT PROFITABLE. IRR is less than MARR.",
+      "formulaTitle": "IRR Definition",
+      "formulaDescription": "The rate that makes NPV equal to zero, found iteratively",
+      "formula": "NPV(IRR) = 0",
+      "newtonRaphson": "Newton-Raphson Method",
+      "summary": {
+        "irr": "Internal Rate of Return",
+        "accept": "IRR > TMAR: Accept",
+        "reject": "IRR < TMAR: Reject",
+        "tmar": "TMAR",
+        "tmarHelp": "Minimum acceptable rate",
+        "spread": "IRR - TMAR Spread",
+        "spreadHelp": "Safety margin",
+        "iterations": "Iterations to Converge",
+        "iterationsHelp": "Newton-Raphson method"
+      },
+      "charts": {
+        "npv": {
+          "title": "NPV vs Discount Rate",
+          "description": "IRR is where the curve crosses zero"
+        },
+        "convergence": {
+          "title": "Convergence Path",
+          "description": "NPV approaching zero through iterations",
+          "axisLabel": "Iteration"
+        }
+      },
       "iterations": {
-        "title": "Newton-Raphson Method Iterations",
+        "title": "Newton-Raphson Iteration Table",
+        "description": "Step-by-step convergence to the Internal Rate of Return",
         "iteration": "Iteration",
         "rate": "Rate (r)",
-        "vpn": "NPV(r)",
-        "derivative": "NPV'(r)",
+        "rateHelp": "Current estimate of IRR",
+        "npv": "NPV at r",
+        "npvHelp": "f(r) = NPV calculated at current rate",
+        "derivative": "Derivative",
+        "derivativeHelp": "f'(r) = Slope of NPV function",
         "newRate": "New Rate",
         "error": "Error",
-        "converged": "Convergence reached"
+        "adjustment": "Adjustment",
+        "status": "Status",
+        "converged": "Converged",
+        "iterating": "Iterating..."
       },
       "method": {
         "title": "Methodology",
         "description": "The Newton-Raphson method is an iterative algorithm for finding roots of functions. For IRR, we seek the rate r where NPV(r) = 0.",
         "formula": "Iterative Formula"
+      },
+      "details": {
+        "title": "Detailed Iteration Steps",
+        "description": "Expand each iteration to see the mathematical operations",
+        "iterationLabel": "Iteration {iteration}",
+        "final": "Final",
+        "step1": "Step 1: Calculate NPV at current rate",
+        "step2": "Step 2: Calculate derivative",
+        "step3": "Step 3: Apply Newton-Raphson formula",
+        "converged": "Convergence criterion met: |NPV| < tolerance",
+        "increased": "increased",
+        "decreased": "decreased",
+        "adjustment": "Rate {direction} by {value}%"
+      },
+      "final": {
+        "title": "Final Interpretation",
+        "description": "The Internal Rate of Return of {irr}% exceeds the minimum acceptable rate of return (TMAR) of {tmar}%. This indicates the project generates sufficient returns to justify the investment risk. The project should be accepted.",
+        "margin": "The IRR provides a safety margin of {margin}% above the required return, offering protection against estimation errors and unforeseen circumstances."
       }
     },
     "benefitCost": {

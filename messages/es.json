@@ -347,31 +347,78 @@
       "title": "Análisis de Valor Presente Neto",
       "subtitle": "Calcula el VPN de tus proyectos con metodología paso a paso",
       "selectProject": "Seleccionar Proyecto",
-      "selectProjectPlaceholder": "Elige un proyecto para analizar",
-      "parameters": "Parámetros de Análisis",
-      "discountRate": "Tasa de Descuento (%)",
-      "calculate": "Calcular VPN",
-      "results": "Resultados del Análisis",
-      "vpnValue": "Valor Presente Neto",
-      "interpretation": "Interpretación",
-      "viable": "El proyecto ES VIABLE. El VPN positivo indica que genera valor sobre la tasa requerida.",
-      "notViable": "El proyecto NO ES VIABLE. El VPN negativo indica que destruye valor.",
-      "steps": {
-        "title": "Procedimiento de Cálculo",
-        "formula": "Fórmula del VPN",
-        "step": "Paso",
-        "year": "Año",
-        "cashFlow": "Flujo de Caja",
-        "presentValue": "Valor Presente",
-        "discountFactor": "Factor de Descuento",
-        "calculation": "Cálculo",
-        "total": "Total VPN"
+      "selectProjectPlaceholder": "Seleccionar Proyecto",
+      "formulaTitle": "Fórmula del VPN",
+      "formulaDescription": "Suma de flujos descontados menos la inversión inicial",
+      "formula": "VPN = -I₀ + Σ FCₜ / (1 + r)ᵗ",
+      "summary": {
+        "npv": "Valor Presente Neto",
+        "accept": "VPN > 0: Aceptar",
+        "reject": "VPN < 0: Rechazar",
+        "discountRate": "Tasa de Descuento",
+        "discountRateHelp": "Tasa anual usada para descontar",
+        "initialInvestment": "Inversión Inicial",
+        "initialInvestmentHelp": "Capital requerido al inicio",
+        "periods": "Períodos de Análisis",
+        "periodsHelp": "Horizonte del proyecto"
       },
-      "sensitivity": {
-        "title": "Análisis de Sensibilidad",
-        "description": "Observa cómo cambia el VPN con diferentes tasas de descuento",
-        "rate": "Tasa",
-        "vpn": "VPN"
+      "tabs": {
+        "table": "Tabla de Cálculo",
+        "chart": "Gráfica del VPN",
+        "interpretation": "Interpretación"
+      },
+      "table": {
+        "title": "Cálculos Paso a Paso del Flujo Descontado",
+        "description": "Cada flujo de caja se descuenta usando la fórmula: VP = FC / (1 + r)^t",
+        "period": "Período",
+        "cashFlow": "Flujo de Caja (FC)",
+        "cashFlowHelp": "Flujo neto del período",
+        "discountFactor": "Factor de Descuento",
+        "discountFactorHelp": "1 / (1 + r)^t",
+        "presentValue": "Valor Descontado",
+        "presentValueHelp": "FC × Factor de Descuento",
+        "accumulated": "VPN Acumulado",
+        "initial": "Inicial",
+        "year": "Año {period}",
+        "finalNpv": "VPN Final",
+        "exampleTitle": "Ejemplo de Cálculo (Año 1)",
+        "exampleStep1": "VP₁ = $75,000 / (1 + 0.12)¹",
+        "exampleStep2": "VP₁ = $75,000 / 1.12",
+        "exampleStep3": "VP₁ = $66,964"
+      },
+      "chart": {
+        "title": "VPN Acumulado en el Tiempo",
+        "description": "Observa cómo evoluciona el VPN al descontar y acumular los flujos",
+        "legend": {
+          "accumulated": "VPN acumulado",
+          "breakEven": "Línea de equilibrio"
+        }
+      },
+      "interpretation": {
+        "title": "Interpretación Financiera",
+        "description": "Entendiendo los resultados del VPN y la decisión de inversión",
+        "recommendation": "Recomendación de Inversión: ACEPTAR",
+        "recommendationHelp": "El proyecto tiene un VPN positivo de {npv}, indicando que generará valor sobre la tasa requerida de {rate}%.",
+        "valueCreation": {
+          "title": "Creación de Valor",
+          "description": "Este proyecto creará {npv} en valor presente por encima de la inversión inicial, considerando el valor del dinero en el tiempo."
+        },
+        "breakeven": {
+          "title": "Análisis de Punto de Equilibrio",
+          "description": "El VPN acumulado pasa de negativo a positivo entre el Año 9 y el Año 10, indicando el período de recuperación descontado."
+        },
+        "sensitivity": {
+          "title": "Sensibilidad a la Tasa de Descuento",
+          "description": "Con la tasa de descuento actual de {rate}%, el proyecto sigue siendo rentable. El VPN sería cero con una TIR de {irr}."
+        },
+        "rule": {
+          "title": "Regla de Decisión",
+          "description": "Como el VPN > 0, el proyecto debe aceptarse. Supera el retorno mínimo requerido y agrega valor a la organización."
+        },
+        "whydiscount": {
+          "title": "¿Por qué descontar flujos?",
+          "description": "El dinero recibido en el futuro vale menos que el dinero recibido hoy debido al valor del dinero en el tiempo. Descontar convierte los flujos futuros a su equivalente en valor presente, permitiendo compararlos de forma significativa en distintos momentos. La tasa de descuento refleja el costo de oportunidad del capital y el riesgo asociado con la inversión."
+        }
       }
     },
     "tir": {
@@ -390,20 +437,71 @@
       "interpretation": "Interpretación",
       "viable": "El proyecto ES RENTABLE. La TIR supera la TMAR requerida.",
       "notViable": "El proyecto NO ES RENTABLE. La TIR es menor que la TMAR.",
+      "formulaTitle": "Definición de la TIR",
+      "formulaDescription": "La tasa que hace que el VPN sea igual a cero, encontrada iterativamente",
+      "formula": "VPN(TIR) = 0",
+      "newtonRaphson": "Método Newton-Raphson",
+      "summary": {
+        "irr": "Tasa Interna de Retorno",
+        "accept": "TIR > TMAR: Aceptar",
+        "reject": "TIR < TMAR: Rechazar",
+        "tmar": "TMAR",
+        "tmarHelp": "Tasa mínima aceptable",
+        "spread": "Margen TIR - TMAR",
+        "spreadHelp": "Margen de seguridad",
+        "iterations": "Iteraciones para Converger",
+        "iterationsHelp": "Método Newton-Raphson"
+      },
+      "charts": {
+        "npv": {
+          "title": "VPN vs Tasa de Descuento",
+          "description": "La TIR es donde la curva cruza cero"
+        },
+        "convergence": {
+          "title": "Ruta de Convergencia",
+          "description": "VPN acercándose a cero mediante iteraciones",
+          "axisLabel": "Iteración"
+        }
+      },
       "iterations": {
-        "title": "Iteraciones del Método Newton-Raphson",
+        "title": "Tabla de Iteraciones Newton-Raphson",
+        "description": "Convergencia paso a paso hacia la Tasa Interna de Retorno",
         "iteration": "Iteración",
         "rate": "Tasa (r)",
-        "vpn": "VPN(r)",
+        "rateHelp": "Estimación actual de la TIR",
+        "npv": "VPN(r)",
+        "npvHelp": "f(r) = VPN calculado en la tasa actual",
         "derivative": "VPN'(r)",
+        "derivativeHelp": "f'(r) = Pendiente de la función VPN",
         "newRate": "Nueva Tasa",
         "error": "Error",
-        "converged": "Convergencia alcanzada"
+        "adjustment": "Ajuste",
+        "status": "Estado",
+        "converged": "Convergió",
+        "iterating": "Iterando..."
       },
       "method": {
         "title": "Metodología",
         "description": "El método de Newton-Raphson es un algoritmo iterativo para encontrar raíces de funciones. Para la TIR, buscamos la tasa r donde VPN(r) = 0.",
         "formula": "Fórmula Iterativa"
+      },
+      "details": {
+        "title": "Pasos Detallados de Iteración",
+        "description": "Expande cada iteración para ver las operaciones matemáticas",
+        "iterationLabel": "Iteración {iteration}",
+        "final": "Final",
+        "step1": "Paso 1: Calcular VPN en la tasa actual",
+        "step2": "Paso 2: Calcular derivada",
+        "step3": "Paso 3: Aplicar fórmula Newton-Raphson",
+        "converged": "Se cumplió el criterio de convergencia: |VPN| < tolerancia",
+        "increased": "aumentó",
+        "decreased": "disminuyó",
+        "adjustment": "La tasa {direction} en {value}%"
+      },
+      "final": {
+        "title": "Interpretación Final",
+        "description": "La Tasa Interna de Retorno de {irr}% supera la tasa mínima aceptable de retorno (TMAR) de {tmar}%. Esto indica que el proyecto genera retornos suficientes para justificar el riesgo de la inversión. El proyecto debe aceptarse.",
+        "margin": "La TIR proporciona un margen de seguridad de {margin}% sobre el retorno requerido, ofreciendo protección contra errores de estimación y circunstancias imprevistas."
       }
     },
     "benefitCost": {
