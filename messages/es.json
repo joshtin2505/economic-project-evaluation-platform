@@ -742,8 +742,91 @@
       },
       "recent": "Reportes Recientes",
       "download": "Descargar",
-      "preview": "Vista Previa",
       "noReports": "No hay reportes generados"
+      ,
+      "selectProject": "Seleccionar Proyecto",
+      "exports": {
+        "pdf": {
+          "title": "Exportar como PDF",
+          "description": "Crear un reporte imprimible en PDF",
+          "action": "Descargar PDF"
+        },
+        "excel": {
+          "title": "Exportar como Excel",
+          "description": "Descargar reporte como hoja de cálculo",
+          "action": "Descargar Excel"
+        },
+        "csv": {
+          "title": "Exportar como CSV",
+          "description": "Descargar datos como CSV",
+          "action": "Descargar CSV"
+        },
+        "print": {
+          "title": "Imprimir Reporte",
+          "description": "Abrir diálogo de impresión para el reporte",
+          "action": "Imprimir"
+        }
+      },
+      "preview": {
+        "title": "Vista Previa del Reporte",
+        "description": "Vista previa del reporte antes de exportar",
+        "badge": "Vista Previa"
+      },
+      "report": {
+        "title": "Reporte del Proyecto",
+        "generatedOn": "Generado el {date}"
+      },
+      "sections": {
+        "executiveSummary": "Resumen Ejecutivo",
+        "projectDetails": "Detalles del Proyecto",
+        "recommendation": "Recomendación"
+      },
+      "summary": {
+        "npv": "VPN",
+        "irr": "TIR",
+        "bcRatio": "Relación B/C",
+        "verdict": "Veredicto",
+        "viable": "Viable",
+        "notViable": "No Viable"
+      },
+      "details": {
+        "initialInvestment": "Inversión Inicial",
+        "analysisPeriod": "Período de Análisis",
+        "years": "{count} años",
+        "discountRate": "Tasa de Descuento",
+        "paybackPeriod": "Período de Recuperación",
+        "na": "N/A",
+        "yearsShort": "años",
+        "profitabilityIndex": "Índice de Rentabilidad",
+        "tmar": "TMAR"
+      },
+      "recommendation": {
+        "accept": "Recomendación: ACEPTAR",
+        "reject": "Recomendación: RECHAZAR",
+        "acceptText": "El proyecto tiene VPN de {npv}, TIR de {irr}% y TMAR {tmar}%. Relación B/C: {ratio}.",
+        "rejectText": "El proyecto no cumple los criterios financieros requeridos."
+      },
+      "footer": {
+        "generatedBy": "Generado por EconoLab",
+        "confidential": "Confidencial - Uso interno únicamente"
+      },
+      "sectionsChecklist": {
+        "title": "Checklist de Secciones del Reporte",
+        "description": "Secciones incluidas y opcionales en el reporte",
+        "items": {
+          "executiveSummary": "Resumen Ejecutivo",
+          "projectDetails": "Detalles del Proyecto",
+          "cashFlowAnalysis": "Análisis de Flujos",
+          "npvCalculations": "Cálculos de VPN",
+          "irrAnalysis": "Análisis TIR",
+          "benefitCostAnalysis": "Análisis Beneficio/Costo",
+          "sensitivityAnalysis": "Análisis de Sensibilidad",
+          "riskAssessment": "Evaluación de Riesgos",
+          "recommendations": "Recomendaciones"
+        },
+        "included": "Incluido",
+        "optional": "Opcional"
+      }
     },
     "settings": {
       "title": "Configuración",
