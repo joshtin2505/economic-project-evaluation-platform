@@ -38,6 +38,8 @@ export default function NewProjectPage() {
         discount_rate: form.discountRate,
         inflation: form.inflation,
         risk_premium: form.riskPremium,
+        tmar_method: form.tmarMethod,
+        funding_sources: form.fundingSources,
         status,
         results:
           mode === "calculate"
@@ -86,6 +88,12 @@ export default function NewProjectPage() {
             setInflation={form.setInflation}
             riskPremium={form.riskPremium}
             setRiskPremium={form.setRiskPremium}
+            tmarMethod={form.tmarMethod}
+            setTmarMethod={form.setTmarMethod}
+            fundingSources={form.fundingSources}
+            updateFundingSource={form.updateFundingSource}
+            addFundingSource={form.addFundingSource}
+            removeFundingSource={form.removeFundingSource}
             cashFlows={form.cashFlows}
             addPeriod={form.addPeriod}
             removePeriod={form.removePeriod}

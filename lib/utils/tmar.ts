@@ -64,3 +64,78 @@ export function calculateFisherCrossTermPercent(
   const inflation = percentToDecimal(inflationPercent);
   return decimalToPercent(realGain * inflation);
 }
+
+export type TmarMethod = "simple" | "mixta";
+
+export interface FundingSource {
+  id: string;
+  name: string;
+  /** Participación dentro del negocio (%). */
+  share: number;
+  /** Costo asociado a la fuente (%). */
+  cost: number;
+}
+
+export const DEFAULT_FUNDING_SOURCES: FundingSource[] = [
+  { id: "equity", name: "Recursos propios", share: 40, cost: 15 },
+  { id: "banks", name: "Bancos", share: 45, cost: 10 },
+  { id: "coops", name: "Cooperativas", share: 15, cost: 12 },
+];
+
+/**
+ * Procedimiento 1 — Inversionista único:
+ * TMAR = Inflación + Riesgo + (Inflación × Riesgo)
+ */
+export function calculateInflationRiskTmarDecimal(
+  inflationPercent: number,
+  riskPremiumPercent: number,
+): number {
+  const inflation = percentToDecimal(inflationPercent);
+  const risk = percentToDecimal(riskPremiumPercent);
+  return inflation + risk + inflation * risk;
+}
+
+export function calculateInflationRiskTmarPercent(
+  inflationPercent: number,
+  riskPremiumPercent: number,
+): number {
+  return decimalToPercent(
+    calculateInflationRiskTmarDecimal(inflationPercent, riskPremiumPercent),
+  );
+}
+
+/**
+ * Procedimiento 2 — Múltiples aportantes:
+ * TMAR = Σ (Participación × Costo)
+ */
+export function calculateWeightedFundingTmarDecimal(
+  sources: FundingSource[],
+): number {
+  return sources.reduce(
+    (sum, source) =>
+      sum + percentToDecimal(source.share) * percentToDecimal(source.cost),
+    0,
+  );
+}
+
+export function calculateWeightedFundingTmarPercent(
+  sources: FundingSource[],
+): number {
+  return decimalToPercent(calculateWeightedFundingTmarDecimal(sources));
+}
+
+export function resolveProjectTmarPercent(
+  method: TmarMethod,
+  inflationPercent: number,
+  riskPremiumPercent: number,
+  fundingSources: FundingSource[],
+): number {
+  if (method === "mixta") {
+    return calculateWeightedFundingTmarPercent(fundingSources);
+  }
+  return calculateInflationRiskTmarPercent(inflationPercent, riskPremiumPercent);
+}
+
+export function sumFundingShares(sources: FundingSource[]): number {
+  return sources.reduce((sum, source) => sum + Number(source.share || 0), 0);
+}

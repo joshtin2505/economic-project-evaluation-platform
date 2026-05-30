@@ -36,6 +36,7 @@ import {
 import * as projectService from "@/lib/services/projects"
 import { routes } from "@/lib/routes"
 import { formatRatePercent } from "@/lib/utils/project-results"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 type ProjectStatus = "draft" | "analyzing" | "completed"
 
@@ -157,7 +158,7 @@ export default function ProjectsPage() {
       <Card>
         <CardHeader>
           <CardTitle>{t("table.title")}</CardTitle>
-          <CardDescription>{t("table.description")}</CardDescription>
+          {/* <CardDescription>{t("table.description")}</CardDescription> */}
         </CardHeader>
         <CardContent>
           <Table>
@@ -188,12 +189,19 @@ export default function ProjectsPage() {
               ) : (
                 filteredProjects.map((project) => (
                   <TableRow key={project.id} className="group cursor-pointer hover:bg-muted/50">
-                    <TableCell>
+                    <TableCell className="max-w-xs">
                       <div>
                         <p className="font-medium">{project.name}</p>
-                        <p className="text-xs text-muted-foreground line-clamp-1">
-                          {project.description ?? "-"}
-                        </p>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                        <p className="text-xs text-muted-foreground line-clamp-2 text-ellipsis">
+                            {project.description ?? "-"}
+                          </p>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom">
+                              {project.description ?? "-"}
+                            </TooltipContent>
+                          </Tooltip>
                       </div>
                     </TableCell>
                     <TableCell className="font-mono">

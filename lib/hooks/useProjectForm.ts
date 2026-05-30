@@ -3,6 +3,13 @@ import {
   DEFAULT_USER_PROFILE,
   fetchUserProfile,
 } from "@/lib/services/user-profiles";
+import {
+  DEFAULT_FUNDING_SOURCES,
+  type FundingSource,
+  resolveProjectTmarPercent,
+  sumFundingShares,
+  type TmarMethod,
+} from "@/lib/utils/tmar";
 
 interface CashFlowRow {
   period: number;
@@ -18,6 +25,8 @@ export function useProjectForm(initial?: {
   inflation?: number;
   risk_premium?: number;
   periods?: number;
+  tmar_method?: TmarMethod;
+  funding_sources?: FundingSource[];
   cashFlows?: CashFlowRow[];
 }) {
   const [projectName, setProjectName] = useState(initial?.name ?? "");
@@ -34,6 +43,14 @@ export function useProjectForm(initial?: {
   const [inflation, setInflation] = useState<number>(initial?.inflation ?? 3);
   const [riskPremium, setRiskPremium] = useState<number>(
     initial?.risk_premium ?? 2,
+  );
+  const [tmarMethod, setTmarMethod] = useState<TmarMethod>(
+    initial?.tmar_method ?? "simple",
+  );
+  const [fundingSources, setFundingSources] = useState<FundingSource[]>(
+    initial?.funding_sources?.length
+      ? initial.funding_sources
+      : DEFAULT_FUNDING_SOURCES.map((source) => ({ ...source })),
   );
 
   const [cashFlows, setCashFlows] = useState<CashFlowRow[]>(
@@ -122,6 +139,42 @@ export function useProjectForm(initial?: {
     setCashFlows(newFlows);
   };
 
+  const updateFundingSource = (
+    id: string,
+    field: keyof Pick<FundingSource, "name" | "share" | "cost">,
+    value: string | number,
+  ) => {
+    setFundingSources((current) =>
+      current.map((source) =>
+        source.id === id
+          ? {
+              ...source,
+              [field]:
+                field === "name" ? String(value) : Number(value) || 0,
+            }
+          : source,
+      ),
+    );
+  };
+
+  const addFundingSource = () => {
+    setFundingSources((current) => [
+      ...current,
+      {
+        id: `source-${Date.now()}`,
+        name: "",
+        share: 0,
+        cost: 0,
+      },
+    ]);
+  };
+
+  const removeFundingSource = (id: string) => {
+    setFundingSources((current) =>
+      current.length > 1 ? current.filter((source) => source.id !== id) : current,
+    );
+  };
+
   const calculations = useMemo(() => {
     const rate = discountRate / 100;
     let npv = -initialInvestment;
@@ -136,7 +189,6 @@ export function useProjectForm(initial?: {
       totalOutflows += cf.outflow;
     });
 
-    // Simple IRR approximation using bisection
     let irr = 0;
     let low = -0.5;
     let high = 1.0;
@@ -154,7 +206,14 @@ export function useProjectForm(initial?: {
       irr = mid;
     }
 
-    const tmar = (discountRate + inflation + riskPremium) / 100;
+    const tmarPercent = resolveProjectTmarPercent(
+      tmarMethod,
+      inflation,
+      riskPremium,
+      fundingSources,
+    );
+    const fundingShareTotal = sumFundingShares(fundingSources);
+
     const pvBenefits = cashFlows.reduce((sum, cf, index) => {
       return sum + cf.inflow / Math.pow(1 + rate, index + 1);
     }, 0);
@@ -163,18 +222,29 @@ export function useProjectForm(initial?: {
       cashFlows.reduce((sum, cf, index) => {
         return sum + cf.outflow / Math.pow(1 + rate, index + 1);
       }, 0);
-    const bcRatio = pvBenefits / pvCosts;
+    const bcRatio = pvCosts > 0 ? pvBenefits / pvCosts : 0;
+    const irrPercent = irr * 100;
 
     return {
       npv: Math.round(npv),
-      irr: (irr * 100).toFixed(2),
-      tmar: (tmar * 100).toFixed(1),
+      irr: irrPercent.toFixed(2),
+      tmar: tmarPercent.toFixed(2),
+      tmarMethod,
+      fundingShareTotal,
       bcRatio: bcRatio.toFixed(2),
       totalInflows,
       totalOutflows,
-      isViable: npv > 0 && irr * 100 > tmar * 100 && bcRatio > 1,
+      isViable: npv > 0 && irrPercent > tmarPercent && bcRatio > 1,
     };
-  }, [cashFlows, initialInvestment, discountRate, inflation, riskPremium]);
+  }, [
+    cashFlows,
+    discountRate,
+    fundingSources,
+    inflation,
+    initialInvestment,
+    riskPremium,
+    tmarMethod,
+  ]);
 
   const setInitialValues = (data: any, flows: CashFlowRow[] | null) => {
     setProjectName(data?.name ?? "");
@@ -183,6 +253,17 @@ export function useProjectForm(initial?: {
     setDiscountRate(Number(data?.discount_rate) || 0);
     setInflation(Number(data?.inflation) || 0);
     setRiskPremium(Number(data?.risk_premium) || 0);
+    setTmarMethod(data?.tmar_method === "mixta" ? "mixta" : "simple");
+    if (Array.isArray(data?.funding_sources) && data.funding_sources.length > 0) {
+      setFundingSources(
+        data.funding_sources.map((source: FundingSource, index: number) => ({
+          id: source.id ?? `source-${index}`,
+          name: source.name ?? "",
+          share: Number(source.share) || 0,
+          cost: Number(source.cost) || 0,
+        })),
+      );
+    }
     setPeriods(Number(data?.periods) || flows?.length || 1);
     if (flows && flows.length > 0) {
       setCashFlows(
@@ -210,6 +291,12 @@ export function useProjectForm(initial?: {
     setInflation,
     riskPremium,
     setRiskPremium,
+    tmarMethod,
+    setTmarMethod,
+    fundingSources,
+    updateFundingSource,
+    addFundingSource,
+    removeFundingSource,
     cashFlows,
     addPeriod,
     removePeriod,

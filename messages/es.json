@@ -1107,6 +1107,21 @@
         "riskPremiumHelp": "Retorno adicional requerido para compensar el riesgo del proyecto",
         "periods": "Número de Períodos"
       },
+      "tmarConfig": {
+        "title": "Configuración TMAR",
+        "description": "Selecciona el procedimiento para calcular la tasa mínima aceptable de rendimiento",
+        "simpleTab": "Inversionista único",
+        "mixtaTab": "Múltiples aportantes",
+        "simpleFormula": "TMAR = Inflación + Riesgo + (Inflación × Riesgo)",
+        "mixtaFormula": "TMAR = Σ (Participación % × Costo %)",
+        "fundingDescription": "Fuentes de financiamiento del proyecto",
+        "addSource": "Agregar fuente",
+        "sourceName": "Fuente",
+        "share": "Participación (%)",
+        "cost": "Costo (%)",
+        "weighted": "Ponderado",
+        "shareTotal": "Total participación"
+      },
       "cashFlows": {
         "title": "Flujos de Caja por Período",
         "description": "Ingresa los ingresos y egresos esperados para cada año",
@@ -1137,7 +1152,8 @@
         "aboveTmar": "Por encima de la TMAR",
         "belowTmar": "Por debajo de la TMAR",
         "tmar": "TMAR",
-        "tmarFormula": "r + π + β",
+        "tmarFormulaSimple": "π + β + (π × β)",
+        "tmarFormulaMixta": "Σ (part. × costo)",
         "bcRatio": "Relación B/C",
         "bcFeasible": "B/C ≥ 1",
         "bcNotFeasible": "B/C < 1",

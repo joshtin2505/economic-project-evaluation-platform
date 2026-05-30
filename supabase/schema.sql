@@ -10,6 +10,8 @@ create table if not exists public.projects (
   inflation numeric not null default 0,
   risk_premium numeric not null default 0,
   status text not null default 'draft' check (status in ('draft', 'analyzing', 'completed')),
+  tmar_method text not null default 'simple' check (tmar_method in ('simple', 'mixta')),
+  funding_sources jsonb not null default '[]'::jsonb,
   results jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

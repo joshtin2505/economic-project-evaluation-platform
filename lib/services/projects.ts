@@ -15,7 +15,7 @@ export async function fetchProjectById(id: string) {
   const supabase = createSupabaseClient()
   const { data, error } = await supabase
     .from("projects")
-    .select("id,name,description,initial_investment,discount_rate,inflation,risk_premium,periods,results")
+    .select("id,name,description,initial_investment,discount_rate,inflation,risk_premium,tmar_method,funding_sources,periods,results")
     .eq("id", id)
     .single()
 

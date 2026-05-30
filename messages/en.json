@@ -1106,6 +1106,21 @@
         "riskPremiumHelp": "Additional return required to compensate for project risk",
         "periods": "Number of Periods"
       },
+      "tmarConfig": {
+        "title": "MARR Configuration",
+        "description": "Select the procedure to calculate the minimum acceptable rate of return",
+        "simpleTab": "Single investor",
+        "mixtaTab": "Multiple contributors",
+        "simpleFormula": "MARR = Inflation + Risk + (Inflation × Risk)",
+        "mixtaFormula": "MARR = Σ (Share % × Cost %)",
+        "fundingDescription": "Project funding sources",
+        "addSource": "Add source",
+        "sourceName": "Source",
+        "share": "Share (%)",
+        "cost": "Cost (%)",
+        "weighted": "Weighted",
+        "shareTotal": "Total share"
+      },
       "cashFlows": {
         "title": "Cash Flows by Period",
         "description": "Enter expected inflows and outflows for each year",
@@ -1136,7 +1151,8 @@
         "aboveTmar": "Above TMAR",
         "belowTmar": "Below TMAR",
         "tmar": "TMAR",
-        "tmarFormula": "r + π + β",
+        "tmarFormulaSimple": "π + β + (π × β)",
+        "tmarFormulaMixta": "Σ (share × cost)",
         "bcRatio": "B/C Ratio",
         "bcFeasible": "B/C ≥ 1",
         "bcNotFeasible": "B/C < 1",
