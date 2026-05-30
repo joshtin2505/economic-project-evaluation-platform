@@ -459,10 +459,11 @@
       "save": "Save MARR",
       "history": "MARR History",
       "formulaTitle": "TMAR Formulas",
-      "formulaDescription": "Components and decomposition of the TMAR used in analysis",
-      "formula": "TMAR = Risk-free rate + Risk premium + Inflation",
+      "formulaDescription": "Fisher relation: combining real return and inflation",
+      "formulaRealGain": "Real Return (i) = Risk-free Rate + Risk Premium",
+      "formulaTmar": "TMAR = i + Inflation + (i × Inflation)",
       "calculated": "Calculated TMAR",
-      "rule": "Rule: sum components to obtain TMAR",
+      "rule": "TMAR combines real return (i) with inflation (f) using the multiplicative Fisher equation",
       "thresholds": {
         "low": "Low",
         "medium": "Moderate",
@@ -488,10 +489,12 @@
       },
       "breakdown": {
         "title": "Component Breakdown",
-        "description": "Contribution of each component to the TMAR",
+        "description": "Model inputs and nominal TMAR composition (Fisher)",
         "riskFree": "Risk-free",
-        "inflation": "Inflation",
+        "inflation": "Inflation (f)",
         "riskPremium": "Risk Premium",
+        "realGain": "Real Return (i)",
+        "crossTerm": "Cross term (i × f)",
         "total": "Total TMAR"
       },
       "rules": {

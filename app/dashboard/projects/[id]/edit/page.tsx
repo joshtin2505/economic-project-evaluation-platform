@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl"
 import ProjectForm from "@/components/project-form"
 import { useProjectForm } from "@/lib/hooks/useProjectForm"
 import * as projectService from "@/lib/services/projects"
+import { buildResultsPayload } from "@/lib/utils/project-results"
+import { estimatePaybackPeriod } from "@/lib/services/project-analytics"
 import * as auth from "@/lib/supabase/auth"
 import { routes } from "@/lib/routes"
 
@@ -25,8 +27,6 @@ export default function EditProjectPage({ params }: Props) {
     const load = async () => {
       try {
         const data = await projectService.fetchProjectById(id)
-        console.log()
-        console.log(data)   
         const flows = await projectService.fetchCashFlows(id)
         form.setInitialValues(data ?? {}, flows ?? [])
       } catch (err) {
@@ -58,13 +58,12 @@ export default function EditProjectPage({ params }: Props) {
         status,
         results:
           mode === "calculate"
-            ? {
-                npv: form.calculations.npv,
-                irr: Number(form.calculations.irr),
-                tmar: Number(form.calculations.tmar),
-                bcRatio: Number(form.calculations.bcRatio),
-                isViable: form.calculations.isViable,
-              }
+            ? buildResultsPayload(form.calculations, {
+                paybackPeriod: estimatePaybackPeriod(
+                  { initial_investment: form.initialInvestment },
+                  form.cashFlows,
+                ),
+              })
             : null,
       }
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -64,11 +63,17 @@ import {
   Area,
   AreaChart,
 } from "recharts";
+import { useMemo } from "react";
+import { useProjectAnalysis } from "@/lib/hooks/useProjectAnalysis";
 import {
-  mockProjects,
-  mockTIRIterations,
-  npvVsRateData,
-} from "@/lib/mock-data";
+  buildNpvVsRateData,
+  buildTirIterations,
+} from "@/lib/services/project-analytics";
+import {
+  asPercent,
+  formatRatePercent,
+  isRateAbove,
+} from "@/lib/utils/project-results";
 
 const npvChartConfig = {
   npv: {
@@ -85,13 +90,38 @@ const convergenceChartConfig = {
 } satisfies ChartConfig;
 
 export default function TIRAnalysisPage() {
-  const [selectedProject, setSelectedProject] = useState(mockProjects[0].id);
-  const project =
-    mockProjects.find((p) => p.id === selectedProject) || mockProjects[0];
+  const {
+    projectOptions,
+    selectedProjectId,
+    setSelectedProjectId,
+    selectedProject,
+    selectedCashFlows,
+    isLoading,
+    error,
+  } = useProjectAnalysis({ requireResults: true });
   const t = useTranslations("dashboard.tir");
 
-  // Convergence chart data
-  const convergenceData = mockTIRIterations.map((iter) => ({
+  const tirIterations = useMemo(
+    () =>
+      selectedProject
+        ? buildTirIterations(selectedProject, selectedCashFlows)
+        : [],
+    [selectedCashFlows, selectedProject],
+  );
+
+  const npvVsRateData = useMemo(
+    () =>
+      selectedProject
+        ? buildNpvVsRateData(selectedProject, selectedCashFlows)
+        : [],
+    [selectedCashFlows, selectedProject],
+  );
+
+  const irrPercent = asPercent(selectedProject?.results?.irr);
+  const tmarPercent = asPercent(selectedProject?.results?.tmar);
+  const spreadPercent = irrPercent - tmarPercent;
+
+  const convergenceData = tirIterations.map((iter) => ({
     iteration: iter.iteration,
     rate: (iter.rate * 100).toFixed(2),
     npv: iter.npv,
@@ -100,6 +130,20 @@ export default function TIRAnalysisPage() {
   return (
     <TooltipProvider>
       <div className="space-y-6">
+        {error && (
+          <Card className="border-destructive/40">
+            <CardContent className="py-3 text-sm text-destructive">
+              {error}
+            </CardContent>
+          </Card>
+        )}
+        {isLoading && !error && (
+          <Card>
+            <CardContent className="py-3 text-sm text-muted-foreground">
+              Loading...
+            </CardContent>
+          </Card>
+        )}
         {/* Page Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -107,18 +151,19 @@ export default function TIRAnalysisPage() {
             <p className="text-muted-foreground">{t("subtitle")}</p>
           </div>
           <div className="flex items-center gap-3">
-            <Select value={selectedProject} onValueChange={setSelectedProject}>
+            <Select
+              value={selectedProjectId}
+              onValueChange={setSelectedProjectId}
+            >
               <SelectTrigger className="w-60">
                 <SelectValue placeholder={t("selectProject")} />
               </SelectTrigger>
               <SelectContent>
-                {mockProjects
-                  .filter((p) => p.results)
-                  .map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.name}
-                    </SelectItem>
-                  ))}
+                {projectOptions.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Button variant="outline" size="icon">
@@ -168,16 +213,22 @@ export default function TIRAnalysisPage() {
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold text-primary">
-                {((project.results?.irr || 0) * 100).toFixed(1)}%
+                {formatRatePercent(selectedProject?.results?.irr)}
               </p>
               <Badge
                 className={
-                  project.results && project.results.irr > project.results.tmar
+                  isRateAbove(
+                    selectedProject?.results?.irr,
+                    selectedProject?.results?.tmar,
+                  )
                     ? "mt-2 bg-success/10 text-success hover:bg-success/20"
                     : "mt-2 bg-destructive/10 text-destructive hover:bg-destructive/20"
                 }
               >
-                {project.results && project.results.irr > project.results.tmar
+                {isRateAbove(
+                  selectedProject?.results?.irr,
+                  selectedProject?.results?.tmar,
+                )
                   ? t("summary.accept")
                   : t("summary.reject")}
               </Badge>
@@ -192,7 +243,7 @@ export default function TIRAnalysisPage() {
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold">
-                {((project.results?.tmar || 0) * 100).toFixed(1)}%
+                {formatRatePercent(selectedProject?.results?.tmar)}
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
                 {t("summary.tmarHelp")}
@@ -209,16 +260,16 @@ export default function TIRAnalysisPage() {
             <CardContent>
               <p
                 className={`text-2xl font-bold ${
-                  project.results && project.results.irr > project.results.tmar
+                  isRateAbove(
+                    selectedProject?.results?.irr,
+                    selectedProject?.results?.tmar,
+                  )
                     ? "text-success"
                     : "text-destructive"
                 }`}
               >
-                {project.results
-                  ? `${project.results.irr > project.results.tmar ? "+" : ""}${(
-                      (project.results.irr - project.results.tmar) *
-                      100
-                    ).toFixed(1)}%`
+                {selectedProject?.results
+                  ? `${spreadPercent >= 0 ? "+" : ""}${spreadPercent.toFixed(1)}%`
                   : "N/A"}
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
@@ -234,7 +285,7 @@ export default function TIRAnalysisPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold">{mockTIRIterations.length}</p>
+              <p className="text-2xl font-bold">{tirIterations.length}</p>
               <div className="mt-2 flex items-center gap-1">
                 <Zap className="h-3 w-3 text-accent" />
                 <p className="text-xs text-muted-foreground">
@@ -291,17 +342,19 @@ export default function TIRAnalysisPage() {
                     stroke="hsl(var(--muted-foreground))"
                     strokeDasharray="3 3"
                   />
-                  <ReferenceLine
-                    x={18.7}
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2}
-                    label={{
-                      value: "IRR = 18.7%",
-                      position: "top",
-                      fill: "hsl(var(--primary))",
-                      fontSize: 12,
-                    }}
-                  />
+                  {irrPercent > 0 && (
+                    <ReferenceLine
+                      x={irrPercent}
+                      stroke="hsl(var(--primary))"
+                      strokeWidth={2}
+                      label={{
+                        value: `IRR = ${irrPercent.toFixed(1)}%`,
+                        position: "top",
+                        fill: "hsl(var(--primary))",
+                        fontSize: 12,
+                      }}
+                    />
+                  )}
                   <Area
                     type="monotone"
                     dataKey="npv"
@@ -446,7 +499,7 @@ export default function TIRAnalysisPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {mockTIRIterations.map((iter) => (
+                  {tirIterations.map((iter) => (
                     <TableRow
                       key={iter.iteration}
                       className={iter.converged ? "bg-success/5" : ""}
@@ -506,7 +559,7 @@ export default function TIRAnalysisPage() {
           </CardHeader>
           <CardContent>
             <Accordion type="single" collapsible className="w-full">
-              {mockTIRIterations.slice(0, 4).map((iter) => (
+              {tirIterations.slice(0, 4).map((iter) => (
                 <AccordionItem
                   key={iter.iteration}
                   value={`iter-${iter.iteration}`}
@@ -618,20 +671,20 @@ export default function TIRAnalysisPage() {
               <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
               <div>
                 <h4 className="font-semibold text-success">
-                  IRR = {((project.results?.irr || 0) * 100).toFixed(1)}% {">"}{" "}
-                  TMAR = {((project.results?.tmar || 0) * 100).toFixed(1)}%
+                  IRR = {formatRatePercent(selectedProject?.results?.irr)}{" "}
+                  {">"} TMAR ={" "}
+                  {formatRatePercent(selectedProject?.results?.tmar)}
                 </h4>
                 <p className="mt-2 text-sm text-muted-foreground">
                   {t("final.description", {
-                    irr: ((project.results?.irr || 0) * 100).toFixed(1),
-                    tmar: ((project.results?.tmar || 0) * 100).toFixed(1),
+                    irr: formatRatePercent(selectedProject?.results?.irr),
+                    tmar: formatRatePercent(selectedProject?.results?.tmar),
                   })}
                 </p>
                 <p className="mt-2 text-sm text-muted-foreground">
                   {t("final.margin", {
                     margin: (
-                      (project.results?.irr || 0) * 100 -
-                      (project.results?.tmar || 0) * 100
+                      spreadPercent
                     ).toFixed(1),
                   })}
                 </p>

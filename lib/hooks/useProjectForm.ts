@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+import {
+  DEFAULT_USER_PROFILE,
+  fetchUserProfile,
+} from "@/lib/services/user-profiles";
 
 interface CashFlowRow {
   period: number;
@@ -40,6 +44,33 @@ export function useProjectForm(initial?: {
         outflow: 0,
       })),
   );
+
+  useEffect(() => {
+    if (initial) return;
+
+    const loadDefaults = async () => {
+      try {
+        const profile = await fetchUserProfile();
+        const defaults = profile ?? DEFAULT_USER_PROFILE;
+        setDiscountRate(Number(defaults.default_discount_rate));
+        setInflation(Number(defaults.default_inflation));
+        setRiskPremium(Number(defaults.default_risk_premium));
+        const defaultPeriods = Number(defaults.default_periods);
+        setPeriods(defaultPeriods);
+        setCashFlows(
+          Array.from({ length: defaultPeriods }, (_, index) => ({
+            period: index + 1,
+            inflow: 0,
+            outflow: 0,
+          })),
+        );
+      } catch {
+        // Keep built-in defaults
+      }
+    };
+
+    void loadDefaults();
+  }, [initial]);
 
   useEffect(() => {
     setCashFlows((current) => {

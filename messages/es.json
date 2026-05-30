@@ -459,10 +459,11 @@
       "save": "Guardar TMAR",
       "history": "Historial de TMAR",
       "formulaTitle": "Fórmulas TMAR",
-      "formulaDescription": "Componentes y descomposición de la TMAR utilizada en el análisis",
-      "formula": "TMAR = Tasa Libre de Riesgo + Prima de Riesgo + Inflación",
+      "formulaDescription": "Relación de Fisher: acoplamiento de ganancia real e inflación",
+      "formulaRealGain": "Ganancia Real (i) = Tasa Libre de Riesgo + Prima de Riesgo",
+      "formulaTmar": "TMAR = i + Inflación + (i × Inflación)",
       "calculated": "TMAR Calculada",
-      "rule": "Regla: Suma de componentes para obtener TMAR",
+      "rule": "La TMAR combina la ganancia real (i) con la inflación (f) mediante la ecuación multiplicativa de Fisher",
       "thresholds": {
         "low": "Baja",
         "medium": "Moderada",
@@ -488,10 +489,12 @@
       },
       "breakdown": {
         "title": "Desglose de Componentes",
-        "description": "Contribución de cada componente a la TMAR",
+        "description": "Entradas del modelo y composición nominal de la TMAR (Fisher)",
         "riskFree": "Libre de Riesgo",
-        "inflation": "Inflación",
+        "inflation": "Inflación (f)",
         "riskPremium": "Prima de Riesgo",
+        "realGain": "Ganancia Real (i)",
+        "crossTerm": "Término cruzado (i × f)",
         "total": "TMAR Total"
       },
       "rules": {

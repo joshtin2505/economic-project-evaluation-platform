@@ -34,9 +34,13 @@ import {
   ComposedChart,
   Line,
 } from "recharts";
-import { mockProjects, cashFlowTimelineData } from "@/lib/mock-data";
-import { useState } from "react";
+import { useMemo } from "react";
 import { useTranslations } from "next-intl";
+import { useProjectAnalysis } from "@/lib/hooks/useProjectAnalysis";
+import {
+  buildCumulativeCashFlow,
+  estimatePaybackPeriod,
+} from "@/lib/services/project-analytics";
 
 const timelineChartConfig = {
   inflow: {
@@ -60,39 +64,58 @@ const cumulativeChartConfig = {
   },
 } satisfies ChartConfig;
 
+const toNumber = (value: number | string | null | undefined) =>
+  Number(value ?? 0);
+
 export default function CashFlowPage() {
-  const [selectedProject, setSelectedProject] = useState(mockProjects[0].id);
-  const project =
-    mockProjects.find((p) => p.id === selectedProject) || mockProjects[0];
+  const {
+    projectOptions,
+    selectedProjectId,
+    setSelectedProjectId,
+    selectedProject,
+    selectedCashFlows,
+    isLoading,
+    error,
+  } = useProjectAnalysis();
   const t = useTranslations("dashboard.cashFlow");
 
-  // Calculate cumulative cash flow
-  const cumulativeData = cashFlowTimelineData.map((cf, index) => {
-    const netFlow = cf.inflow + cf.outflow; // outflow is already negative
-    const previousCumulative =
-      index === 0
-        ? 0
-        : cashFlowTimelineData
-            .slice(0, index)
-            .reduce((sum, prev) => sum + prev.inflow + prev.outflow, 0);
-    return {
-      ...cf,
-      netFlow,
-      cumulative: previousCumulative + netFlow,
-    };
-  });
+  const cumulativeData = useMemo(
+    () =>
+      selectedProject
+        ? buildCumulativeCashFlow(selectedProject, selectedCashFlows)
+        : [],
+    [selectedCashFlows, selectedProject],
+  );
 
-  const totalInflows = cashFlowTimelineData.reduce(
-    (sum, cf) => sum + cf.inflow,
-    0,
+  const paybackPeriod = useMemo(
+    () =>
+      selectedProject
+        ? estimatePaybackPeriod(selectedProject, selectedCashFlows)
+        : null,
+    [selectedCashFlows, selectedProject],
   );
-  const totalOutflows = Math.abs(
-    cashFlowTimelineData.reduce((sum, cf) => sum + cf.outflow, 0),
-  );
+
+  const initialInvestment = toNumber(selectedProject?.initial_investment);
+  const totalInflows = cumulativeData.reduce((sum, cf) => sum + cf.inflow, 0);
+  const totalOutflows = cumulativeData.reduce((sum, cf) => sum + cf.outflow, 0);
   const netTotal = totalInflows - totalOutflows;
 
   return (
     <div className="space-y-6">
+      {error && (
+        <Card className="border-destructive/40">
+          <CardContent className="py-3 text-sm text-destructive">
+            {error}
+          </CardContent>
+        </Card>
+      )}
+      {isLoading && !error && (
+        <Card>
+          <CardContent className="py-3 text-sm text-muted-foreground">
+            Loading...
+          </CardContent>
+        </Card>
+      )}
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -100,12 +123,15 @@ export default function CashFlowPage() {
           <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
         <div className="flex items-center gap-3">
-          <Select value={selectedProject} onValueChange={setSelectedProject}>
+          <Select
+            value={selectedProjectId}
+            onValueChange={setSelectedProjectId}
+          >
             <SelectTrigger className="w-60">
               <SelectValue placeholder={t("selectProject")} />
             </SelectTrigger>
             <SelectContent>
-              {mockProjects.map((p) => (
+              {projectOptions.map((p) => (
                 <SelectItem key={p.id} value={p.id}>
                   {p.name}
                 </SelectItem>
@@ -194,7 +220,7 @@ export default function CashFlowPage() {
                 config={timelineChartConfig}
                 className="h-100 w-full"
               >
-                <BarChart data={cashFlowTimelineData} barGap={2}>
+                <BarChart data={cumulativeData} barGap={2}>
                   <CartesianGrid
                     strokeDasharray="3 3"
                     className="stroke-border"
@@ -325,7 +351,9 @@ export default function CashFlowPage() {
               <div className="mt-4 rounded-lg bg-muted/50 p-4">
                 <h4 className="font-medium">{t("cumulative.payback.title")}</h4>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  {t("cumulative.payback.description")}
+                  {paybackPeriod !== null
+                    ? `${t("cumulative.payback.description")} (~${paybackPeriod.toFixed(1)} years)`
+                    : t("cumulative.payback.description")}
                 </p>
               </div>
             </CardContent>
@@ -410,7 +438,7 @@ export default function CashFlowPage() {
                     {t("waterfall.summary.initialInvestment")}
                   </p>
                   <p className="mt-1 text-xl font-bold text-destructive">
-                    -${project.initialInvestment.toLocaleString()}
+                    -${initialInvestment.toLocaleString()}
                   </p>
                 </div>
                 <div className="rounded-lg border p-4 text-center">
@@ -420,8 +448,7 @@ export default function CashFlowPage() {
                   <p className="mt-1 text-xl font-bold text-success">
                     +$
                     {(
-                      totalInflows -
-                      (totalOutflows - project.initialInvestment)
+                      totalInflows - (totalOutflows - initialInvestment)
                     ).toLocaleString()}
                   </p>
                 </div>

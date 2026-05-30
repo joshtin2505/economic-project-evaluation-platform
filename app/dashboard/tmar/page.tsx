@@ -19,15 +19,65 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Percent, Info, TrendingUp, Shield, Flame } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  DEFAULT_USER_PROFILE,
+  fetchUserProfile,
+} from "@/lib/services/user-profiles";
+import {
+  calculateFisherCrossTermPercent,
+  calculateRealGainPercent,
+  calculateTmarPercent,
+} from "@/lib/utils/tmar";
 
 export default function TMARPage() {
-  const [riskFreeRate, setRiskFreeRate] = useState(4);
-  const [inflation, setInflation] = useState(3);
-  const [riskPremium, setRiskPremium] = useState(5);
+  const [riskFreeRate, setRiskFreeRate] = useState(
+    DEFAULT_USER_PROFILE.default_risk_free_rate,
+  );
+  const [inflation, setInflation] = useState(
+    DEFAULT_USER_PROFILE.default_inflation,
+  );
+  const [riskPremium, setRiskPremium] = useState(
+    DEFAULT_USER_PROFILE.default_risk_premium,
+  );
   const t = useTranslations("dashboard.tmar");
 
-  const tmar = riskFreeRate + inflation + riskPremium;
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const profile = await fetchUserProfile();
+        if (!profile) return;
+        setRiskFreeRate(Number(profile.default_risk_free_rate));
+        setInflation(Number(profile.default_inflation));
+        setRiskPremium(Number(profile.default_risk_premium));
+      } catch {
+        // Keep defaults when profile is unavailable
+      }
+    };
+
+    void load();
+  }, []);
+
+  const { realGainPercent, crossTermPercent, tmarPercent } = useMemo(() => {
+    const realGain = calculateRealGainPercent(riskFreeRate, riskPremium);
+    const crossTerm = calculateFisherCrossTermPercent(
+      riskFreeRate,
+      inflation,
+      riskPremium,
+    );
+    const tmar = calculateTmarPercent(riskFreeRate, inflation, riskPremium);
+
+    return {
+      realGainPercent: realGain,
+      crossTermPercent: crossTerm,
+      tmarPercent: tmar,
+    };
+  }, [inflation, riskFreeRate, riskPremium]);
+
+  const barWidth = (value: number) =>
+    tmarPercent > 0 ? `${(value / tmarPercent) * 100}%` : "0%";
+
+  const formatPercent = (value: number, digits = 2) => `${value.toFixed(digits)}%`;
 
   return (
     <TooltipProvider>
@@ -52,8 +102,9 @@ export default function TMARPage() {
                 </p>
               </div>
             </div>
-            <div className="rounded-lg border border-primary/20 bg-background px-6 py-3">
-              <p className="font-mono text-lg">{t("formula")}</p>
+            <div className="space-y-1 rounded-lg border border-primary/20 bg-background px-6 py-3 text-sm">
+              <p className="font-mono">{t("formulaRealGain")}</p>
+              <p className="font-mono font-semibold">{t("formulaTmar")}</p>
             </div>
           </CardContent>
         </Card>
@@ -67,13 +118,18 @@ export default function TMARPage() {
           </CardHeader>
           <CardContent className="text-center">
             <p className="text-6xl font-bold text-primary">
-              {tmar.toFixed(1)}%
+              {formatPercent(tmarPercent)}
+            </p>
+            <p className="mt-2 font-mono text-sm text-muted-foreground">
+              i = {formatPercent(realGainPercent)} · f ={" "}
+              {formatPercent(inflation)} · i×f ={" "}
+              {formatPercent(crossTermPercent)}
             </p>
             <p className="mt-4 text-sm text-muted-foreground">{t("rule")}</p>
             <Badge className="mt-4">
-              {tmar < 10
+              {tmarPercent < 10
                 ? t("thresholds.low")
-                : tmar < 15
+                : tmarPercent < 15
                   ? t("thresholds.medium")
                   : t("thresholds.high")}
             </Badge>
@@ -272,22 +328,12 @@ export default function TMARPage() {
                 <div className="flex-1">
                   <div
                     className="h-8 rounded bg-chart-2"
-                    style={{ width: `${(riskFreeRate / tmar) * 100}%` }}
+                    style={{ width: barWidth(riskFreeRate) }}
                   />
                 </div>
-                <div className="w-16 text-right font-mono">{riskFreeRate}%</div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="w-32 text-sm font-medium">
-                  {t("breakdown.inflation")}
+                <div className="w-16 text-right font-mono">
+                  {formatPercent(riskFreeRate, 1)}
                 </div>
-                <div className="flex-1">
-                  <div
-                    className="h-8 rounded bg-chart-3"
-                    style={{ width: `${(inflation / tmar) * 100}%` }}
-                  />
-                </div>
-                <div className="w-16 text-right font-mono">{inflation}%</div>
               </div>
               <div className="flex items-center gap-4">
                 <div className="w-32 text-sm font-medium">
@@ -296,10 +342,54 @@ export default function TMARPage() {
                 <div className="flex-1">
                   <div
                     className="h-8 rounded bg-chart-1"
-                    style={{ width: `${(riskPremium / tmar) * 100}%` }}
+                    style={{ width: barWidth(riskPremium) }}
                   />
                 </div>
-                <div className="w-16 text-right font-mono">{riskPremium}%</div>
+                <div className="w-16 text-right font-mono">
+                  {formatPercent(riskPremium, 1)}
+                </div>
+              </div>
+              <div className="flex items-center gap-4 border-t border-dashed pt-4">
+                <div className="w-32 text-sm font-medium">
+                  {t("breakdown.realGain")}
+                </div>
+                <div className="flex-1">
+                  <div
+                    className="h-8 rounded bg-chart-4"
+                    style={{ width: barWidth(realGainPercent) }}
+                  />
+                </div>
+                <div className="w-16 text-right font-mono font-medium">
+                  {formatPercent(realGainPercent)}
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-32 text-sm font-medium">
+                  {t("breakdown.inflation")}
+                </div>
+                <div className="flex-1">
+                  <div
+                    className="h-8 rounded bg-chart-3"
+                    style={{ width: barWidth(inflation) }}
+                  />
+                </div>
+                <div className="w-16 text-right font-mono">
+                  {formatPercent(inflation, 1)}
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-32 text-sm font-medium">
+                  {t("breakdown.crossTerm")}
+                </div>
+                <div className="flex-1">
+                  <div
+                    className="h-8 rounded bg-muted-foreground/40"
+                    style={{ width: barWidth(crossTermPercent) }}
+                  />
+                </div>
+                <div className="w-16 text-right font-mono">
+                  {formatPercent(crossTermPercent)}
+                </div>
               </div>
               <div className="flex items-center gap-4 border-t pt-4">
                 <div className="w-32 text-sm font-bold">
@@ -312,7 +402,7 @@ export default function TMARPage() {
                   />
                 </div>
                 <div className="w-16 text-right font-mono font-bold">
-                  {tmar}%
+                  {formatPercent(tmarPercent)}
                 </div>
               </div>
             </div>
@@ -331,7 +421,11 @@ export default function TMARPage() {
                   {t("rules.accept.title")}
                 </h4>
                 <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                  <li>{t("rules.accept.irr", { tmar })}</li>
+                  <li>
+                    {t("rules.accept.irr", {
+                      tmar: tmarPercent.toFixed(2),
+                    })}
+                  </li>
                   <li>{t("rules.accept.npv")}</li>
                   <li>{t("rules.accept.bc")}</li>
                 </ul>
@@ -341,7 +435,11 @@ export default function TMARPage() {
                   {t("rules.reject.title")}
                 </h4>
                 <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                  <li>{t("rules.reject.irr", { tmar })}</li>
+                  <li>
+                    {t("rules.reject.irr", {
+                      tmar: tmarPercent.toFixed(2),
+                    })}
+                  </li>
                   <li>{t("rules.reject.npv")}</li>
                   <li>{t("rules.reject.bc")}</li>
                 </ul>

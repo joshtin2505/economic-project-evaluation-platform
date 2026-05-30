@@ -35,6 +35,10 @@ import {
   type CashFlowRecord,
   type ProjectRecord,
 } from "@/lib/services/project-analytics";
+import {
+  asPercent,
+  getBenefitCostRatio,
+} from "@/lib/utils/project-results";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -159,7 +163,7 @@ export default function DashboardPage() {
     if (completedProjectsWithResults.length === 0) return 0;
     return (
       completedProjectsWithResults.reduce(
-        (sum, project) => sum + toNumber(project.results?.irr),
+        (sum, project) => sum + asPercent(project.results?.irr),
         0,
       ) / completedProjectsWithResults.length
     );
@@ -168,19 +172,19 @@ export default function DashboardPage() {
     if (completedProjectsWithResults.length === 0) return 0;
     return (
       completedProjectsWithResults.reduce(
-        (sum, project) => sum + toNumber(project.results?.tmar),
+        (sum, project) => sum + asPercent(project.results?.tmar),
         0,
       ) / completedProjectsWithResults.length
     );
   }, [completedProjectsWithResults]);
   const avgBcRatio = useMemo(() => {
     const rows = completedProjectsWithResults.filter(
-      (project) => typeof project.results?.benefitCostRatio === "number",
+      (project) => typeof getBenefitCostRatio(project.results) === "number",
     );
     if (rows.length === 0) return 0;
     return (
       rows.reduce(
-        (sum, project) => sum + toNumber(project.results?.benefitCostRatio),
+        (sum, project) => sum + toNumber(getBenefitCostRatio(project.results)),
         0,
       ) / rows.length
     );

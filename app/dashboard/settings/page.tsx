@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Card,
@@ -20,26 +21,117 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import { User, Bell, Palette, Calculator, Globe, Save } from "lucide-react";
 import { useTheme } from "next-themes";
+import * as auth from "@/lib/supabase/auth";
+import {
+  DEFAULT_USER_PROFILE,
+  fetchUserProfile,
+  upsertUserProfile,
+  type UserProfile,
+} from "@/lib/services/user-profiles";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const t = useTranslations("dashboard");
+  const [profile, setProfile] = useState<Omit<UserProfile, "id">>(
+    DEFAULT_USER_PROFILE,
+  );
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const user = await auth.getUser();
+        setEmail(user?.email ?? "");
+
+        const existing = await fetchUserProfile();
+        if (existing) {
+          const { id: _id, ...rest } = existing;
+          setProfile({
+            ...DEFAULT_USER_PROFILE,
+            ...rest,
+            display_name:
+              rest.display_name || user?.user_metadata?.full_name || "",
+          });
+        } else if (user?.user_metadata?.full_name) {
+          setProfile((current) => ({
+            ...current,
+            display_name: String(user.user_metadata.full_name),
+          }));
+        }
+      } catch (loadError) {
+        setError(
+          loadError instanceof Error
+            ? loadError.message
+            : "Failed to load settings",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void load();
+  }, []);
+
+  const updateProfile = <K extends keyof Omit<UserProfile, "id">>(
+    key: K,
+    value: Omit<UserProfile, "id">[K],
+  ) => {
+    setProfile((current) => ({ ...current, [key]: value }));
+    setSaved(false);
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setError(null);
+    setSaved(false);
+
+    try {
+      await upsertUserProfile(profile);
+      setSaved(true);
+    } catch (saveError) {
+      setError(
+        saveError instanceof Error
+          ? saveError.message
+          : "Failed to save settings",
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground">{t("subtitle")}</p>
       </div>
 
+      {error && (
+        <Card className="border-destructive/40">
+          <CardContent className="py-3 text-sm text-destructive">
+            {error}
+          </CardContent>
+        </Card>
+      )}
+      {saved && (
+        <Card className="border-success/40">
+          <CardContent className="py-3 text-sm text-success">
+            {t("saved") ?? "Settings saved."}
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Main Settings */}
         <div className="space-y-6 lg:col-span-2">
-          {/* Profile Settings */}
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
@@ -52,29 +144,51 @@ export default function SettingsPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="name">{t("profile.name")}</Label>
-                  <Input id="name" defaultValue="John Engineer" />
+                  <Input
+                    id="name"
+                    value={profile.display_name}
+                    disabled={isLoading}
+                    onChange={(event) =>
+                      updateProfile("display_name", event.target.value)
+                    }
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">{t("profile.email")}</Label>
                   <Input
                     id="email"
                     type="email"
-                    defaultValue="john@company.com"
+                    value={email}
+                    disabled
+                    readOnly
                   />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="company">{t("profile.company")}</Label>
-                <Input id="company" defaultValue="Engineering Solutions Inc." />
+                <Input
+                  id="company"
+                  value={profile.company}
+                  disabled={isLoading}
+                  onChange={(event) =>
+                    updateProfile("company", event.target.value)
+                  }
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="role">{t("profile.role")}</Label>
-                <Input id="role" defaultValue="Financial Analyst" />
+                <Input
+                  id="role"
+                  value={profile.role}
+                  disabled={isLoading}
+                  onChange={(event) =>
+                    updateProfile("role", event.target.value)
+                  }
+                />
               </div>
             </CardContent>
           </Card>
 
-          {/* Calculation Defaults */}
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
@@ -89,13 +203,35 @@ export default function SettingsPage() {
                   <Label htmlFor="defaultDiscount">
                     {t("calculations.discountRate")}
                   </Label>
-                  <Input id="defaultDiscount" type="number" defaultValue="12" />
+                  <Input
+                    id="defaultDiscount"
+                    type="number"
+                    value={profile.default_discount_rate}
+                    disabled={isLoading}
+                    onChange={(event) =>
+                      updateProfile(
+                        "default_discount_rate",
+                        Number(event.target.value),
+                      )
+                    }
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="defaultPeriods">
                     {t("calculations.analysisPeriods")}
                   </Label>
-                  <Input id="defaultPeriods" type="number" defaultValue="10" />
+                  <Input
+                    id="defaultPeriods"
+                    type="number"
+                    value={profile.default_periods}
+                    disabled={isLoading}
+                    onChange={(event) =>
+                      updateProfile(
+                        "default_periods",
+                        Number(event.target.value),
+                      )
+                    }
+                  />
                 </div>
               </div>
               <div className="grid gap-4 sm:grid-cols-3">
@@ -103,13 +239,35 @@ export default function SettingsPage() {
                   <Label htmlFor="defaultRiskFree">
                     {t("calculations.riskFreeRate")}
                   </Label>
-                  <Input id="defaultRiskFree" type="number" defaultValue="4" />
+                  <Input
+                    id="defaultRiskFree"
+                    type="number"
+                    value={profile.default_risk_free_rate}
+                    disabled={isLoading}
+                    onChange={(event) =>
+                      updateProfile(
+                        "default_risk_free_rate",
+                        Number(event.target.value),
+                      )
+                    }
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="defaultInflation">
                     {t("calculations.inflation")}
                   </Label>
-                  <Input id="defaultInflation" type="number" defaultValue="3" />
+                  <Input
+                    id="defaultInflation"
+                    type="number"
+                    value={profile.default_inflation}
+                    disabled={isLoading}
+                    onChange={(event) =>
+                      updateProfile(
+                        "default_inflation",
+                        Number(event.target.value),
+                      )
+                    }
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="defaultRiskPremium">
@@ -118,14 +276,30 @@ export default function SettingsPage() {
                   <Input
                     id="defaultRiskPremium"
                     type="number"
-                    defaultValue="5"
+                    value={profile.default_risk_premium}
+                    disabled={isLoading}
+                    onChange={(event) =>
+                      updateProfile(
+                        "default_risk_premium",
+                        Number(event.target.value),
+                      )
+                    }
                   />
                 </div>
               </div>
               <Separator />
               <div className="space-y-2">
                 <Label>{t("calculations.irrMethod")}</Label>
-                <Select defaultValue="newton">
+                <Select
+                  value={profile.irr_method}
+                  disabled={isLoading}
+                  onValueChange={(value) =>
+                    updateProfile(
+                      "irr_method",
+                      value as UserProfile["irr_method"],
+                    )
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder={t("calculations.selectMethod")} />
                   </SelectTrigger>
@@ -148,7 +322,6 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          {/* Localization */}
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
@@ -161,7 +334,11 @@ export default function SettingsPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label>{t("localization.currency")}</Label>
-                  <Select defaultValue="usd">
+                  <Select
+                    value={profile.currency}
+                    disabled={isLoading}
+                    onValueChange={(value) => updateProfile("currency", value)}
+                  >
                     <SelectTrigger>
                       <SelectValue
                         placeholder={t("localization.selectCurrency")}
@@ -188,7 +365,13 @@ export default function SettingsPage() {
                 </div>
                 <div className="space-y-2">
                   <Label>{t("localization.numberFormat")}</Label>
-                  <Select defaultValue="en-us">
+                  <Select
+                    value={profile.number_format}
+                    disabled={isLoading}
+                    onValueChange={(value) =>
+                      updateProfile("number_format", value)
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue
                         placeholder={t("localization.selectNumberFormat")}
@@ -210,7 +393,13 @@ export default function SettingsPage() {
               </div>
               <div className="space-y-2">
                 <Label>{t("localization.language")}</Label>
-                <Select defaultValue="en">
+                <Select
+                  value={profile.preferred_locale}
+                  disabled={isLoading}
+                  onValueChange={(value) =>
+                    updateProfile("preferred_locale", value)
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue
                       placeholder={t("localization.selectLanguage")}
@@ -233,9 +422,7 @@ export default function SettingsPage() {
           </Card>
         </div>
 
-        {/* Sidebar Settings */}
         <div className="space-y-6">
-          {/* Appearance */}
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
@@ -267,13 +454,11 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          {/* Notifications,  */}
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Bell className="h-5 w-5 text-primary" />
                 <CardTitle>{t("notifications.title")}</CardTitle>
-                <CardDescription>Comming soon</CardDescription>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -284,7 +469,13 @@ export default function SettingsPage() {
                     {t("notifications.emailHelp")}
                   </p>
                 </div>
-                <Switch disabled />
+                <Switch
+                  checked={profile.email_notifications}
+                  disabled={isLoading}
+                  onCheckedChange={(checked) =>
+                    updateProfile("email_notifications", checked)
+                  }
+                />
               </div>
               <Separator />
               <div className="flex items-center justify-between">
@@ -294,7 +485,13 @@ export default function SettingsPage() {
                     {t("notifications.projectUpdatesHelp")}
                   </p>
                 </div>
-                <Switch disabled />
+                <Switch
+                  checked={profile.project_updates_notifications}
+                  disabled={isLoading}
+                  onCheckedChange={(checked) =>
+                    updateProfile("project_updates_notifications", checked)
+                  }
+                />
               </div>
               <Separator />
               <div className="flex items-center justify-between">
@@ -304,40 +501,23 @@ export default function SettingsPage() {
                     {t("notifications.weeklySummaryHelp")}
                   </p>
                 </div>
-                <Switch disabled />
+                <Switch
+                  checked={profile.weekly_summary_notifications}
+                  disabled={isLoading}
+                  onCheckedChange={(checked) =>
+                    updateProfile("weekly_summary_notifications", checked)
+                  }
+                />
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Plan Info, hidden temporarily */}
-          <Card hidden>
-            <CardHeader>
-              <CardTitle>{t("plan.title")}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="font-medium">{t("plan.name")}</span>
-                <Badge>{t("plan.active")}</Badge>
-              </div>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <p>{t("plan.features.projects")}</p>
-                <p>{t("plan.features.calculations")}</p>
-                <p>{t("plan.features.exports")}</p>
-                <p>{t("plan.features.support")}</p>
-              </div>
-              <Button variant="outline" className="w-full">
-                {t("plan.manageSubscription")}
-              </Button>
             </CardContent>
           </Card>
         </div>
       </div>
 
-      {/* Save Button, hidden temporarily */}
-      <div className="flex justify-end" hidden>
-        <Button>
+      <div className="flex justify-end">
+        <Button onClick={() => void handleSave()} disabled={isSaving || isLoading}>
           <Save className="mr-2 h-4 w-4" />
-          {t("save")}
+          {isSaving ? t("saving") ?? "Saving..." : t("save")}
         </Button>
       </div>
     </div>

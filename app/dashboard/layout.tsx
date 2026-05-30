@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
@@ -50,6 +50,11 @@ import {
 import { cn } from "@/lib/utils"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import * as auth from "@/lib/supabase/auth"
+import * as projectService from "@/lib/services/projects"
+import {
+  buildNotifications,
+  type ProjectRecord,
+} from "@/lib/services/project-analytics"
 
 function getBreadcrumbs(pathname: string, tSidebar: any, tCommon: any) {
   const segments = pathname.split("/").filter(Boolean)
@@ -223,9 +228,24 @@ function DashboardHeader() {
   const pathname = usePathname()
   const router = useRouter()
   const [isSigningOut, setIsSigningOut] = useState(false)
+  const [notificationCount, setNotificationCount] = useState(0)
   const tSidebar = useTranslations("dashboard.sidebar")
   const tCommon = useTranslations("common")
   const breadcrumbs = getBreadcrumbs(pathname, tSidebar, tCommon)
+
+  useEffect(() => {
+    const loadNotifications = async () => {
+      try {
+        const projects =
+          (await projectService.fetchProjects()) as ProjectRecord[]
+        setNotificationCount(buildNotifications(projects).length)
+      } catch {
+        setNotificationCount(0)
+      }
+    }
+
+    void loadNotifications()
+  }, [pathname])
 
   const handleSignOut = async () => {
     setIsSigningOut(true)
@@ -281,9 +301,11 @@ function DashboardHeader() {
         </Button>
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-4 w-4" />
-          <Badge className="absolute -right-1 -top-1 h-4 w-4 rounded-full p-0 text-[10px]">
-            3
-          </Badge>
+          {notificationCount > 0 && (
+            <Badge className="absolute -right-1 -top-1 h-4 w-4 rounded-full p-0 text-[10px]">
+              {notificationCount}
+            </Badge>
+          )}
         </Button>
       </div>
     </header>

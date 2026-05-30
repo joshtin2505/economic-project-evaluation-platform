@@ -3,6 +3,7 @@ export interface ProjectResultsRecord {
   irr?: number;
   tmar?: number;
   benefitCostRatio?: number;
+  bcRatio?: number;
   paybackPeriod?: number;
   profitabilityIndex?: number;
   isViable?: boolean;
@@ -69,6 +70,8 @@ export interface TIRIteration {
   adjustment: number;
   converged: boolean;
 }
+
+import { asPercent } from "@/lib/utils/project-results";
 
 const toNumber = (value: number | string | null | undefined) =>
   Number(value ?? 0);
@@ -195,12 +198,13 @@ export function buildRecentCalculations(
           id: rowsForProject.length + project.id.length + 1000,
           project: project.name,
           indicator: "IRR",
-          value: `${(project.results.irr * 100).toFixed(1)}%`,
+          value: `${asPercent(project.results.irr).toFixed(1)}%`,
           date: project.updated_at
             ? new Date(project.updated_at).toLocaleDateString()
             : "-",
           status:
-            project.results.irr >= (project.results.tmar ?? 0)
+            asPercent(project.results.irr) >=
+            asPercent(project.results.tmar ?? 0)
               ? "positive"
               : "negative",
         });
@@ -292,10 +296,18 @@ export function buildFinancialEvolutionData(projects: ProjectRecord[]) {
 }
 
 export function buildNpvVsRateData(
-  project: Pick<ProjectRecord, "initial_investment">,
+  project: Pick<ProjectRecord, "initial_investment" | "results">,
   cashFlows: CashFlowRecord[],
 ) {
-  const samples = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 18.7, 20, 22, 24];
+  const irrPercent =
+    typeof project.results?.irr === "number"
+      ? asPercent(project.results.irr)
+      : null;
+  const baseSamples = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24];
+  const samples =
+    irrPercent !== null && !baseSamples.includes(Math.round(irrPercent * 10) / 10)
+      ? [...baseSamples, Math.round(irrPercent * 10) / 10].sort((a, b) => a - b)
+      : baseSamples;
 
   return samples.map((ratePercent) => {
     const rate = ratePercent / 100;

@@ -17,6 +17,10 @@ import {
   selectFeaturedProject,
   type ProjectRecord,
 } from "@/lib/services/project-analytics";
+import {
+  formatRatePercent,
+  getBenefitCostRatio,
+} from "@/lib/utils/project-results";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -235,7 +239,7 @@ export default function ReportsPage() {
                     </div>
                     <p className="mt-1 text-xl font-bold">
                       {selectedProject.results?.irr !== undefined
-                        ? `${(selectedProject.results.irr * 100).toFixed(1)}%`
+                        ? formatRatePercent(selectedProject.results.irr)
                         : "N/A"}
                     </p>
                   </div>
@@ -247,8 +251,8 @@ export default function ReportsPage() {
                       </span>
                     </div>
                     <p className="mt-1 text-xl font-bold">
-                      {selectedProject.results?.benefitCostRatio !== undefined
-                        ? selectedProject.results.benefitCostRatio.toFixed(2)
+                      {getBenefitCostRatio(selectedProject.results) !== undefined
+                        ? getBenefitCostRatio(selectedProject.results)!.toFixed(2)
                         : "N/A"}
                     </p>
                   </div>

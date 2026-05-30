@@ -52,9 +52,11 @@ import {
   YAxis,
   ReferenceLine,
 } from "recharts";
-import { mockProjects, mockVPNSteps } from "@/lib/mock-data";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useMemo } from "react";
+import { useProjectAnalysis } from "@/lib/hooks/useProjectAnalysis";
+import { buildVpnSteps } from "@/lib/services/project-analytics";
+import { formatRatePercent } from "@/lib/utils/project-results";
 
 const chartConfig = {
   npv: {
@@ -67,22 +69,57 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+const toNumber = (value: number | string | null | undefined) =>
+  Number(value ?? 0);
+
 export default function VPNAnalysisPage() {
-  const [selectedProject, setSelectedProject] = useState(mockProjects[0].id);
-  const project =
-    mockProjects.find((p) => p.id === selectedProject) || mockProjects[0];
+  const {
+    projectOptions,
+    selectedProjectId,
+    setSelectedProjectId,
+    selectedProject,
+    selectedCashFlows,
+    isLoading,
+    error,
+  } = useProjectAnalysis({ requireResults: true });
   const t = useTranslations("dashboard.vpn");
 
-  // Chart data for accumulated NPV
-  const accumulatedNpvData = mockVPNSteps.map((step) => ({
+  const vpnSteps = useMemo(
+    () =>
+      selectedProject
+        ? buildVpnSteps(selectedProject, selectedCashFlows)
+        : [],
+    [selectedCashFlows, selectedProject],
+  );
+
+  const accumulatedNpvData = vpnSteps.map((step) => ({
     period: `Year ${step.period}`,
     npv: step.accumulatedNPV,
     discountedValue: step.discountedValue,
   }));
 
+  const npv = selectedProject?.results?.npv ?? 0;
+  const discountRatePercent = toNumber(selectedProject?.discount_rate);
+  const initialInvestment = toNumber(selectedProject?.initial_investment);
+  const periods = selectedProject?.periods ?? 0;
+
   return (
     <TooltipProvider>
       <div className="space-y-6">
+        {error && (
+          <Card className="border-destructive/40">
+            <CardContent className="py-3 text-sm text-destructive">
+              {error}
+            </CardContent>
+          </Card>
+        )}
+        {isLoading && !error && (
+          <Card>
+            <CardContent className="py-3 text-sm text-muted-foreground">
+              Loading...
+            </CardContent>
+          </Card>
+        )}
         {/* Page Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -90,18 +127,19 @@ export default function VPNAnalysisPage() {
             <p className="text-muted-foreground">{t("subtitle")}</p>
           </div>
           <div className="flex items-center gap-3">
-            <Select value={selectedProject} onValueChange={setSelectedProject}>
+            <Select
+              value={selectedProjectId}
+              onValueChange={setSelectedProjectId}
+            >
               <SelectTrigger className="w-60">
                 <SelectValue placeholder={t("selectProject")} />
               </SelectTrigger>
               <SelectContent>
-                {mockProjects
-                  .filter((p) => p.results)
-                  .map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.name}
-                    </SelectItem>
-                  ))}
+                {projectOptions.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Button variant="outline" size="icon">
@@ -140,20 +178,18 @@ export default function VPNAnalysisPage() {
             </CardHeader>
             <CardContent>
               <p
-                className={`text-2xl font-bold ${project.results && project.results.npv >= 0 ? "text-success" : "text-destructive"}`}
+                className={`text-2xl font-bold ${npv >= 0 ? "text-success" : "text-destructive"}`}
               >
-                ${project.results?.npv.toLocaleString()}
+                ${npv.toLocaleString()}
               </p>
               <Badge
                 className={
-                  project.results && project.results.npv >= 0
+                  npv >= 0
                     ? "mt-2 bg-success/10 text-success hover:bg-success/20"
                     : "mt-2 bg-destructive/10 text-destructive hover:bg-destructive/20"
                 }
               >
-                {project.results && project.results.npv >= 0
-                  ? t("summary.accept")
-                  : t("summary.reject")}
+                {npv >= 0 ? t("summary.accept") : t("summary.reject")}
               </Badge>
             </CardContent>
           </Card>
@@ -166,7 +202,7 @@ export default function VPNAnalysisPage() {
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold">
-                {(project.discountRate * 100).toFixed(1)}%
+                {discountRatePercent.toFixed(1)}%
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
                 {t("summary.discountRateHelp")}
@@ -182,7 +218,7 @@ export default function VPNAnalysisPage() {
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold">
-                ${project.initialInvestment.toLocaleString()}
+                ${initialInvestment.toLocaleString()}
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
                 {t("summary.initialInvestmentHelp")}
@@ -197,7 +233,7 @@ export default function VPNAnalysisPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold">{project.periods} Years</p>
+              <p className="text-2xl font-bold">{periods} Years</p>
               <p className="mt-2 text-xs text-muted-foreground">
                 {t("summary.periodsHelp")}
               </p>
@@ -273,11 +309,11 @@ export default function VPNAnalysisPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {mockVPNSteps.map((step, index) => (
+                      {vpnSteps.map((step, index) => (
                         <TableRow
                           key={step.period}
                           className={
-                            index === mockVPNSteps.length - 1
+                            index === vpnSteps.length - 1
                               ? "bg-muted/30"
                               : ""
                           }
@@ -322,7 +358,7 @@ export default function VPNAnalysisPage() {
                             >
                               ${step.accumulatedNPV.toLocaleString()}
                             </span>
-                            {index === mockVPNSteps.length - 1 && (
+                            {index === vpnSteps.length - 1 && (
                               <Badge className="ml-2 bg-primary/10 text-primary">
                                 {t("table.finalNpv")}
                               </Badge>
@@ -451,8 +487,8 @@ export default function VPNAnalysisPage() {
                     </h4>
                     <p className="mt-1 text-sm text-muted-foreground">
                       {t("interpretation.recommendationHelp", {
-                        npv: (project.results?.npv ?? 0).toLocaleString(),
-                        rate: (project.discountRate * 100).toFixed(1),
+                        npv: npv.toLocaleString(),
+                        rate: discountRatePercent.toFixed(1),
                       })}
                     </p>
                   </div>
@@ -466,7 +502,7 @@ export default function VPNAnalysisPage() {
                     </h4>
                     <p className="mt-2 text-sm">
                       {t("interpretation.valueCreation.description", {
-                        npv: (project.results?.npv ?? 0).toLocaleString(),
+                        npv: npv.toLocaleString(),
                       })}
                     </p>
                   </div>
@@ -484,8 +520,8 @@ export default function VPNAnalysisPage() {
                     </h4>
                     <p className="mt-2 text-sm">
                       {t("interpretation.sensitivity.description", {
-                        rate: (project.discountRate * 100).toFixed(1),
-                        irr: ((project.results?.irr || 0) * 100).toFixed(1),
+                        rate: discountRatePercent.toFixed(1),
+                        irr: formatRatePercent(selectedProject?.results?.irr),
                       })}
                     </p>
                   </div>
