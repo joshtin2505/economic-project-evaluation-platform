@@ -663,7 +663,6 @@
       "selectProject": "Seleccionar Proyecto",
       "chart": "Gráfico de Flujos",
       "table": "Tabla Detallada",
-      "cumulative": "Flujo Acumulado",
       "columns": {
         "year": "Año",
         "inflows": "Ingresos",
@@ -677,6 +676,54 @@
         "discounted": "Payback Descontado",
         "years": "años",
         "notRecovered": "No se recupera"
+      }
+      ,
+      "summary": {
+        "inflows": "Total Ingresos",
+        "inflowsHelp": "Suma de todos los ingresos positivos",
+        "outflows": "Total Egresos",
+        "outflowsHelp": "Suma de todos los egresos",
+        "net": "Flujo Neto",
+        "netHelp": "Ingresos menos Egresos"
+      },
+      "tabs": {
+        "timeline": "Línea de Tiempo",
+        "cumulative": "Acumulado",
+        "waterfall": "Waterfall"
+      },
+      "timeline": {
+        "title": "Línea de Tiempo de Flujos",
+        "description": "Ingresos y egresos por período",
+        "legend": {
+          "inflows": "Ingresos",
+          "outflows": "Egresos"
+        }
+      },
+      "cumulative": {
+        "title": "Flujo Acumulado",
+        "description": "Flujo neto y posición acumulada en el tiempo",
+        "payback": {
+          "title": "Período de Recuperación Descontado",
+          "description": "Cuando los flujos descontados acumulados se vuelven positivos"
+        }
+      },
+      "waterfall": {
+        "title": "Visión Waterfall",
+        "description": "Desglose visual de la posición a través de los períodos",
+        "summary": {
+          "initialInvestment": "Inversión Inicial",
+          "operatingCashFlows": "Flujos Operativos",
+          "finalPosition": "Posición Final"
+        }
+      },
+      "details": {
+        "title": "Detalles de Flujos",
+        "description": "Desglose de ingresos, egresos y neto por período",
+        "netPositive": "Neto Positivo",
+        "netNegative": "Neto Negativo",
+        "inflow": "Ingreso",
+        "outflow": "Egreso",
+        "net": "Neto"
       }
     },
 

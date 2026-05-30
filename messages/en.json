@@ -663,7 +663,6 @@
       "selectProject": "Select Project",
       "chart": "Flow Chart",
       "table": "Detailed Table",
-      "cumulative": "Cumulative Flow",
       "columns": {
         "year": "Year",
         "inflows": "Inflows",
@@ -677,6 +676,54 @@
         "discounted": "Discounted Payback",
         "years": "years",
         "notRecovered": "Not recovered"
+      }
+      ,
+      "summary": {
+        "inflows": "Total Inflows",
+        "inflowsHelp": "Sum of all positive cash inflows",
+        "outflows": "Total Outflows",
+        "outflowsHelp": "Sum of all cash outflows",
+        "net": "Net Flow",
+        "netHelp": "Inflows minus Outflows"
+      },
+      "tabs": {
+        "timeline": "Timeline",
+        "cumulative": "Cumulative",
+        "waterfall": "Waterfall"
+      },
+      "timeline": {
+        "title": "Cash Flow Timeline",
+        "description": "Inflows and outflows by period",
+        "legend": {
+          "inflows": "Inflows",
+          "outflows": "Outflows"
+        }
+      },
+      "cumulative": {
+        "title": "Cumulative Cash Flow",
+        "description": "Net and cumulative position over time",
+        "payback": {
+          "title": "Discounted Payback",
+          "description": "When cumulative discounted cash flows become positive"
+        }
+      },
+      "waterfall": {
+        "title": "Waterfall Overview",
+        "description": "Visual breakdown of position across periods",
+        "summary": {
+          "initialInvestment": "Initial Investment",
+          "operatingCashFlows": "Operating Cash Flows",
+          "finalPosition": "Final Position"
+        }
+      },
+      "details": {
+        "title": "Cash Flow Details",
+        "description": "Breakdown of inflows, outflows and net by period",
+        "netPositive": "Net Positive",
+        "netNegative": "Net Negative",
+        "inflow": "Inflow",
+        "outflow": "Outflow",
+        "net": "Net"
       }
     },
     "reports": {

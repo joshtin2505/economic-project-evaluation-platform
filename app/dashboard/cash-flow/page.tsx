@@ -223,16 +223,16 @@ export default function CashFlowPage() {
                       />
                     }
                   />
-                  <ReferenceLine y={0} stroke="hsl(var(--muted-foreground))" />
+                  <ReferenceLine y={0} stroke="var(--muted-foreground)" />
                   <Bar
                     dataKey="inflow"
-                    fill="var(--color-inflow)"
+                    fill="var(--success)"
                     radius={[4, 4, 0, 0]}
                     name="Inflows"
                   />
                   <Bar
                     dataKey="outflow"
-                    fill="var(--color-outflow)"
+                    fill="var(--destructive)"
                     radius={[0, 0, 4, 4]}
                     name="Outflows"
                   />
@@ -301,21 +301,21 @@ export default function CashFlowPage() {
                   />
                   <ReferenceLine
                     y={0}
-                    stroke="hsl(var(--muted-foreground))"
+                    stroke="var(--muted-foreground)"
                     strokeDasharray="3 3"
                   />
                   <Bar
                     dataKey="netFlow"
-                    fill="var(--color-netFlow)"
+                    fill="var(--chart-3)"
                     radius={[4, 4, 0, 0]}
                     name="Net Flow"
                   />
                   <Line
                     type="monotone"
                     dataKey="cumulative"
-                    stroke="var(--color-cumulative)"
+                    stroke="var(--chart-2)"
                     strokeWidth={2}
-                    dot={{ fill: "var(--color-cumulative)", r: 4 }}
+                    dot={{ fill: "var(--chart-2)", r: 4 }}
                     name="Cumulative"
                   />
                 </ComposedChart>
