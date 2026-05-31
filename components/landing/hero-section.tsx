@@ -7,7 +7,6 @@ import { ArrowRight, TrendingUp, BarChart3, Calculator, LineChart } from "lucide
 
 export function HeroSection() {
   const t = useTranslations("landing.hero")
-  const locale = useLocale()
   const tCommon = useTranslations("common")
 
   return (
@@ -22,7 +21,7 @@ export function HeroSection() {
         <div className="mx-auto max-w-3xl text-center">
           {/* Badge */}
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
-            <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+            <span className="h-2 w-2 rounded-full bg-accent-foreground animate-pulse" />
             <span className="text-sm font-medium text-primary">{t("badge")}</span>
           </div>
 
@@ -42,13 +41,13 @@ export function HeroSection() {
           {/* CTA Buttons */}
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button size="lg" asChild className="group w-full sm:w-auto">
-              <Link href={`/${locale}/dashboard/projects/new`}>
+              <Link href={`/dashboard/projects/new`}>
                 {t("cta")}
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="w-full sm:w-auto">
-              <Link href={`/${locale}/dashboard`}>{t("demo")}</Link>
+              <Link href={`/dashboard`}>{t("demo")}</Link>
             </Button>
           </div>
 

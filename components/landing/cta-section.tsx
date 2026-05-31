@@ -1,13 +1,12 @@
 "use client"
 
-import Link from "next/link"
-import { useLocale, useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
+import { useTranslations } from "next-intl"
+import Link from "next/link"
 
 export function CTASection() {
   const t = useTranslations("landing.cta")
-  const locale = useLocale()
 
   return (
     <section className="border-t border-border/50 bg-muted/30 py-20 sm:py-32">
@@ -28,7 +27,7 @@ export function CTASection() {
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" variant="secondary" asChild className="group w-full sm:w-auto">
-                <Link href={`/${locale}/dashboard/projects/new`}>
+                <Link href={`/dashboard/projects/new`}>
                   {t("button")}
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
