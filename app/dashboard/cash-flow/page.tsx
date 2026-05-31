@@ -45,11 +45,11 @@ import {
 const timelineChartConfig = {
   inflow: {
     label: "Inflows",
-    color: "var(--chart-2)",
+    color: "var(--success)",
   },
   outflow: {
     label: "Outflows",
-    color: "var(--chart-5)",
+    color: "var(--destructive)",
   },
 } satisfies ChartConfig;
 
@@ -85,6 +85,16 @@ export default function CashFlowPage() {
         ? buildCumulativeCashFlow(selectedProject, selectedCashFlows)
         : [],
     [selectedCashFlows, selectedProject],
+  );
+
+  const timelineData = useMemo(
+    () =>
+      cumulativeData.map((item) => ({
+        ...item,
+        positive: item.netFlow >= 0 ? item.netFlow : 0,
+        negative: item.netFlow < 0 ? item.netFlow : 0,
+      })),
+    [cumulativeData],
   );
 
   const paybackPeriod = useMemo(
@@ -220,10 +230,11 @@ export default function CashFlowPage() {
                 config={timelineChartConfig}
                 className="h-100 w-full"
               >
-                <BarChart data={cumulativeData} barGap={2}>
+                <BarChart accessibilityLayer data={timelineData} barGap={2}>
                   <CartesianGrid
-                    strokeDasharray="3 3"
-                    className="stroke-border"
+                    // strokeDasharray="3 3"
+                    vertical={false}
+                    // className="stroke-border"
                   />
                   <XAxis
                     dataKey="period"
@@ -244,22 +255,24 @@ export default function CashFlowPage() {
                       <ChartTooltipContent
                         formatter={(value: any) => [
                           `$${Math.abs(Number(value)).toLocaleString()}`,
-                          "",
+                          Number(value) == 0
+                            ? ""
+                            : " " + (Number(value) < 0 ? t("timeline.legend.outflows") : t("timeline.legend.inflows")),
                         ]}
                       />
                     }
                   />
                   <ReferenceLine y={0} stroke="var(--muted-foreground)" />
                   <Bar
-                    dataKey="inflow"
+                    dataKey="positive"
                     fill="var(--success)"
                     radius={[4, 4, 0, 0]}
-                    name="Inflows"
+                    name="Positive"
                   />
                   <Bar
-                    dataKey="outflow"
+                    dataKey="negative"
                     fill="var(--destructive)"
-                    radius={[0, 0, 4, 4]}
+                    radius={[4, 4, 0, 0]}
                     name="Outflows"
                   />
                 </BarChart>
@@ -268,13 +281,13 @@ export default function CashFlowPage() {
               {/* Legend */}
               <div className="mt-4 flex items-center justify-center gap-8 text-sm">
                 <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded bg-chart-2" />
+                  <div className="h-3 w-3 rounded bg-success" />
                   <span className="text-muted-foreground">
                     {t("timeline.legend.inflows")}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded bg-chart-5" />
+                  <div className="h-3 w-3 rounded bg-destructive" />
                   <span className="text-muted-foreground">
                     {t("timeline.legend.outflows")}
                   </span>
