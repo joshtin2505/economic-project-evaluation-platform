@@ -800,7 +800,8 @@
       "preview": {
         "title": "Vista Previa del Reporte",
         "description": "Vista previa del reporte antes de exportar",
-        "badge": "Vista Previa"
+        "badge": "Vista Previa",
+        "usingTmarAsRate": "Usando TMAR como tasa de descuento"
       },
       "report": {
         "title": "Reporte del Proyecto",

@@ -760,7 +760,10 @@
     "reports": {
       "title": "Reports",
       "subtitle": "Generate professional reports of your analyses",
-      "generate": "Generate Report",
+      "generate": "Generate Report",      
+      "preview": {
+        "usingTmarAsRate": "Using MARR as discount rate"
+      },
       "templates": {
         "title": "Report Templates",
         "executive": "Executive Report",

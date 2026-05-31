@@ -232,6 +232,22 @@ export function useProjectForm(initial?: {
     const bcRatio = pvCosts > 0 ? pvBenefits / pvCosts : 0;
     const irrPercent = irr * 100;
 
+    // Calculate profitability index: PV of benefits / Initial investment
+    const profitabilityIndex = initialInvestment > 0 ? pvBenefits / initialInvestment : 0;
+
+    // Calculate payback period
+    let cumulativeCashFlow = -initialInvestment;
+    let paybackPeriod: number | undefined;
+    for (let i = 0; i < cashFlows.length; i++) {
+      cumulativeCashFlow += cashFlows[i].inflow - cashFlows[i].outflow;
+      if (cumulativeCashFlow >= 0) {
+        const previousCumulative = cumulativeCashFlow - (cashFlows[i].inflow - cashFlows[i].outflow);
+        const fraction = Math.abs(previousCumulative) / (cashFlows[i].inflow - cashFlows[i].outflow);
+        paybackPeriod = i + fraction;
+        break;
+      }
+    }
+
     return {
       npv: Math.round(npv),
       irr: irrPercent.toFixed(2),
@@ -243,6 +259,8 @@ export function useProjectForm(initial?: {
       totalOutflows,
       effectiveDiscountRate,
       useTmarAsDiscountRate,
+      profitabilityIndex,
+      paybackPeriod,
       isViable: npv > 0 && irrPercent > tmarPercent && bcRatio > 1,
     };
   }, [
