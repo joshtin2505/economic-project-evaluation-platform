@@ -11,6 +11,7 @@ import { buildResultsPayload } from "@/lib/utils/project-results"
 import { estimatePaybackPeriod } from "@/lib/services/project-analytics"
 import * as auth from "@/lib/supabase/auth"
 import { routes } from "@/lib/routes"
+import { toast } from "sonner"
 
 export default function NewProjectPage() {
   const router = useRouter()
@@ -39,6 +40,7 @@ export default function NewProjectPage() {
         inflation: form.inflation,
         risk_premium: form.riskPremium,
         tmar_method: form.tmarMethod,
+        use_tmar_as_discount_rate: form.useTmarAsDiscountRate,
         funding_sources: form.fundingSources,
         status,
         results:
@@ -52,7 +54,11 @@ export default function NewProjectPage() {
             : null,
       }
 
-      await projectService.createProjectWithFlows(payload, form.cashFlows)
+      await projectService.createProjectWithFlows(payload, form.cashFlows).then(() => {
+        toast.success("Project saved successfully")
+      }).catch((error) => {
+        toast.error(error instanceof Error ? error.message : "Error al guardar el proyecto")
+      })
 
       router.push(routes.projects)
       router.refresh()
@@ -90,6 +96,8 @@ export default function NewProjectPage() {
             setRiskPremium={form.setRiskPremium}
             tmarMethod={form.tmarMethod}
             setTmarMethod={form.setTmarMethod}
+            useTmarAsDiscountRate={form.useTmarAsDiscountRate}
+            setUseTmarAsDiscountRate={form.setUseTmarAsDiscountRate}
             fundingSources={form.fundingSources}
             updateFundingSource={form.updateFundingSource}
             addFundingSource={form.addFundingSource}

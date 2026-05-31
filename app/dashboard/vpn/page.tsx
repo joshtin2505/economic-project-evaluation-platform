@@ -55,7 +55,10 @@ import {
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { useProjectAnalysis } from "@/lib/hooks/useProjectAnalysis";
-import { buildVpnSteps } from "@/lib/services/project-analytics";
+import {
+  buildVpnSteps,
+  getEffectiveDiscountRate,
+} from "@/lib/services/project-analytics";
 import { formatRatePercent } from "@/lib/utils/project-results";
 
 const chartConfig = {
@@ -99,9 +102,11 @@ export default function VPNAnalysisPage() {
   }));
 
   const npv = selectedProject?.results?.npv ?? 0;
+  const effectiveDiscountRate = selectedProject ? getEffectiveDiscountRate(selectedProject) : 0;
   const discountRatePercent = toNumber(selectedProject?.discount_rate);
   const initialInvestment = toNumber(selectedProject?.initial_investment);
   const periods = selectedProject?.periods ?? 0;
+  const usingTmarAsRate = selectedProject?.use_tmar_as_discount_rate ?? false;
 
   return (
     <TooltipProvider>
@@ -202,8 +207,13 @@ export default function VPNAnalysisPage() {
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold">
-                {discountRatePercent.toFixed(1)}%
+                {effectiveDiscountRate.toFixed(1)}%
               </p>
+              {usingTmarAsRate && (
+                <p className="mt-2 text-xs text-primary font-medium">
+                  {t("preview.usingTmarAsRate")}
+                </p>
+              )}
               <p className="mt-2 text-xs text-muted-foreground">
                 {t("summary.discountRateHelp")}
               </p>
@@ -488,7 +498,7 @@ export default function VPNAnalysisPage() {
                     <p className="mt-1 text-sm text-muted-foreground">
                       {t("interpretation.recommendationHelp", {
                         npv: npv.toLocaleString(),
-                        rate: discountRatePercent.toFixed(1),
+                        rate: effectiveDiscountRate.toFixed(1),
                       })}
                     </p>
                   </div>
@@ -520,7 +530,7 @@ export default function VPNAnalysisPage() {
                     </h4>
                     <p className="mt-2 text-sm">
                       {t("interpretation.sensitivity.description", {
-                        rate: discountRatePercent.toFixed(1),
+                        rate: effectiveDiscountRate.toFixed(1),
                         irr: formatRatePercent(selectedProject?.results?.irr),
                       })}
                     </p>

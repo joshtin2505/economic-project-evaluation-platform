@@ -8,10 +8,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
-import { Plus, Trash2, Info, TrendingUp } from "lucide-react"
+import { Plus, Trash2, Info, TrendingUp, Check } from "lucide-react"
 import ProjectSaveControls from "@/components/ui/project-save-controls"
 import type { FundingSource, TmarMethod } from "@/lib/utils/tmar"
 
@@ -39,6 +40,8 @@ interface Props {
   setRiskPremium: (v: number) => void
   tmarMethod: TmarMethod
   setTmarMethod: (v: TmarMethod) => void
+  useTmarAsDiscountRate: boolean
+  setUseTmarAsDiscountRate: (v: boolean) => void
   fundingSources: FundingSource[]
   updateFundingSource: (
     id: string,
@@ -60,6 +63,8 @@ interface Props {
     bcRatio: string
     totalInflows: number
     totalOutflows: number
+    effectiveDiscountRate: number
+    useTmarAsDiscountRate: boolean
     isViable: boolean
   }
   isSaving: null | "draft" | "calculate"
@@ -87,6 +92,8 @@ export default function ProjectForm(props: Props) {
     setRiskPremium,
     tmarMethod,
     setTmarMethod,
+    useTmarAsDiscountRate,
+    setUseTmarAsDiscountRate,
     fundingSources,
     updateFundingSource,
     addFundingSource,
@@ -176,7 +183,14 @@ export default function ProjectForm(props: Props) {
                     step="0.1"
                     value={discountRate}
                     onChange={(e) => setDiscountRate(Number(e.target.value))}
+                    disabled={useTmarAsDiscountRate}
+                    className={useTmarAsDiscountRate ? "bg-muted/50" : ""}
                   />
+                  {useTmarAsDiscountRate && (
+                    <p className="text-xs text-muted-foreground">
+                      {t("financial.usingTmarAsDiscount")}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="periods">{t("financial.periods")}</Label>
@@ -189,6 +203,28 @@ export default function ProjectForm(props: Props) {
                     max={30}
                   />
                 </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="useTmarAsDiscountRate"
+                  checked={useTmarAsDiscountRate}
+                  onCheckedChange={(checked) => setUseTmarAsDiscountRate(checked as boolean)}
+                />
+                <Label
+                  htmlFor="useTmarAsDiscountRate"
+                  className="text-sm font-normal cursor-pointer"
+                >
+                  {t("financial.useTmarAsDiscountRate")}
+                </Label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-3 w-3 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{t("financial.useTmarAsDiscountRateHelp")}</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
 
               <div className="space-y-4">
@@ -515,12 +551,12 @@ export default function ProjectForm(props: Props) {
                 <Badge
                   variant="outline"
                   className={
-                    Number(calculations.irr) > Number(calculations.tmar)
+                    Number(calculations.irr) > calculations.effectiveDiscountRate
                       ? "border-success/50 text-success"
                       : "border-destructive/50 text-destructive"
                   }
                 >
-                  {Number(calculations.irr) > Number(calculations.tmar)
+                  {Number(calculations.irr) > calculations.effectiveDiscountRate
                     ? t("preview.aboveTmar")
                     : t("preview.belowTmar")}
                 </Badge>
@@ -540,6 +576,22 @@ export default function ProjectForm(props: Props) {
                   {t(previewFormulaKey)}
                 </span>
               </div>
+
+              {calculations.useTmarAsDiscountRate && (
+                <div className="rounded-lg bg-primary/10 border border-primary/20 p-3">
+                  <div className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-medium text-primary">
+                      {t("preview.usingTmarAsRate")}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {t("preview.usingTmarAsRateDesc", {
+                      rate: calculations.effectiveDiscountRate.toFixed(2),
+                    })}
+                  </p>
+                </div>
+              )}
 
               <div className="flex items-center justify-between">
                 <div>

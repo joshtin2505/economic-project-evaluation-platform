@@ -14,6 +14,7 @@ import { Cell, Pie, PieChart } from "recharts";
 import * as projectService from "@/lib/services/projects";
 import {
   buildBenefitCostData,
+  getEffectiveDiscountRate,
   selectFeaturedProject,
   type CashFlowRecord,
   type ProjectRecord,
@@ -163,6 +164,8 @@ export default function BenefitCostPage() {
   );
   const bcRatio = totalCostsPV > 0 ? totalBenefitsPV / totalCostsPV : 0;
   const netBenefit = totalBenefitsPV - totalCostsPV;
+  const usingTmarAsRate = selectedProject?.use_tmar_as_discount_rate ?? false;
+  const effectiveDiscountRate = selectedProject ? getEffectiveDiscountRate(selectedProject) : 0;
 
   const benefitsPieData = benefitCostData.benefits.map((benefit) => ({
     name: benefit.category,
@@ -231,6 +234,11 @@ export default function BenefitCostPage() {
                 <p className="text-sm text-muted-foreground">
                   {t("formulaDescription")}
                 </p>
+                {usingTmarAsRate && (
+                  <p className="mt-1 text-xs text-primary font-medium">
+                    {t("preview.usingTmarAsRate")}
+                  </p>
+                )}
               </div>
             </div>
             <div className="rounded-lg border border-primary/20 bg-background px-6 py-3">

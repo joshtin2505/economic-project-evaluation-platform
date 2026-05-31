@@ -68,6 +68,7 @@ import { useProjectAnalysis } from "@/lib/hooks/useProjectAnalysis";
 import {
   buildNpvVsRateData,
   buildTirIterations,
+  getEffectiveDiscountRate,
 } from "@/lib/services/project-analytics";
 import {
   asPercent,
@@ -120,6 +121,8 @@ export default function TIRAnalysisPage() {
   const irrPercent = asPercent(selectedProject?.results?.irr);
   const tmarPercent = asPercent(selectedProject?.results?.tmar);
   const spreadPercent = irrPercent - tmarPercent;
+  const usingTmarAsRate = selectedProject?.use_tmar_as_discount_rate ?? false;
+  const effectiveDiscountRate = selectedProject ? getEffectiveDiscountRate(selectedProject) : 0;
 
   const convergenceData = tirIterations.map((iter) => ({
     iteration: iter.iteration,
@@ -245,6 +248,11 @@ export default function TIRAnalysisPage() {
               <p className="text-2xl font-bold">
                 {formatRatePercent(selectedProject?.results?.tmar)}
               </p>
+              {usingTmarAsRate && (
+                <p className="mt-2 text-xs text-primary font-medium">
+                  {t("preview.usingTmarAsRate")}
+                </p>
+              )}
               <p className="mt-2 text-xs text-muted-foreground">
                 {t("summary.tmarHelp")}
               </p>

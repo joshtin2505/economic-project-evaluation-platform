@@ -56,6 +56,7 @@ export default function EditProjectPage({ params }: Props) {
         inflation: form.inflation,
         risk_premium: form.riskPremium,
         tmar_method: form.tmarMethod,
+        use_tmar_as_discount_rate: form.useTmarAsDiscountRate,
         funding_sources: form.fundingSources,
         status,
         results:
@@ -104,6 +105,8 @@ export default function EditProjectPage({ params }: Props) {
         setRiskPremium={form.setRiskPremium}
         tmarMethod={form.tmarMethod}
         setTmarMethod={form.setTmarMethod}
+        useTmarAsDiscountRate={form.useTmarAsDiscountRate}
+        setUseTmarAsDiscountRate={form.setUseTmarAsDiscountRate}
         fundingSources={form.fundingSources}
         updateFundingSource={form.updateFundingSource}
         addFundingSource={form.addFundingSource}

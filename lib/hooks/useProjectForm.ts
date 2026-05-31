@@ -28,6 +28,7 @@ export function useProjectForm(initial?: {
   tmar_method?: TmarMethod;
   funding_sources?: FundingSource[];
   cashFlows?: CashFlowRow[];
+  use_tmar_as_discount_rate: boolean;
 }) {
   const [projectName, setProjectName] = useState(initial?.name ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
@@ -46,6 +47,9 @@ export function useProjectForm(initial?: {
   );
   const [tmarMethod, setTmarMethod] = useState<TmarMethod>(
     initial?.tmar_method ?? "simple",
+  );
+  const [useTmarAsDiscountRate, setUseTmarAsDiscountRate] = useState<boolean>(
+    initial?.use_tmar_as_discount_rate ?? false,
   );
   const [fundingSources, setFundingSources] = useState<FundingSource[]>(
     initial?.funding_sources?.length
@@ -176,7 +180,16 @@ export function useProjectForm(initial?: {
   };
 
   const calculations = useMemo(() => {
-    const rate = discountRate / 100;
+    const tmarPercent = resolveProjectTmarPercent(
+      tmarMethod,
+      inflation,
+      riskPremium,
+      fundingSources,
+    );
+    
+    // Use TMAR as discount rate if checkbox is checked, otherwise use manual discount rate
+    const effectiveDiscountRate = useTmarAsDiscountRate ? tmarPercent : discountRate;
+    const rate = effectiveDiscountRate / 100;
     let npv = -initialInvestment;
     let totalInflows = 0;
     let totalOutflows = initialInvestment;
@@ -206,12 +219,6 @@ export function useProjectForm(initial?: {
       irr = mid;
     }
 
-    const tmarPercent = resolveProjectTmarPercent(
-      tmarMethod,
-      inflation,
-      riskPremium,
-      fundingSources,
-    );
     const fundingShareTotal = sumFundingShares(fundingSources);
 
     const pvBenefits = cashFlows.reduce((sum, cf, index) => {
@@ -234,6 +241,8 @@ export function useProjectForm(initial?: {
       bcRatio: bcRatio.toFixed(2),
       totalInflows,
       totalOutflows,
+      effectiveDiscountRate,
+      useTmarAsDiscountRate,
       isViable: npv > 0 && irrPercent > tmarPercent && bcRatio > 1,
     };
   }, [
@@ -244,6 +253,7 @@ export function useProjectForm(initial?: {
     initialInvestment,
     riskPremium,
     tmarMethod,
+    useTmarAsDiscountRate,
   ]);
 
   const setInitialValues = (data: any, flows: CashFlowRow[] | null) => {
@@ -254,6 +264,7 @@ export function useProjectForm(initial?: {
     setInflation(Number(data?.inflation) || 0);
     setRiskPremium(Number(data?.risk_premium) || 0);
     setTmarMethod(data?.tmar_method === "mixta" ? "mixta" : "simple");
+    setUseTmarAsDiscountRate(Boolean(data?.use_tmar_as_discount_rate) || false);
     if (Array.isArray(data?.funding_sources) && data.funding_sources.length > 0) {
       setFundingSources(
         data.funding_sources.map((source: FundingSource, index: number) => ({
@@ -276,6 +287,48 @@ export function useProjectForm(initial?: {
     }
   };
 
+  // Function to collect project data for database storage
+  const obtenerDatosProyecto = () => {
+    return {
+      nombre: projectName,
+      descripcion: description,
+      inversion_inicial: initialInvestment,
+      tasa_descuento: discountRate,
+      periodos: periods,
+      metodo_tmar: tmarMethod,
+      usar_tmar_como_tasa_descuento: useTmarAsDiscountRate,
+      // Only include origin data for the selected method
+      datos_tmar: {
+        metodo: tmarMethod,
+        ...(tmarMethod === "simple" ? {
+          inflacion: inflation,
+          prima_riesgo: riskPremium,
+        } : {
+          fuentes_financiamiento: fundingSources.map(source => ({
+            id: source.id,
+            nombre: source.name,
+            participacion: source.share,
+            costo: source.cost,
+          })),
+        }),
+      },
+      flujos_efectivo: cashFlows.map(cf => ({
+        periodo: cf.period,
+        entrada: cf.inflow,
+        salida: cf.outflow,
+        flujo_neto: cf.inflow - cf.outflow,
+      })),
+      resultados: {
+        vpn: calculations.npv,
+        tir: calculations.irr,
+        tmar: calculations.tmar,
+        tasa_descuento_efectiva: calculations.effectiveDiscountRate,
+        relacion_beneficio_costo: calculations.bcRatio,
+        total_entradas: calculations.totalInflows,
+      },
+    };
+  };
+
   return {
     projectName,
     setProjectName,
@@ -293,6 +346,8 @@ export function useProjectForm(initial?: {
     setRiskPremium,
     tmarMethod,
     setTmarMethod,
+    useTmarAsDiscountRate,
+    setUseTmarAsDiscountRate,
     fundingSources,
     updateFundingSource,
     addFundingSource,
@@ -303,5 +358,6 @@ export function useProjectForm(initial?: {
     updateCashFlow,
     calculations,
     setInitialValues,
+    obtenerDatosProyecto,
   };
 }

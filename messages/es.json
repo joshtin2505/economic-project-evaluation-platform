@@ -372,6 +372,9 @@
         "periods": "Períodos de Análisis",
         "periodsHelp": "Horizonte del proyecto"
       },
+      "preview": {
+        "usingTmarAsRate": "Usando TMAR como tasa de descuento"
+      },
       "tabs": {
         "table": "Tabla de Cálculo",
         "chart": "Gráfica del VPN",
@@ -557,6 +560,9 @@
           "axisLabel": "Iteración"
         }
       },
+      "preview": {
+        "usingTmarAsRate": "Usando TMAR como tasa de descuento"
+      },
       "iterations": {
         "title": "Tabla de Iteraciones Newton-Raphson",
         "description": "Convergencia paso a paso hacia la Tasa Interna de Retorno",
@@ -620,7 +626,11 @@
         "benefits": "Beneficios",
         "costs": "Costos",
         "ratioPrefix": "Relación",
-        "ratioSuffix": "B/C"
+        "ratioSuffix": "B/C",
+        "result": "Relación B/C"
+      },
+      "preview": {
+        "usingTmarAsRate": "Usando TMAR como tasa de descuento"
       },
       "summary": {
         "ratio": "Relación B/C",
@@ -640,8 +650,23 @@
         "costs": "Costos",
         "pvBenefits": "VP Beneficios",
         "pvCosts": "VP Costos"
-      }
-      ,
+      },
+      "charts": {
+        "benefits": {
+          "title": "Distribución de Beneficios",
+          "description": "Gráfico circular que muestra el desglose de beneficios por categoría"
+        },
+        "costs": {
+          "title": "Distribución de Costos",
+          "description": "Gráfico circular que muestra el desglose de costos por categoría"
+        }
+      },
+      "details": {
+        "title": "Desglose Detallado",
+        "description": "Ver los valores nominales y presentes de cada categoría de beneficios y costos",
+        "benefits": "Beneficios",
+        "costs": "Costos"
+      },
       "tables": {
         "benefits": {
           "title": "Beneficios",
@@ -1105,7 +1130,10 @@
         "inflationHelp": "Tasa anual de inflación esperada",
         "riskPremium": "Prima de Riesgo (%)",
         "riskPremiumHelp": "Retorno adicional requerido para compensar el riesgo del proyecto",
-        "periods": "Número de Períodos"
+        "periods": "Número de Períodos",
+        "useTmarAsDiscountRate": "Usar TMAR calculada como tasa de descuento",
+        "useTmarAsDiscountRateHelp": "Cuando está activado, el campo de tasa de descuento se deshabilitará y se usará la TMAR calculada para todos los cálculos",
+        "usingTmarAsDiscount": "Usando TMAR calculada como tasa de descuento"
       },
       "tmarConfig": {
         "title": "Configuración TMAR",
@@ -1158,7 +1186,9 @@
         "bcFeasible": "B/C ≥ 1",
         "bcNotFeasible": "B/C < 1",
         "formulaTitle": "Fórmula VPN",
-        "formula": "VPN = -I₀ + Σ FCₜ/(1+r)ᵗ"
+        "formula": "VPN = -I₀ + Σ FCₜ/(1+r)ᵗ",
+        "usingTmarAsRate": "Usando TMAR como tasa de descuento",
+        "usingTmarAsRateDesc": "Tasa de descuento actual: {rate}%"
       }
     },
     "vpnPage": {

@@ -92,7 +92,7 @@ export function calculateInflationRiskTmarDecimal(
 ): number {
   const inflation = percentToDecimal(inflationPercent);
   const risk = percentToDecimal(riskPremiumPercent);
-  return inflation + risk + inflation * risk;
+  return inflation + risk + (inflation * risk);
 }
 
 export function calculateInflationRiskTmarPercent(

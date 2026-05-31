@@ -1,10 +1,11 @@
-import { createClient as createSupabaseClient } from "@/lib/supabase/client"
+"use server"
+import { createClient as createSupabaseClient } from "@/lib/supabase/server"
 
 export async function fetchProjects() {
-  const supabase = createSupabaseClient()
+  const supabase = await createSupabaseClient()
   const { data, error } = await supabase
     .from("projects")
-    .select("id,name,description,initial_investment,periods,status,results,updated_at")
+    .select("id,name,description,initial_investment,discount_rate,inflation,risk_premium,tmar_method,use_tmar_as_discount_rate,funding_sources,periods,status,results,updated_at")
     .order("updated_at", { ascending: false })
 
   if (error) throw error
@@ -12,10 +13,10 @@ export async function fetchProjects() {
 }
 
 export async function fetchProjectById(id: string) {
-  const supabase = createSupabaseClient()
+  const supabase = await createSupabaseClient()
   const { data, error } = await supabase
     .from("projects")
-    .select("id,name,description,initial_investment,discount_rate,inflation,risk_premium,tmar_method,funding_sources,periods,results")
+    .select("id,name,description,initial_investment,discount_rate,inflation,risk_premium,tmar_method,use_tmar_as_discount_rate,funding_sources,periods,results")
     .eq("id", id)
     .single()
 
@@ -24,7 +25,7 @@ export async function fetchProjectById(id: string) {
 }
 
 export async function fetchCashFlows(projectId: string) {
-  const supabase = createSupabaseClient()
+  const supabase = await createSupabaseClient()
   const { data, error } = await supabase
     .from("cash_flows")
     .select("period,inflow,outflow")
@@ -36,14 +37,15 @@ export async function fetchCashFlows(projectId: string) {
 }
 
 export async function deleteProject(id: string) {
-  const supabase = createSupabaseClient()
+  const supabase = await createSupabaseClient()
   const { error } = await supabase.from("projects").delete().eq("id", id)
   if (error) throw error
   return true
 }
 
 export async function createProjectWithFlows(payload: any, flows: any[]) {
-  const supabase = createSupabaseClient()
+  console.log("rendering createProjectWithFlows: ", payload)
+  const supabase = await createSupabaseClient()
   const { data: project, error: projectError } = await supabase
     .from("projects")
     .insert(payload)
@@ -51,6 +53,7 @@ export async function createProjectWithFlows(payload: any, flows: any[]) {
     .single()
 
   if (projectError) throw projectError
+
 
   const flowsPayload = flows.map((flow) => ({
     project_id: project.id,
@@ -66,7 +69,7 @@ export async function createProjectWithFlows(payload: any, flows: any[]) {
 }
 
 export async function updateProjectWithFlows(id: string, payload: any, flows: any[]) {
-  const supabase = createSupabaseClient()
+  const supabase = await createSupabaseClient()
   const { error: updateError } = await supabase.from("projects").update(payload).eq("id", id)
   if (updateError) throw updateError
 

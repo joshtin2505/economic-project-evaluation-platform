@@ -18,6 +18,9 @@ export interface ProjectRecord {
   discount_rate?: number | string;
   inflation?: number | string;
   risk_premium?: number | string;
+  tmar_method?: "simple" | "mixta";
+  use_tmar_as_discount_rate?: boolean;
+  funding_sources?: any[];
   status: "draft" | "analyzing" | "completed";
   results: ProjectResultsRecord | null;
   updated_at?: string;
@@ -72,9 +75,39 @@ export interface TIRIteration {
 }
 
 import { asDecimal, formatDecimalRate } from "@/lib/utils/project-results";
+import {
+  resolveProjectTmarPercent,
+  type FundingSource,
+  type TmarMethod,
+} from "@/lib/utils/tmar";
 
 const toNumber = (value: number | string | null | undefined) =>
   Number(value ?? 0);
+
+/**
+ * Get the effective discount rate for a project.
+ * If use_tmar_as_discount_rate is true, calculates and returns the TMAR.
+ * Otherwise, returns the manual discount_rate.
+ */
+export function getEffectiveDiscountRate(project: ProjectRecord): number {
+  if (project.use_tmar_as_discount_rate) {
+    const tmarMethod = (project.tmar_method ?? "simple") as TmarMethod;
+    const inflation = toNumber(project.inflation);
+    const riskPremium = toNumber(project.risk_premium);
+    const fundingSources = (project.funding_sources ?? []) as FundingSource[];
+    
+    const tmarPercent = resolveProjectTmarPercent(
+      tmarMethod,
+      inflation,
+      riskPremium,
+      fundingSources,
+    );
+    
+    return tmarPercent;
+  }
+  
+  return toNumber(project.discount_rate);
+}
 
 export function selectFeaturedProject(projects: ProjectRecord[]) {
   return (
@@ -126,10 +159,10 @@ export function buildCumulativeCashFlow(
 }
 
 export function buildBenefitCostData(
-  project: Pick<ProjectRecord, "initial_investment" | "discount_rate">,
+  project: ProjectRecord,
   cashFlows: CashFlowRecord[],
 ) {
-  const discountRate = toNumber(project.discount_rate) / 100;
+  const discountRate = getEffectiveDiscountRate(project) / 100;
   const benefits: BenefitCostEntry[] = cashFlows
     .filter((cashFlow) => toNumber(cashFlow.inflow) > 0)
     .map((cashFlow) => {
@@ -326,11 +359,11 @@ export function buildNpvVsRateData(
 }
 
 export function buildTirIterations(
-  project: Pick<ProjectRecord, "initial_investment" | "discount_rate">,
+  project: ProjectRecord,
   cashFlows: CashFlowRecord[],
   maxIterations = 8,
 ) {
-  let rate = Math.max(0.01, toNumber(project.discount_rate) / 100 || 0.1);
+  let rate = Math.max(0.01, getEffectiveDiscountRate(project) / 100 || 0.1);
   const iterations: TIRIteration[] = [];
 
   for (let iteration = 1; iteration <= maxIterations; iteration += 1) {
@@ -396,10 +429,10 @@ export function estimatePaybackPeriod(
 }
 
 export function buildVpnSteps(
-  project: Pick<ProjectRecord, "initial_investment" | "discount_rate">,
+  project: ProjectRecord,
   cashFlows: CashFlowRecord[],
 ) {
-  const discountRate = toNumber(project.discount_rate) / 100;
+  const discountRate = getEffectiveDiscountRate(project) / 100;
   let accumulatedNPV = -toNumber(project.initial_investment);
 
   return [

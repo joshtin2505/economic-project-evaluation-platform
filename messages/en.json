@@ -361,6 +361,9 @@
       "formulaTitle": "NPV Formula",
       "formulaDescription": "Sum of discounted cash flows minus initial investment",
       "formula": "NPV = -I₀ + Σ CFₜ / (1 + r)ᵗ",
+      "preview": {
+        "usingTmarAsRate": "Using MARR as discount rate"
+      },
       "summary": {
         "npv": "Net Present Value",
         "accept": "NPV > 0: Accept",
@@ -592,6 +595,9 @@
         "decreased": "decreased",
         "adjustment": "Rate {direction} by {value}%"
       },
+      "preview": {
+        "usingTmarAsRate": "Using MARR as discount rate"
+      },
       "final": {
         "title": "Final Interpretation",
         "description": "The Internal Rate of Return of {irr}% exceeds the minimum acceptable rate of return (TMAR) of {tmar}%. This indicates the project generates sufficient returns to justify the investment risk. The project should be accepted.",
@@ -602,6 +608,7 @@
       "title": "Benefit/Cost Analysis",
       "subtitle": "Evaluate the relationship between project benefits and costs",
       "selectProject": "Select Project",
+      "result": "B/C Ratio",
       "calculate": "Calculate B/C",
       "results": "Results",
       "ratio": "B/C Ratio",
@@ -656,6 +663,25 @@
         "pv": "Present Value (PV)",
         "percent": "Percent",
         "total": "Total"
+      },
+      "charts": {
+        "benefits": {
+          "title": "Benefits Distribution",
+          "description": "Pie chart showing the breakdown of benefits by category"
+        },
+        "costs": {
+          "title": "Costs Distribution",
+          "description": "Pie chart showing the breakdown of costs by category"
+        }
+      },
+      "details": {
+        "title": "Detailed Breakdown",
+        "description": "View the nominal and present values of each benefit and cost category",
+        "benefits": "Benefits",
+        "costs": "Costs"
+      },
+      "preview": {
+        "usingTmarAsRate": "Using MARR as discount rate"
       },
       "feasibility": {
         "title": "Feasibility",
@@ -1104,7 +1130,10 @@
         "inflationHelp": "Expected annual inflation rate",
         "riskPremium": "Risk Premium (%)",
         "riskPremiumHelp": "Additional return required to compensate for project risk",
-        "periods": "Number of Periods"
+        "periods": "Number of Periods",
+        "useTmarAsDiscountRate": "Use calculated MARR as discount rate",
+        "useTmarAsDiscountRateHelp": "When enabled, the discount rate field will be disabled and the calculated MARR will be used for all calculations",
+        "usingTmarAsDiscount": "Using calculated MARR as discount rate"
       },
       "tmarConfig": {
         "title": "MARR Configuration",
@@ -1157,7 +1186,9 @@
         "bcFeasible": "B/C ≥ 1",
         "bcNotFeasible": "B/C < 1",
         "formulaTitle": "NPV Formula",
-        "formula": "NPV = -I₀ + Σ CFₜ/(1+r)ᵗ"
+        "formula": "NPV = -I₀ + Σ CFₜ/(1+r)ᵗ",
+        "usingTmarAsRate": "Using MARR as discount rate",
+        "usingTmarAsRateDesc": "Current discount rate: {rate}%"
       }
     },
     "vpnPage": {
