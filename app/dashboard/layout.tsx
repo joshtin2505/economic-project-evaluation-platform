@@ -119,18 +119,18 @@ function AppSidebar() {
   ]
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
-      <SidebarHeader className="border-b border-sidebar-border">
+    <Sidebar collapsible="icon" className="border-r border-border">
+      <SidebarHeader className="border-b border-border">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/dashboard">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-primary">
-                  <TrendingUp className="h-4 w-4 text-sidebar-primary-foreground" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                  <TrendingUp className="h-4 w-4 text-primary-foreground" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">EconoLab</span>
-                  <span className="text-xs text-sidebar-foreground/60">
+                  <span className="text-xs text-foreground/60">
                     {tCommon("tagline")}
                   </span>
                 </div>
@@ -208,11 +208,11 @@ function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border">
+      <SidebarFooter className="border-t border-border">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip={t("newProject")}>
-              <Link href="/dashboard/projects/new" className="bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90">
+              <Link href="/dashboard/projects/new" className="bg-primary text-primary-foreground hover:bg-primary/90">
                 <Plus className="h-4 w-4" />
                 <span>{t("newProject")}</span>
               </Link>
