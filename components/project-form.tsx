@@ -71,6 +71,8 @@ interface Props {
   submitError: string | null
   onSaveDraft: () => void
   onCalculate: () => void
+  salvageValue: number
+  setSalvageValue: (v: number) => void
 }
 
 export default function ProjectForm(props: Props) {
@@ -107,6 +109,8 @@ export default function ProjectForm(props: Props) {
     submitError,
     onSaveDraft,
     onCalculate,
+    salvageValue,
+    setSalvageValue,
   } = props
 
   const fundingShareValid = Math.abs(calculations.fundingShareTotal - 100) < 0.01
@@ -151,9 +155,36 @@ export default function ProjectForm(props: Props) {
                     id="initialInvestment"
                     type="number"
                     value={initialInvestment}
-                    onChange={(e) => setInitialInvestment(Number(e.target.value))}
+                    onChange={(e) => {
+                      const value = Number(e.target.value)
+                      setInitialInvestment(value)
+                      // Auto-calculate salvage value as 20% of initial investment
+                      setSalvageValue(value * 0.2)
+                    }}
                   />
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="salvageValue" className="flex items-center gap-1">
+                  {t("projectInfo.salvageValue")}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-3 w-3 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{t("projectInfo.salvageValueHelp")}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </Label>
+                <Input
+                  id="salvageValue"
+                  type="number"
+                  value={salvageValue}
+                  onChange={(e) => setSalvageValue(Number(e.target.value))}
+                />
+                <p className="text-xs text-muted-foreground">
+                  {t("projectInfo.salvageValueNote", { percentage: 20, value: (initialInvestment * 0.2).toLocaleString() })}
+                </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="description">{t("projectInfo.descriptionLabel")}</Label>
@@ -572,7 +603,7 @@ export default function ProjectForm(props: Props) {
                       : t("tmarConfig.simpleTab")}
                   </p>
                 </div>
-                <span className="max-w-[8rem] text-right text-xs text-muted-foreground">
+                <span className="max-w-32 text-right text-xs text-muted-foreground">
                   {t(previewFormulaKey)}
                 </span>
               </div>

@@ -1119,6 +1119,9 @@
         "namePlaceholder": "Ej: Instalación de Paneles Solares",
         "initialInvestment": "Inversión Inicial ($)",
         "initialInvestmentHelp": "El costo inicial requerido para comenzar el proyecto",
+        "salvageValue": "Valor de Salvamento / Remanente ($)",
+        "salvageValueHelp": "Valor estimado de los activos al final del horizonte del proyecto",
+        "salvageValueNote": "Calculado automáticamente como {percentage}% de la inversión inicial: ${value}",
         "descriptionLabel": "Descripción",
         "descriptionPlaceholder": "Breve descripción del proyecto..."
       },
@@ -1167,6 +1170,92 @@
       "actions": {
         "saveDraft": "Guardar como Borrador",
         "calculate": "Calcular Indicadores"
+      },
+      "preview": {
+        "title": "Vista Previa en Tiempo Real",
+        "description": "Indicadores estimados con base en los datos actuales",
+        "viable": "Viable",
+        "notViable": "No Viable",
+        "npv": "VPN",
+        "npvHelp": "Valor Presente Neto: Suma de flujos descontados",
+        "addsValue": "El proyecto agrega valor",
+        "destroysValue": "El proyecto destruye valor",
+        "irr": "TIR",
+        "aboveTmar": "Por encima de la TMAR",
+        "belowTmar": "Por debajo de la TMAR",
+        "tmar": "TMAR",
+        "tmarFormulaSimple": "π + β + (π × β)",
+        "tmarFormulaMixta": "Σ (part. × costo)",
+        "bcRatio": "Relación B/C",
+        "bcFeasible": "B/C ≥ 1",
+        "bcNotFeasible": "B/C < 1",
+        "formulaTitle": "Fórmula VPN",
+        "formula": "VPN = -I₀ + Σ FCₜ/(1+r)ᵗ",
+        "usingTmarAsRate": "Usando TMAR como tasa de descuento",
+        "usingTmarAsRateDesc": "Tasa de descuento actual: {rate}%"
+      }
+    },
+    "projectsEditPage": {
+      "title": "Editar Proyecto",
+      "subtitle": "Modifica los parámetros y proyecciones de flujo de caja de tu proyecto existente.",
+      "projectInfo": {
+        "title": "Información del Proyecto",
+        "description": "Detalles básicos sobre tu proyecto de inversión",
+        "name": "Nombre del Proyecto",
+        "namePlaceholder": "Ej: Instalación de Paneles Solares",
+        "initialInvestment": "Inversión Inicial ($)",
+        "initialInvestmentHelp": "El costo inicial requerido para comenzar el proyecto",
+        "salvageValue": "Valor de Salvamento / Remanente ($)",
+        "salvageValueHelp": "Valor estimado de los activos al final del horizonte del proyecto",
+        "salvageValueNote": "Calculado automáticamente como {percentage}% de la inversión inicial: ${value}",
+        "descriptionLabel": "Descripción",
+        "descriptionPlaceholder": "Breve descripción del proyecto..."
+      },
+      "financial": {
+        "title": "Parámetros Financieros",
+        "description": "Configura tasas de descuento y factores económicos",
+        "discountRate": "Tasa de Descuento (%)",
+        "discountRateHelp": "Tasa usada para descontar flujos futuros a valor presente",
+        "inflation": "Inflación (%)",
+        "inflationHelp": "Tasa anual de inflación esperada",
+        "riskPremium": "Prima de Riesgo (%)",
+        "riskPremiumHelp": "Retorno adicional requerido para compensar el riesgo del proyecto",
+        "periods": "Número de Períodos",
+        "useTmarAsDiscountRate": "Usar TMAR calculada como tasa de descuento",
+        "useTmarAsDiscountRateHelp": "Cuando está activado, el campo de tasa de descuento se deshabilitará y se usará la TMAR calculada para todos los cálculos",
+        "usingTmarAsDiscount": "Usando TMAR calculada como tasa de descuento"
+      },
+      "tmarConfig": {
+        "title": "Configuración TMAR",
+        "description": "Selecciona el procedimiento para calcular la tasa mínima aceptable de rendimiento",
+        "simpleTab": "Inversionista único",
+        "mixtaTab": "Múltiples aportantes",
+        "simpleFormula": "TMAR = Inflación + Riesgo + (Inflación × Riesgo)",
+        "mixtaFormula": "TMAR = Σ (Participación % × Costo %)",
+        "fundingDescription": "Fuentes de financiamiento del proyecto",
+        "addSource": "Agregar fuente",
+        "sourceName": "Fuente",
+        "share": "Participación (%)",
+        "cost": "Costo (%)",
+        "weighted": "Ponderado",
+        "shareTotal": "Total participación"
+      },
+      "cashFlows": {
+        "title": "Flujos de Caja por Período",
+        "description": "Modifica los ingresos y egresos esperados para cada año",
+        "addPeriod": "Agregar Período",
+        "period": "Período",
+        "inflows": "Ingresos ($)",
+        "outflows": "Egresos ($)",
+        "netFlow": "Flujo Neto ($)",
+        "year0": "Año 0",
+        "year": "Año {period}",
+        "totalInflows": "Total Ingresos: ",
+        "totalOutflows": "Total Egresos: "
+      },
+      "actions": {
+        "saveDraft": "Guardar Cambios",
+        "calculate": "Actualizar Análisis"
       },
       "preview": {
         "title": "Vista Previa en Tiempo Real",

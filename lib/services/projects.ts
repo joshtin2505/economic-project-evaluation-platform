@@ -14,11 +14,26 @@ export async function fetchProjects() {
 
 export async function fetchProjectById(id: string) {
   const supabase = await createSupabaseClient()
-  const { data, error } = await supabase
+  
+  // Try to fetch with salvage_value column first
+  let { data, error } = await supabase
     .from("projects")
-    .select("id,name,description,initial_investment,discount_rate,inflation,risk_premium,tmar_method,use_tmar_as_discount_rate,funding_sources,periods,results")
+    .select("id,name,description,initial_investment,discount_rate,inflation,risk_premium,tmar_method,use_tmar_as_discount_rate,funding_sources,periods,results,salvage_value")
     .eq("id", id)
     .single()
+
+  // If salvage_value column doesn't exist, fetch without it
+  if (error && error.code === '42703') {
+    const { data: data2, error: error2 } = await supabase
+      .from("projects")
+      .select("id,name,description,initial_investment,discount_rate,inflation,risk_premium,tmar_method,use_tmar_as_discount_rate,funding_sources,periods,results")
+      .eq("id", id)
+      .single()
+    
+    if (error2) throw error2
+    // Add default salvage_value if column doesn't exist
+    return { ...data2, salvage_value: 0 }
+  }
 
   if (error) throw error
   return data

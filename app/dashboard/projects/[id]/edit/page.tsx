@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, use } from "react"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import ProjectForm from "@/components/project-form"
@@ -12,13 +12,13 @@ import * as auth from "@/lib/supabase/auth"
 import { routes } from "@/lib/routes"
 
 interface Props {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default function EditProjectPage({ params }: Props) {
-  const { id } = params
+  const { id } = use(params)
   const router = useRouter()
-  const t = useTranslations("dashboard.projectsNewPage")
+  const t = useTranslations("dashboard.projectsEditPage")
   const form = useProjectForm()
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState<null | "draft" | "calculate">(null)
@@ -26,10 +26,15 @@ export default function EditProjectPage({ params }: Props) {
   useEffect(() => {
     const load = async () => {
       try {
+        console.log('Loading project with id:', id)
         const data = await projectService.fetchProjectById(id)
         const flows = await projectService.fetchCashFlows(id)
+        console.log('Loaded project data:', data)
+        console.log('Loaded cash flows:', flows)
         form.setInitialValues(data ?? {}, flows ?? [])
+        console.log('Form values set')
       } catch (err) {
+        console.error('Error loading project:', err)
         setSubmitError(err instanceof Error ? err.message : "Failed to load project")
       }
     }
@@ -58,6 +63,7 @@ export default function EditProjectPage({ params }: Props) {
         tmar_method: form.tmarMethod,
         use_tmar_as_discount_rate: form.useTmarAsDiscountRate,
         funding_sources: form.fundingSources,
+        salvage_value: form.salvageValue,
         status,
         results:
           mode === "calculate"
@@ -120,6 +126,8 @@ export default function EditProjectPage({ params }: Props) {
         submitError={submitError}
         onSaveDraft={() => void saveProject("draft")}
         onCalculate={() => void saveProject("calculate")}
+        salvageValue={form.salvageValue}
+        setSalvageValue={form.setSalvageValue}
       />
     </div>
   )

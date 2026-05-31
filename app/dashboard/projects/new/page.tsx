@@ -42,6 +42,7 @@ export default function NewProjectPage() {
         tmar_method: form.tmarMethod,
         use_tmar_as_discount_rate: form.useTmarAsDiscountRate,
         funding_sources: form.fundingSources,
+        salvage_value: form.salvageValue,
         status,
         results:
           mode === "calculate"
@@ -111,6 +112,8 @@ export default function NewProjectPage() {
             submitError={submitError}
             onSaveDraft={() => void saveProject("draft")}
             onCalculate={() => void saveProject("calculate")}
+            salvageValue={form.salvageValue}
+            setSalvageValue={form.setSalvageValue}
           />
         </CardContent>
       </Card>

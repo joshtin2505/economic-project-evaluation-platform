@@ -29,6 +29,7 @@ export function useProjectForm(initial?: {
   funding_sources?: FundingSource[];
   cashFlows?: CashFlowRow[];
   use_tmar_as_discount_rate: boolean;
+  salvage_value?: number;
 }) {
   const [projectName, setProjectName] = useState(initial?.name ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
@@ -50,6 +51,9 @@ export function useProjectForm(initial?: {
   );
   const [useTmarAsDiscountRate, setUseTmarAsDiscountRate] = useState<boolean>(
     initial?.use_tmar_as_discount_rate ?? false,
+  );
+  const [salvageValue, setSalvageValue] = useState<number>(
+    initial?.salvage_value ?? 0,
   );
   const [fundingSources, setFundingSources] = useState<FundingSource[]>(
     initial?.funding_sources?.length
@@ -283,6 +287,7 @@ export function useProjectForm(initial?: {
     setRiskPremium(Number(data?.risk_premium) || 0);
     setTmarMethod(data?.tmar_method === "mixta" ? "mixta" : "simple");
     setUseTmarAsDiscountRate(Boolean(data?.use_tmar_as_discount_rate) || false);
+    setSalvageValue(Number(data?.salvage_value) || 0);
     if (Array.isArray(data?.funding_sources) && data.funding_sources.length > 0) {
       setFundingSources(
         data.funding_sources.map((source: FundingSource, index: number) => ({
@@ -377,5 +382,7 @@ export function useProjectForm(initial?: {
     calculations,
     setInitialValues,
     obtenerDatosProyecto,
+    salvageValue,
+    setSalvageValue,
   };
 }

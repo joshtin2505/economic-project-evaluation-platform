@@ -1121,6 +1121,9 @@
         "namePlaceholder": "e.g., Solar Panel Installation",
         "initialInvestment": "Initial Investment ($)",
         "initialInvestmentHelp": "The upfront cost required to start the project",
+        "salvageValue": "Salvage Value / Residual ($)",
+        "salvageValueHelp": "Estimated asset value at the end of the project horizon",
+        "salvageValueNote": "Automatically calculated as {percentage}% of initial investment: ${value}",
         "descriptionLabel": "Description",
         "descriptionPlaceholder": "Brief description of the project..."
       },
@@ -1169,6 +1172,92 @@
       "actions": {
         "saveDraft": "Save as Draft",
         "calculate": "Calculate Indicators"
+      },
+      "preview": {
+        "title": "Real-time Preview",
+        "description": "Estimated indicators based on current inputs",
+        "viable": "Viable",
+        "notViable": "Not Viable",
+        "npv": "NPV (VPN)",
+        "npvHelp": "Net Present Value: Sum of discounted cash flows",
+        "addsValue": "Project adds value",
+        "destroysValue": "Project destroys value",
+        "irr": "IRR (TIR)",
+        "aboveTmar": "Above TMAR",
+        "belowTmar": "Below TMAR",
+        "tmar": "TMAR",
+        "tmarFormulaSimple": "π + β + (π × β)",
+        "tmarFormulaMixta": "Σ (share × cost)",
+        "bcRatio": "B/C Ratio",
+        "bcFeasible": "B/C ≥ 1",
+        "bcNotFeasible": "B/C < 1",
+        "formulaTitle": "NPV Formula",
+        "formula": "NPV = -I₀ + Σ CFₜ/(1+r)ᵗ",
+        "usingTmarAsRate": "Using MARR as discount rate",
+        "usingTmarAsRateDesc": "Current discount rate: {rate}%"
+      }
+    },
+    "projectsEditPage": {
+      "title": "Edit Project",
+      "subtitle": "Modify the parameters and cash flow projections of your existing project.",
+      "projectInfo": {
+        "title": "Project Information",
+        "description": "Basic details about your investment project",
+        "name": "Project Name",
+        "namePlaceholder": "e.g., Solar Panel Installation",
+        "initialInvestment": "Initial Investment ($)",
+        "initialInvestmentHelp": "The upfront cost required to start the project",
+        "salvageValue": "Salvage Value / Residual ($)",
+        "salvageValueHelp": "Estimated asset value at the end of the project horizon",
+        "salvageValueNote": "Automatically calculated as {percentage}% of initial investment: ${value}",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Brief description of the project..."
+      },
+      "financial": {
+        "title": "Financial Parameters",
+        "description": "Configure discount rates and economic factors",
+        "discountRate": "Discount Rate (%)",
+        "discountRateHelp": "Rate used to discount future cash flows to present value",
+        "inflation": "Inflation (%)",
+        "inflationHelp": "Expected annual inflation rate",
+        "riskPremium": "Risk Premium (%)",
+        "riskPremiumHelp": "Additional return required to compensate for project risk",
+        "periods": "Number of Periods",
+        "useTmarAsDiscountRate": "Use calculated MARR as discount rate",
+        "useTmarAsDiscountRateHelp": "When enabled, the discount rate field will be disabled and the calculated MARR will be used for all calculations",
+        "usingTmarAsDiscount": "Using calculated MARR as discount rate"
+      },
+      "tmarConfig": {
+        "title": "MARR Configuration",
+        "description": "Select the procedure to calculate the minimum acceptable rate of return",
+        "simpleTab": "Single investor",
+        "mixtaTab": "Multiple contributors",
+        "simpleFormula": "MARR = Inflation + Risk + (Inflation × Risk)",
+        "mixtaFormula": "MARR = Σ (Share % × Cost %)",
+        "fundingDescription": "Project funding sources",
+        "addSource": "Add source",
+        "sourceName": "Source",
+        "share": "Share (%)",
+        "cost": "Cost (%)",
+        "weighted": "Weighted",
+        "shareTotal": "Total share"
+      },
+      "cashFlows": {
+        "title": "Cash Flows by Period",
+        "description": "Modify expected inflows and outflows for each year",
+        "addPeriod": "Add Period",
+        "period": "Period",
+        "inflows": "Inflows ($)",
+        "outflows": "Outflows ($)",
+        "netFlow": "Net Flow ($)",
+        "year0": "Year 0",
+        "year": "Year {period}",
+        "totalInflows": "Total Inflows: ",
+        "totalOutflows": "Total Outflows: "
+      },
+      "actions": {
+        "saveDraft": "Save Changes",
+        "calculate": "Update Analysis"
       },
       "preview": {
         "title": "Real-time Preview",
