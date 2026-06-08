@@ -41,7 +41,7 @@ export default function AppSidebar() {
   const analysisNavItems = [
     { title: t("vpn"), href: "/dashboard/vpn", icon: TrendingUp },
     { title: t("tir"), href: "/dashboard/tir", icon: Calculator },
-    { title: t("tmar"), href: "/dashboard/tmar", icon: Percent },
+    // { title: t("tmar"), href: "/dashboard/tmar", icon: Percent },
     { title: t("benefitCost"), href: "/dashboard/benefit-cost", icon: Scale },
     { title: t("cashFlow"), href: "/dashboard/cash-flow", icon: LineChart },
   ];
