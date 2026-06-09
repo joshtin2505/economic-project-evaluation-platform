@@ -198,6 +198,8 @@
       "overview": "Overview",
       "projects": "Projects",
       "newProject": "New Project",
+      "recurring": "Recurring",
+      "newRecurring": "New Recurring",
       "main": "Main",
       "searchPlaceholder": "Search projects...",
       "analysis": "Analysis",
@@ -231,6 +233,13 @@
       "tirComparison": "IRR vs MARR Comparison",
       "cashFlowTrend": "Cash Flow Overview",
       "cashFlowTrendDescription": "Inflows and outflows across all active projects",
+      "recurringForecastTitle": "Recurring Cash Flow Forecast",
+      "recurringForecastDescription": "Monthly recurring income and expenses combined into a lightweight forecast.",
+      "openRecurring": "Open recurring items",
+      "monthlyIncome": "Monthly income",
+      "monthlyExpenses": "Monthly expenses",
+      "monthlyNet": "Monthly net",
+      "noRecurringData": "No recurring data yet",
       "NPVTrend": "NPV Evolution",
       "NPVTrendDescription": "Actual vs projected NPV over time",
       "npvEvolutionEmptyTitle": "Evolution unavailable",
@@ -255,6 +264,55 @@
       "status": {
         "viable": "Viable",
         "notViable": "Not Viable"
+      }
+    },
+    "recurringPage": {
+      "title": "Recurring Income & Expenses",
+      "settings": "Settings",
+      "new": "New",
+      "incomeSources": "Income Sources",
+      "expenses": "Recurring Expenses",
+      "table": {
+        "name": "Name",
+        "amount": "Amount",
+        "frequency": "Frequency",
+        "actions": "Actions"
+      },
+      "edit": "Edit",
+      "errors": {
+        "income": "Error fetching income sources",
+        "expenses": "Error fetching recurring expenses"
+      }
+    },
+    "recurringForm": {
+      "types": {
+        "title": "Type",
+        "income": "Income",
+        "expense": "Expense",
+        "select": "Select type"
+      },
+      "name": "Name",
+      "namePlaceholder": "Service retainer",
+      "amount": "Amount",
+      "frequency": "Frequency",
+      "selectFrequency": "Select frequency",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "category": "Category",
+      "categoryPlaceholder": "Operations",
+      "notes": "Notes",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "create": {
+        "income": "New Income Source",
+        "expense": "New Expense"
+      },
+      "edit": {
+        "income": "Edit Income Source",
+        "expense": "Edit Expense"
+      },
+      "errors": {
+        "save": "Unable to save item"
       }
     },
     "projects": {
@@ -910,6 +968,27 @@
       "company": "Company",
       "role": "Role"
     },
+    "business": {
+      "title": "Business Profile",
+      "description": "Capture the operating context used for forecasting and reporting",
+      "type": "Business Type",
+      "selectType": "Select business type",
+      "types": {
+        "freelancer": "Freelancer",
+        "small_business": "Small Business",
+        "agency": "Agency",
+        "startup": "Startup"
+      },
+      "annualRevenue": "Annual Revenue",
+      "taxJurisdiction": "Tax Jurisdiction",
+      "accountingMethod": "Accounting Method",
+      "selectAccountingMethod": "Select accounting method",
+      "accountingMethods": {
+        "cash": "Cash Basis",
+        "accrual": "Accrual Basis",
+        "hybrid": "Hybrid"
+      }
+    },
     "calculations": {
       "title": "Calculation Defaults",
       "description": "Set default values for new project calculations",
@@ -995,6 +1074,27 @@
         "email": "Email",
         "company": "Company",
         "role": "Role"
+      },
+      "business": {
+        "title": "Business Profile",
+        "description": "Capture the operating context used for forecasting and reporting",
+        "type": "Business Type",
+        "selectType": "Select business type",
+        "types": {
+          "freelancer": "Freelancer",
+          "small_business": "Small Business",
+          "agency": "Agency",
+          "startup": "Startup"
+        },
+        "annualRevenue": "Annual Revenue",
+        "taxJurisdiction": "Tax Jurisdiction",
+        "accountingMethod": "Accounting Method",
+        "selectAccountingMethod": "Select accounting method",
+        "accountingMethods": {
+          "cash": "Cash Basis",
+          "accrual": "Accrual Basis",
+          "hybrid": "Hybrid"
+        }
       },
       "calculations": {
         "title": "Calculation Defaults",

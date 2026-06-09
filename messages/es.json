@@ -198,6 +198,8 @@
       "overview": "Resumen",
       "projects": "Proyectos",
       "newProject": "Nuevo Proyecto",
+      "recurring": "Recurrentes",
+      "newRecurring": "Nuevo Recurrente",
       "main": "Principal",
       "searchPlaceholder": "Buscar proyectos...",
       "analysis": "Análisis",
@@ -231,6 +233,13 @@
       "tirComparison": "Comparación TIR vs TMAR",
       "cashFlowTrend": "Tendencia de Flujos de Caja",
       "cashFlowTrendDescription": "Ingresos y egresos a lo largo de todos los proyectos activos",
+      "recurringForecastTitle": "Pronóstico de Caja Recurrente",
+      "recurringForecastDescription": "Ingresos y gastos recurrentes mensuales combinados en un pronóstico ligero.",
+      "openRecurring": "Abrir recurrentes",
+      "monthlyIncome": "Ingresos mensuales",
+      "monthlyExpenses": "Gastos mensuales",
+      "monthlyNet": "Neto mensual",
+      "noRecurringData": "Aún no hay datos recurrentes",
       "NPVTrend": "Evolución del VPN",
       "NPVTrendDescription": "VPN real vs proyectado a lo largo del tiempo",
       "npvEvolutionEmptyTitle": "Evolución no disponible",
@@ -255,6 +264,55 @@
       "status": {
         "viable": "Viable",
         "notViable": "No Viable"
+      }
+    },
+    "recurringPage": {
+      "title": "Ingresos y Gastos Recurrentes",
+      "settings": "Configuración",
+      "new": "Nuevo",
+      "incomeSources": "Fuentes de ingreso",
+      "expenses": "Gastos recurrentes",
+      "table": {
+        "name": "Nombre",
+        "amount": "Monto",
+        "frequency": "Frecuencia",
+        "actions": "Acciones"
+      },
+      "edit": "Editar",
+      "errors": {
+        "income": "Error al obtener las fuentes de ingreso",
+        "expenses": "Error al obtener los gastos recurrentes"
+      }
+    },
+    "recurringForm": {
+      "types": {
+        "title": "Tipo",
+        "income": "Ingreso",
+        "expense": "Gasto",
+        "select": "Selecciona tipo"
+      },
+      "name": "Nombre",
+      "namePlaceholder": "Retainer de servicio",
+      "amount": "Monto",
+      "frequency": "Frecuencia",
+      "selectFrequency": "Selecciona frecuencia",
+      "startDate": "Fecha de inicio",
+      "endDate": "Fecha de fin",
+      "category": "Categoría",
+      "categoryPlaceholder": "Operaciones",
+      "notes": "Notas",
+      "cancel": "Cancelar",
+      "saving": "Guardando...",
+      "create": {
+        "income": "Nuevo ingreso recurrente",
+        "expense": "Nuevo gasto recurrente"
+      },
+      "edit": {
+        "income": "Editar ingreso recurrente",
+        "expense": "Editar gasto recurrente"
+      },
+      "errors": {
+        "save": "No fue posible guardar el elemento"
       }
     },
     "projects": {
@@ -908,6 +966,27 @@
       "company": "Empresa",
       "role": "Rol"
     },
+    "business": {
+      "title": "Perfil de Negocio",
+      "description": "Captura el contexto operativo usado para pronósticos y reportes",
+      "type": "Tipo de negocio",
+      "selectType": "Selecciona tipo de negocio",
+      "types": {
+        "freelancer": "Freelancer",
+        "small_business": "Pequeña empresa",
+        "agency": "Agencia",
+        "startup": "Startup"
+      },
+      "annualRevenue": "Ingresos anuales",
+      "taxJurisdiction": "Jurisdicción fiscal",
+      "accountingMethod": "Método contable",
+      "selectAccountingMethod": "Selecciona método contable",
+      "accountingMethods": {
+        "cash": "Base caja",
+        "accrual": "Base devengo",
+        "hybrid": "Híbrido"
+      }
+    },
     "calculations": {
       "title": "Valores por defecto de Cálculo",
       "description": "Define valores por defecto para los cálculos de nuevos proyectos",
@@ -993,6 +1072,27 @@
         "email": "Correo Electrónico",
         "company": "Empresa",
         "role": "Cargo"
+      },
+      "business": {
+        "title": "Perfil de Negocio",
+        "description": "Captura el contexto operativo usado para pronósticos y reportes",
+        "type": "Tipo de negocio",
+        "selectType": "Selecciona tipo de negocio",
+        "types": {
+          "freelancer": "Freelancer",
+          "small_business": "Pequeña empresa",
+          "agency": "Agencia",
+          "startup": "Startup"
+        },
+        "annualRevenue": "Ingresos anuales",
+        "taxJurisdiction": "Jurisdicción fiscal",
+        "accountingMethod": "Método contable",
+        "selectAccountingMethod": "Selecciona método contable",
+        "accountingMethods": {
+          "cash": "Base caja",
+          "accrual": "Base devengo",
+          "hybrid": "Híbrido"
+        }
       },
       "calculations": {
         "title": "Valores Predeterminados de Cálculo",

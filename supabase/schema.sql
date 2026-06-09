@@ -1,7 +1,19 @@
 -- Core project data
+-- Tenants table for multi-tenant SaaS
+create table if not exists public.tenants (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  slug text unique not null,
+  settings jsonb not null default '{}',
+  created_at timestamptz not null default now()
+);
+
+create index if not exists tenants_slug_idx on public.tenants(slug);
+
 create table if not exists public.projects (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
+  tenant_id uuid references public.tenants(id) on delete cascade,
   name text not null,
   description text default '',
   initial_investment numeric not null default 0,
@@ -28,6 +40,172 @@ create table if not exists public.cash_flows (
 
 create index if not exists projects_user_id_idx on public.projects(user_id);
 create index if not exists cash_flows_project_id_idx on public.cash_flows(project_id);
+
+-- Recurring income sources
+create table if not exists public.income_sources (
+  id uuid primary key default gen_random_uuid(),
+  tenant_id uuid references public.tenants(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  name text not null,
+  amount numeric not null default 0,
+  frequency text not null default 'monthly' check (frequency in ('daily','weekly','monthly','quarterly','annual')),
+  start_date date not null default now(),
+  end_date date,
+  notes text default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists income_sources_tenant_idx on public.income_sources(tenant_id);
+
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists income_sources_set_updated_at on public.income_sources;
+create trigger income_sources_set_updated_at
+before update on public.income_sources
+for each row
+execute function public.set_updated_at();
+
+alter table public.income_sources enable row level security;
+
+-- Expenses recurring
+create table if not exists public.recurring_expenses (
+  id uuid primary key default gen_random_uuid(),
+  tenant_id uuid references public.tenants(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  name text not null,
+  amount numeric not null default 0,
+  category text default '',
+  frequency text not null default 'monthly' check (frequency in ('daily','weekly','monthly','quarterly','annual')),
+  start_date date not null default now(),
+  end_date date,
+  notes text default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists recurring_expenses_tenant_idx on public.recurring_expenses(tenant_id);
+
+drop trigger if exists recurring_expenses_set_updated_at on public.recurring_expenses;
+create trigger recurring_expenses_set_updated_at
+before update on public.recurring_expenses
+for each row
+execute function public.set_updated_at();
+
+alter table public.recurring_expenses enable row level security;
+
+-- Policies for income_sources
+create policy "Users can read income sources in their tenant or own"
+on public.income_sources
+for select
+using (
+  (user_id = auth.uid()) OR (
+    tenant_id is not null AND exists (
+      select 1 from public.user_profiles up where up.id = auth.uid() and up.tenant_id = public.income_sources.tenant_id
+    )
+  )
+);
+
+create policy "Users can create income sources"
+on public.income_sources
+for insert
+with check (
+  (user_id = auth.uid()) OR (
+    tenant_id is not null AND exists (
+      select 1 from public.user_profiles up where up.id = auth.uid() and up.tenant_id = public.income_sources.tenant_id
+    )
+  )
+);
+
+create policy "Users can update income sources in their tenant or own"
+on public.income_sources
+for update
+using (
+  (user_id = auth.uid()) OR (
+    tenant_id is not null AND exists (
+      select 1 from public.user_profiles up where up.id = auth.uid() and up.tenant_id = public.income_sources.tenant_id
+    )
+  )
+)
+with check (
+  (user_id = auth.uid()) OR (
+    tenant_id is not null AND exists (
+      select 1 from public.user_profiles up where up.id = auth.uid() and up.tenant_id = public.income_sources.tenant_id
+    )
+  )
+);
+
+create policy "Users can delete income sources in their tenant or own"
+on public.income_sources
+for delete
+using (
+  (user_id = auth.uid()) OR (
+    tenant_id is not null AND exists (
+      select 1 from public.user_profiles up where up.id = auth.uid() and up.tenant_id = public.income_sources.tenant_id
+    )
+  )
+);
+
+-- Policies for recurring_expenses
+create policy "Users can read recurring expenses in their tenant or own"
+on public.recurring_expenses
+for select
+using (
+  (user_id = auth.uid()) OR (
+    tenant_id is not null AND exists (
+      select 1 from public.user_profiles up where up.id = auth.uid() and up.tenant_id = public.recurring_expenses.tenant_id
+    )
+  )
+);
+
+create policy "Users can create recurring expenses"
+on public.recurring_expenses
+for insert
+with check (
+  (user_id = auth.uid()) OR (
+    tenant_id is not null AND exists (
+      select 1 from public.user_profiles up where up.id = auth.uid() and up.tenant_id = public.recurring_expenses.tenant_id
+    )
+  )
+);
+
+create policy "Users can update recurring expenses in their tenant or own"
+on public.recurring_expenses
+for update
+using (
+  (user_id = auth.uid()) OR (
+    tenant_id is not null AND exists (
+      select 1 from public.user_profiles up where up.id = auth.uid() and up.tenant_id = public.recurring_expenses.tenant_id
+    )
+  )
+)
+with check (
+  (user_id = auth.uid()) OR (
+    tenant_id is not null AND exists (
+      select 1 from public.user_profiles up where up.id = auth.uid() and up.tenant_id = public.recurring_expenses.tenant_id
+    )
+  )
+);
+
+create policy "Users can delete recurring expenses in their tenant or own"
+on public.recurring_expenses
+for delete
+using (
+  (user_id = auth.uid()) OR (
+    tenant_id is not null AND exists (
+      select 1 from public.user_profiles up where up.id = auth.uid() and up.tenant_id = public.recurring_expenses.tenant_id
+    )
+  )
+);
+
 
 create or replace function public.set_updated_at()
 returns trigger
@@ -133,6 +311,11 @@ create table if not exists public.user_profiles (
   display_name text default '',
   company text default '',
   role text default '',
+  tenant_id uuid references public.tenants(id),
+  business_type text not null default 'freelancer' check (business_type in ('freelancer', 'small_business', 'agency', 'startup')),
+  annual_revenue numeric not null default 0,
+  tax_jurisdiction text default '',
+  accounting_method text not null default 'cash' check (accounting_method in ('cash', 'accrual', 'hybrid')),
   default_discount_rate numeric not null default 12,
   default_periods integer not null default 10,
   default_risk_free_rate numeric not null default 4,

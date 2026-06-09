@@ -31,12 +31,20 @@ import {
   type UserProfile,
 } from "@/lib/services/user-profiles";
 
+const businessTypeOptions = [
+  "freelancer",
+  "small_business",
+  "agency",
+  "startup",
+] as const;
+
+const accountingMethodOptions = ["cash", "accrual", "hybrid"] as const;
+
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const t = useTranslations("dashboard");
-  const [profile, setProfile] = useState<Omit<UserProfile, "id">>(
-    DEFAULT_USER_PROFILE,
-  );
+  const [profile, setProfile] =
+    useState<Omit<UserProfile, "id">>(DEFAULT_USER_PROFILE);
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -185,6 +193,103 @@ export default function SettingsPage() {
                     updateProfile("role", event.target.value)
                   }
                 />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Calculator className="h-5 w-5 text-primary" />
+                <CardTitle>{t("business.title")}</CardTitle>
+              </div>
+              <CardDescription>{t("business.description")}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>{t("business.type")}</Label>
+                  <Select
+                    value={profile.business_type}
+                    disabled={isLoading}
+                    onValueChange={(value) =>
+                      updateProfile(
+                        "business_type",
+                        value as UserProfile["business_type"],
+                      )
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("business.selectType")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {businessTypeOptions.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {t(`business.types.${option}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="annualRevenue">
+                    {t("business.annualRevenue")}
+                  </Label>
+                  <Input
+                    id="annualRevenue"
+                    type="number"
+                    min={0}
+                    value={profile.annual_revenue}
+                    disabled={isLoading}
+                    onChange={(event) =>
+                      updateProfile(
+                        "annual_revenue",
+                        Number(event.target.value),
+                      )
+                    }
+                  />
+                </div>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="taxJurisdiction">
+                    {t("business.taxJurisdiction")}
+                  </Label>
+                  <Input
+                    id="taxJurisdiction"
+                    value={profile.tax_jurisdiction}
+                    disabled={isLoading}
+                    onChange={(event) =>
+                      updateProfile("tax_jurisdiction", event.target.value)
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("business.accountingMethod")}</Label>
+                  <Select
+                    value={profile.accounting_method}
+                    disabled={isLoading}
+                    onValueChange={(value) =>
+                      updateProfile(
+                        "accounting_method",
+                        value as UserProfile["accounting_method"],
+                      )
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={t("business.selectAccountingMethod")}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {accountingMethodOptions.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {t(`business.accountingMethods.${option}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -515,9 +620,12 @@ export default function SettingsPage() {
       </div>
 
       <div className="flex justify-end">
-        <Button onClick={() => void handleSave()} disabled={isSaving || isLoading}>
+        <Button
+          onClick={() => void handleSave()}
+          disabled={isSaving || isLoading}
+        >
           <Save className="mr-2 h-4 w-4" />
-          {isSaving ? t("saving") ?? "Saving..." : t("save")}
+          {isSaving ? (t("saving") ?? "Saving...") : t("save")}
         </Button>
       </div>
     </div>

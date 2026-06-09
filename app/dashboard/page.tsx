@@ -73,6 +73,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  fetchIncomeSources,
+  fetchRecurringExpenses,
+  type IncomeSource,
+  type RecurringExpense,
+} from "@/lib/services/recurring";
+import {
+  buildRecurringForecastSummary,
+  type RecurringForecastSummary,
+} from "@/lib/utils/recurring-forecast";
 
 const cashFlowChartConfig = {
   inflow: {
@@ -101,15 +111,28 @@ type KpiChangeType = "positive" | "neutral" | "stored" | "muted";
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
-  const [portfolioEntries, setPortfolioEntries] = useState<ProjectWithCashFlows[]>(
-    [],
-  );
+  const [incomeSources, setIncomeSources] = useState<IncomeSource[]>([]);
+  const [recurringExpenses, setRecurringExpenses] = useState<
+    RecurringExpense[]
+  >([]);
+  const [portfolioEntries, setPortfolioEntries] = useState<
+    ProjectWithCashFlows[]
+  >([]);
   const [featuredProject, setFeaturedProject] = useState<ProjectRecord | null>(
     null,
   );
   const [featuredCashFlows, setFeaturedCashFlows] = useState<CashFlowRecord[]>(
     [],
   );
+  const [recurringForecast, setRecurringForecast] =
+    useState<RecurringForecastSummary>({
+      monthlyIncome: 0,
+      monthlyExpenses: 0,
+      monthlyNet: 0,
+      annualIncome: 0,
+      annualExpenses: 0,
+      annualNet: 0,
+    });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -119,14 +142,24 @@ export default function DashboardPage() {
       setError(null);
 
       try {
-        const projectRows =
-          (await projectService.fetchProjects()) as ProjectRecord[];
+        const [projectRows, incomeRows, expenseRows] = await Promise.all([
+          projectService.fetchProjects(),
+          fetchIncomeSources(),
+          fetchRecurringExpenses(),
+        ]);
         setProjects(projectRows);
+        setIncomeSources(incomeRows ?? []);
+        setRecurringExpenses(expenseRows ?? []);
+        setRecurringForecast(
+          buildRecurringForecastSummary(incomeRows ?? [], expenseRows ?? []),
+        );
 
         const activeProjects = getActiveProjects(projectRows);
         const entries = await Promise.all(
           activeProjects.map(async (project) => {
-            const cashFlowRows = await projectService.fetchCashFlows(project.id);
+            const cashFlowRows = await projectService.fetchCashFlows(
+              project.id,
+            );
             return {
               project,
               cashFlows: (cashFlowRows ?? []) as CashFlowRecord[],
@@ -238,6 +271,9 @@ export default function DashboardPage() {
     ],
     [portfolioMetrics],
   );
+
+  const hasRecurringData =
+    incomeSources.length > 0 || recurringExpenses.length > 0;
 
   const recentCalculations = useMemo(
     () => buildRecentCalculations(projects),
@@ -375,6 +411,66 @@ export default function DashboardPage() {
         ))}
       </div>
 
+      <Card className="overflow-hidden border-primary/15 bg-linear-to-br from-primary/5 via-background to-background">
+        <CardHeader className="flex flex-row items-start justify-between gap-4">
+          <div>
+            <CardTitle>{t("overview.recurringForecastTitle")}</CardTitle>
+            <CardDescription>
+              {t("overview.recurringForecastDescription")}
+            </CardDescription>
+          </div>
+          <Button asChild variant="outline" size="sm">
+            <Link href="/dashboard/recurring">
+              {t("overview.openRecurring")}
+            </Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {hasRecurringData ? (
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="rounded-lg border bg-card p-4">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  {t("overview.monthlyIncome")}
+                </p>
+                <p className="mt-2 text-2xl font-bold">
+                  {formatCompactCurrency(recurringForecast.monthlyIncome)}
+                </p>
+              </div>
+              <div className="rounded-lg border bg-card p-4">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  {t("overview.monthlyExpenses")}
+                </p>
+                <p className="mt-2 text-2xl font-bold">
+                  {formatCompactCurrency(recurringForecast.monthlyExpenses)}
+                </p>
+              </div>
+              <div className="rounded-lg border bg-card p-4">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  {t("overview.monthlyNet")}
+                </p>
+                <p
+                  className={`mt-2 text-2xl font-bold ${recurringForecast.monthlyNet >= 0 ? "text-success" : "text-destructive"}`}
+                >
+                  {formatCompactCurrency(recurringForecast.monthlyNet)}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <Empty className="border border-dashed border-border/60 bg-muted/20">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <LineChart className="h-5 w-5 text-primary/80" />
+                </EmptyMedia>
+                <EmptyTitle>{t("overview.noRecurringData")}</EmptyTitle>
+                <EmptyDescription>
+                  {t("overview.recurringForecastDescription")}
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          )}
+        </CardContent>
+      </Card>
+
       <div className="grid gap-4 lg:grid-cols-7">
         <Card className="lg:col-span-4">
           <CardHeader>
@@ -404,7 +500,9 @@ export default function DashboardPage() {
                   tick={{ fontSize: 12 }}
                   tickLine={false}
                   axisLine={false}
-                  tickFormatter={(value) => formatCompactCurrency(Number(value))}
+                  tickFormatter={(value) =>
+                    formatCompactCurrency(Number(value))
+                  }
                   className="text-muted-foreground"
                 />
                 <ChartTooltip
@@ -502,7 +600,9 @@ export default function DashboardPage() {
                   <EmptyMedia variant="icon">
                     <LineChart className="h-5 w-5 text-primary/80" />
                   </EmptyMedia>
-                  <EmptyTitle>{t("overview.npvEvolutionEmptyTitle")}</EmptyTitle>
+                  <EmptyTitle>
+                    {t("overview.npvEvolutionEmptyTitle")}
+                  </EmptyTitle>
                   <EmptyDescription>
                     {t("overview.npvEvolutionEmptyDescription")}
                   </EmptyDescription>

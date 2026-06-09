@@ -21,7 +21,7 @@ function Providers({
           attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange
+          // disableTransitionOnChange
         >
           {children}
         </ThemeProvider>

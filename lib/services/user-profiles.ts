@@ -5,6 +5,10 @@ export interface UserProfile {
   display_name: string;
   company: string;
   role: string;
+  business_type: "freelancer" | "small_business" | "agency" | "startup";
+  annual_revenue: number;
+  tax_jurisdiction: string;
+  accounting_method: "cash" | "accrual" | "hybrid";
   default_discount_rate: number;
   default_periods: number;
   default_risk_free_rate: number;
@@ -23,6 +27,10 @@ export const DEFAULT_USER_PROFILE: Omit<UserProfile, "id"> = {
   display_name: "",
   company: "",
   role: "",
+  business_type: "freelancer",
+  annual_revenue: 0,
+  tax_jurisdiction: "",
+  accounting_method: "cash",
   default_discount_rate: 12,
   default_periods: 10,
   default_risk_free_rate: 4,

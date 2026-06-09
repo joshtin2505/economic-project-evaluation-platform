@@ -20,6 +20,7 @@ import {
   LineChart,
   Percent,
   Plus,
+  Repeat,
   Scale,
   Settings,
   TrendingUp,
@@ -36,6 +37,7 @@ export default function AppSidebar() {
   const mainNavItems = [
     { title: t("overview"), href: "/dashboard", icon: LayoutDashboard },
     { title: t("projects"), href: "/dashboard/projects", icon: FolderKanban },
+    { title: t("recurring"), href: "/dashboard/recurring", icon: Repeat },
   ];
 
   const analysisNavItems = [
@@ -151,6 +153,20 @@ export default function AppSidebar() {
               >
                 <Plus className="h-4 w-4" />
                 <span>{t("newProject")}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              tooltip={t("newRecurring") ?? "New recurring"}
+            >
+              <Link
+                href="/dashboard/recurring/new"
+                className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+              >
+                <Repeat className="h-4 w-4" />
+                <span>{t("newRecurring") ?? "New recurring"}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
