@@ -1,48 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
-import {
-  AlertCircle,
-  ArrowUpRight,
-  Bell,
-  Calculator,
-  CheckCircle2,
-  Clock,
-  LineChart,
-  Percent,
-  Plus,
-  Scale,
-  TrendingUp,
-} from "lucide-react";
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-} from "recharts";
-import * as projectService from "@/lib/services/projects";
-import {
-  buildCashFlowTimeline,
-  buildFinancialEvolutionData,
-  buildNotifications,
-  buildRecentCalculations,
-  selectFeaturedProject,
-  type CashFlowRecord,
-  type ProjectRecord,
-} from "@/lib/services/project-analytics";
-import {
-  calculatePortfolioMetrics,
-  canShowNpvEvolutionChart,
-  getActiveProjects,
-  type ProjectWithCashFlows,
-} from "@/lib/services/portfolio-analytics";
-import { formatDecimalRate } from "@/lib/utils/project-results";
-import { formatCompactCurrency } from "@/lib/utils/currency-format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -74,15 +31,45 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  fetchIncomeSources,
-  fetchRecurringExpenses,
-  type IncomeSource,
-  type RecurringExpense,
-} from "@/lib/services/recurring";
+  calculatePortfolioMetrics,
+  canShowNpvEvolutionChart,
+  type ProjectWithCashFlows
+} from "@/lib/services/portfolio-analytics";
 import {
-  buildRecurringForecastSummary,
-  type RecurringForecastSummary,
-} from "@/lib/utils/recurring-forecast";
+  buildCashFlowTimeline,
+  buildFinancialEvolutionData,
+  buildNotifications,
+  buildRecentCalculations,
+  type CashFlowRecord,
+  type ProjectRecord
+} from "@/lib/services/project-analytics";
+import { formatCompactCurrency } from "@/lib/utils/currency-format";
+import { formatDecimalRate } from "@/lib/utils/project-results";
+import {
+  AlertCircle,
+  ArrowUpRight,
+  Bell,
+  Calculator,
+  CheckCircle2,
+  Clock,
+  LineChart,
+  Percent,
+  Plus,
+  Scale,
+  TrendingUp,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 const cashFlowChartConfig = {
   inflow: {
@@ -111,10 +98,6 @@ type KpiChangeType = "positive" | "neutral" | "stored" | "muted";
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
-  const [incomeSources, setIncomeSources] = useState<IncomeSource[]>([]);
-  const [recurringExpenses, setRecurringExpenses] = useState<
-    RecurringExpense[]
-  >([]);
   const [portfolioEntries, setPortfolioEntries] = useState<
     ProjectWithCashFlows[]
   >([]);
@@ -124,80 +107,9 @@ export default function DashboardPage() {
   const [featuredCashFlows, setFeaturedCashFlows] = useState<CashFlowRecord[]>(
     [],
   );
-  const [recurringForecast, setRecurringForecast] =
-    useState<RecurringForecastSummary>({
-      monthlyIncome: 0,
-      monthlyExpenses: 0,
-      monthlyNet: 0,
-      annualIncome: 0,
-      annualExpenses: 0,
-      annualNet: 0,
-    });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const load = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const [projectRows, incomeRows, expenseRows] = await Promise.all([
-          projectService.fetchProjects(),
-          fetchIncomeSources(),
-          fetchRecurringExpenses(),
-        ]);
-        setProjects(projectRows);
-        setIncomeSources(incomeRows ?? []);
-        setRecurringExpenses(expenseRows ?? []);
-        setRecurringForecast(
-          buildRecurringForecastSummary(incomeRows ?? [], expenseRows ?? []),
-        );
-
-        const activeProjects = getActiveProjects(projectRows);
-        const entries = await Promise.all(
-          activeProjects.map(async (project) => {
-            const cashFlowRows = await projectService.fetchCashFlows(
-              project.id,
-            );
-            return {
-              project,
-              cashFlows: (cashFlowRows ?? []) as CashFlowRecord[],
-            };
-          }),
-        );
-        setPortfolioEntries(entries);
-
-        const selectedProject = selectFeaturedProject(projectRows);
-        if (selectedProject) {
-          const existing = entries.find(
-            (entry) => entry.project.id === selectedProject.id,
-          );
-          if (existing) {
-            setFeaturedProject(existing.project);
-            setFeaturedCashFlows(existing.cashFlows);
-          } else {
-            const [projectDetail, cashFlowRows] = await Promise.all([
-              projectService.fetchProjectById(selectedProject.id),
-              projectService.fetchCashFlows(selectedProject.id),
-            ]);
-            setFeaturedProject(projectDetail as ProjectRecord);
-            setFeaturedCashFlows((cashFlowRows ?? []) as CashFlowRecord[]);
-          }
-        }
-      } catch (loadError) {
-        setError(
-          loadError instanceof Error
-            ? loadError.message
-            : "Failed to load dashboard data",
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    void load();
-  }, []);
 
   const portfolioMetrics = useMemo(
     () => calculatePortfolioMetrics(projects, portfolioEntries),
@@ -271,9 +183,6 @@ export default function DashboardPage() {
     ],
     [portfolioMetrics],
   );
-
-  const hasRecurringData =
-    incomeSources.length > 0 || recurringExpenses.length > 0;
 
   const recentCalculations = useMemo(
     () => buildRecentCalculations(projects),
@@ -410,66 +319,6 @@ export default function DashboardPage() {
           </Card>
         ))}
       </div>
-
-      <Card className="overflow-hidden border-primary/15 bg-linear-to-br from-primary/5 via-background to-background">
-        <CardHeader className="flex flex-row items-start justify-between gap-4">
-          <div>
-            <CardTitle>{t("overview.recurringForecastTitle")}</CardTitle>
-            <CardDescription>
-              {t("overview.recurringForecastDescription")}
-            </CardDescription>
-          </div>
-          <Button asChild variant="outline" size="sm">
-            <Link href="/dashboard/recurring">
-              {t("overview.openRecurring")}
-            </Link>
-          </Button>
-        </CardHeader>
-        <CardContent>
-          {hasRecurringData ? (
-            <div className="grid gap-4 md:grid-cols-3">
-              <div className="rounded-lg border bg-card p-4">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                  {t("overview.monthlyIncome")}
-                </p>
-                <p className="mt-2 text-2xl font-bold">
-                  {formatCompactCurrency(recurringForecast.monthlyIncome)}
-                </p>
-              </div>
-              <div className="rounded-lg border bg-card p-4">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                  {t("overview.monthlyExpenses")}
-                </p>
-                <p className="mt-2 text-2xl font-bold">
-                  {formatCompactCurrency(recurringForecast.monthlyExpenses)}
-                </p>
-              </div>
-              <div className="rounded-lg border bg-card p-4">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                  {t("overview.monthlyNet")}
-                </p>
-                <p
-                  className={`mt-2 text-2xl font-bold ${recurringForecast.monthlyNet >= 0 ? "text-success" : "text-destructive"}`}
-                >
-                  {formatCompactCurrency(recurringForecast.monthlyNet)}
-                </p>
-              </div>
-            </div>
-          ) : (
-            <Empty className="border border-dashed border-border/60 bg-muted/20">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <LineChart className="h-5 w-5 text-primary/80" />
-                </EmptyMedia>
-                <EmptyTitle>{t("overview.noRecurringData")}</EmptyTitle>
-                <EmptyDescription>
-                  {t("overview.recurringForecastDescription")}
-                </EmptyDescription>
-              </EmptyHeader>
-            </Empty>
-          )}
-        </CardContent>
-      </Card>
 
       <div className="grid gap-4 lg:grid-cols-7">
         <Card className="lg:col-span-4">
