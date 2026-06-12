@@ -30,6 +30,11 @@ import {
   upsertUserProfile,
   type UserProfile,
 } from "@/lib/services/user-profiles";
+import {
+  fetchTenantCompanySettings,
+  updateTenantCompanySettings,
+  type TenantCompanySettings,
+} from "@/lib/services/accounting-setup";
 
 const businessTypeOptions = [
   "freelancer",
@@ -50,6 +55,12 @@ export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [companySettings, setCompanySettings] = useState<TenantCompanySettings>({
+    nit: "",
+    legal_name: "",
+    tax_regime: "simplificado",
+    currency: "cop",
+  });
 
   useEffect(() => {
     const load = async () => {
@@ -74,6 +85,13 @@ export default function SettingsPage() {
             ...current,
             display_name: String(user.user_metadata.full_name),
           }));
+        }
+
+        try {
+          const tenantSettings = await fetchTenantCompanySettings();
+          setCompanySettings(tenantSettings);
+        } catch {
+          // Tenant settings optional for legacy users
         }
       } catch (loadError) {
         setError(
@@ -103,7 +121,12 @@ export default function SettingsPage() {
     setSaved(false);
 
     try {
-      await upsertUserProfile(profile);
+      await upsertUserProfile({
+        ...profile,
+        tax_jurisdiction: profile.tax_jurisdiction || "Colombia",
+        currency: companySettings.currency ?? profile.currency,
+      });
+      await updateTenantCompanySettings(companySettings);
       setSaved(true);
     } catch (saveError) {
       setError(
@@ -287,6 +310,88 @@ export default function SettingsPage() {
                           {t(`business.accountingMethods.${option}`)}
                         </SelectItem>
                       ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Calculator className="h-5 w-5 text-primary" />
+                <CardTitle>Datos fiscales de la empresa</CardTitle>
+              </div>
+              <CardDescription>
+                NIT, razón social y régimen tributario para reportes contables (Colombia)
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="legal_name">Razón social</Label>
+                  <Input
+                    id="legal_name"
+                    value={companySettings.legal_name ?? ""}
+                    disabled={isLoading}
+                    onChange={(e) =>
+                      setCompanySettings((s) => ({
+                        ...s,
+                        legal_name: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="nit">NIT</Label>
+                  <Input
+                    id="nit"
+                    value={companySettings.nit ?? ""}
+                    disabled={isLoading}
+                    onChange={(e) =>
+                      setCompanySettings((s) => ({ ...s, nit: e.target.value }))
+                    }
+                  />
+                </div>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Régimen tributario</Label>
+                  <Select
+                    value={companySettings.tax_regime ?? "simplificado"}
+                    disabled={isLoading}
+                    onValueChange={(value) =>
+                      setCompanySettings((s) => ({
+                        ...s,
+                        tax_regime: value as "simplificado" | "comun",
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="simplificado">Régimen simplificado</SelectItem>
+                      <SelectItem value="comun">Régimen común</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Moneda</Label>
+                  <Select
+                    value={companySettings.currency ?? "cop"}
+                    disabled={isLoading}
+                    onValueChange={(value) =>
+                      setCompanySettings((s) => ({ ...s, currency: value }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="cop">COP — Peso colombiano</SelectItem>
+                      <SelectItem value="usd">USD — Dólar</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

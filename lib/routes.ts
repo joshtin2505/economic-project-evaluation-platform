@@ -9,4 +9,11 @@ export const routes = {
   recurringEdit: (kind: "income" | "expense", id: string) =>
     `/dashboard/recurring/${kind}/${id}/edit`,
   projectEdit: (id: string) => `/dashboard/projects/${id}/edit`,
+  accounting: "/dashboard/accounting",
+  accountingTransactions: "/dashboard/accounting/transactions",
+  accountingContacts: "/dashboard/accounting/contacts",
+  accountingInvoices: "/dashboard/accounting/invoices",
+  accountingBanks: "/dashboard/accounting/banks",
+  accountingReports: "/dashboard/accounting/reports",
+  accountingDian: "/dashboard/accounting/dian",
 };

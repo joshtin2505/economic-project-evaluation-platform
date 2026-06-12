@@ -16,14 +16,18 @@ import {
   Calculator,
   FileText,
   FolderKanban,
+  Landmark,
   LayoutDashboard,
   LineChart,
   Percent,
   Plus,
+  Receipt,
   Repeat,
   Scale,
   Settings,
   TrendingUp,
+  Users,
+  Wallet,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -38,6 +42,14 @@ export default function AppSidebar() {
     { title: t("overview"), href: "/dashboard", icon: LayoutDashboard },
     { title: t("projects"), href: "/dashboard/projects", icon: FolderKanban },
     { title: t("recurring"), href: "/dashboard/recurring", icon: Repeat },
+    { title: t("accounting"), href: "/dashboard/accounting", icon: Wallet },
+  ];
+
+  const accountingNavItems = [
+    { title: t("accountingTransactions"), href: "/dashboard/accounting/transactions", icon: Receipt },
+    { title: t("accountingContacts"), href: "/dashboard/accounting/contacts", icon: Users },
+    { title: t("accountingBanks"), href: "/dashboard/accounting/banks", icon: Landmark },
+    { title: t("accountingReports"), href: "/dashboard/accounting/reports", icon: FileText },
   ];
 
   const analysisNavItems = [
@@ -81,6 +93,28 @@ export default function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {mainNavItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.href}
+                    tooltip={item.title}
+                  >
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>{t("accountingGroup")}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {accountingNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild

@@ -41,6 +41,7 @@ import {
   buildCumulativeCashFlow,
   estimatePaybackPeriod,
 } from "@/lib/services/project-analytics";
+import { ProjectAccountingPanel } from "@/components/accounting/project-accounting-panel";
 
 const timelineChartConfig = {
   inflow: {
@@ -541,6 +542,10 @@ export default function CashFlowPage() {
           </div>
         </CardContent>
       </Card>
+
+      {selectedProjectId && (
+        <ProjectAccountingPanel projectId={selectedProjectId} />
+      )}
     </div>
   );
 }

@@ -210,7 +210,13 @@
       "configuration": "Configuration",
       "tmar": "MARR Settings",
       "reports": "Reports",
-      "settings": "Settings"
+      "settings": "Settings",
+      "accounting": "Accounting",
+      "accountingGroup": "Accounting",
+      "accountingTransactions": "Transactions",
+      "accountingContacts": "Contacts",
+      "accountingBanks": "Banks",
+      "accountingReports": "Financial reports"
     },
     "overview": {
       "title": "Dashboard Overview",

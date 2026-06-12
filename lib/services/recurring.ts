@@ -1,5 +1,6 @@
 "use server";
 import { createClient as createSupabaseClient } from "@/lib/supabase/server";
+import { getSessionContext } from "@/lib/services/session-context";
 
 export type RecurringKind = "income" | "expense";
 
@@ -26,31 +27,6 @@ export interface RecurringExpense {
   start_date: string;
   end_date?: string | null;
   notes?: string | null;
-}
-
-async function getSessionContext() {
-  const supabase = await createSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    throw new Error("Session expired. Please log in again.");
-  }
-
-  const { data: profile, error } = await supabase
-    .from("user_profiles")
-    .select("tenant_id")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  if (error) throw error;
-
-  return {
-    supabase,
-    user,
-    tenantId: profile?.tenant_id ?? null,
-  };
 }
 
 export async function fetchIncomeSources() {

@@ -210,7 +210,13 @@
       "configuration": "Configuración",
       "tmar": "Configuración TMAR",
       "reports": "Reportes",
-      "settings": "Ajustes"
+      "settings": "Ajustes",
+      "accounting": "Contabilidad",
+      "accountingGroup": "Contabilidad",
+      "accountingTransactions": "Transacciones",
+      "accountingContacts": "Contactos",
+      "accountingBanks": "Bancos",
+      "accountingReports": "Reportes contables"
     },
     "overview": {
       "title": "Resumen del Dashboard",

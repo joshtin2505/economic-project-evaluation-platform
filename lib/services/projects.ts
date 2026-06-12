@@ -1,5 +1,15 @@
 "use server";
 import { createClient as createSupabaseClient } from "@/lib/supabase/server";
+import { getSessionContext } from "@/lib/services/session-context";
+
+async function withTenantId(payload: Record<string, unknown>) {
+  const { user, tenantId } = await getSessionContext();
+  return {
+    ...payload,
+    user_id: user.id,
+    tenant_id: tenantId,
+  };
+}
 
 export async function fetchProjects() {
   const supabase = await createSupabaseClient();
@@ -79,11 +89,11 @@ export async function deleteProject(id: string) {
 }
 
 export async function createProjectWithFlows(payload: any, flows: any[]) {
-  console.log("rendering createProjectWithFlows: ", payload);
   const supabase = await createSupabaseClient();
+  const enriched = await withTenantId(payload);
   const { data: project, error: projectError } = await supabase
     .from("projects")
-    .insert(payload)
+    .insert(enriched)
     .select("id")
     .single();
 
