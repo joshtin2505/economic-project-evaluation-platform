@@ -1,5 +1,48 @@
 "use client";
 
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
+import {
+  AlertCircle,
+  ArrowUpRight,
+  Bell,
+  Calculator,
+  CheckCircle2,
+  Clock,
+  LineChart,
+  Percent,
+  Plus,
+  Scale,
+  TrendingUp,
+} from "lucide-react";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from "recharts";
+import * as projectService from "@/lib/services/projects";
+import {
+  buildCashFlowTimeline,
+  buildFinancialEvolutionData,
+  buildNotifications,
+  buildRecentCalculations,
+  selectFeaturedProject,
+  type CashFlowRecord,
+  type ProjectRecord,
+} from "@/lib/services/project-analytics";
+import {
+  calculatePortfolioMetrics,
+  canShowNpvEvolutionChart,
+  getActiveProjects,
+  type ProjectWithCashFlows,
+} from "@/lib/services/portfolio-analytics";
+import { formatDecimalRate } from "@/lib/utils/project-results";
+import { formatCompactCurrency } from "@/lib/utils/currency-format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,46 +73,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  calculatePortfolioMetrics,
-  canShowNpvEvolutionChart,
-  type ProjectWithCashFlows
-} from "@/lib/services/portfolio-analytics";
-import {
-  buildCashFlowTimeline,
-  buildFinancialEvolutionData,
-  buildNotifications,
-  buildRecentCalculations,
-  type CashFlowRecord,
-  type ProjectRecord
-} from "@/lib/services/project-analytics";
-import { formatCompactCurrency } from "@/lib/utils/currency-format";
-import { formatDecimalRate } from "@/lib/utils/project-results";
-import {
-  AlertCircle,
-  ArrowUpRight,
-  Bell,
-  Calculator,
-  CheckCircle2,
-  Clock,
-  LineChart,
-  Percent,
-  Plus,
-  Scale,
-  TrendingUp,
-} from "lucide-react";
-import { useTranslations } from "next-intl";
-import Link from "next/link";
-import { useMemo, useState } from "react";
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-} from "recharts";
 
 const cashFlowChartConfig = {
   inflow: {
@@ -98,9 +101,9 @@ type KpiChangeType = "positive" | "neutral" | "stored" | "muted";
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
-  const [portfolioEntries, setPortfolioEntries] = useState<
-    ProjectWithCashFlows[]
-  >([]);
+  const [portfolioEntries, setPortfolioEntries] = useState<ProjectWithCashFlows[]>(
+    [],
+  );
   const [featuredProject, setFeaturedProject] = useState<ProjectRecord | null>(
     null,
   );
@@ -110,6 +113,58 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const load = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const projectRows =
+          (await projectService.fetchProjects()) as ProjectRecord[];
+        setProjects(projectRows);
+
+        const activeProjects = getActiveProjects(projectRows);
+        const entries = await Promise.all(
+          activeProjects.map(async (project) => {
+            const cashFlowRows = await projectService.fetchCashFlows(project.id);
+            return {
+              project,
+              cashFlows: (cashFlowRows ?? []) as CashFlowRecord[],
+            };
+          }),
+        );
+        setPortfolioEntries(entries);
+
+        const selectedProject = selectFeaturedProject(projectRows);
+        if (selectedProject) {
+          const existing = entries.find(
+            (entry) => entry.project.id === selectedProject.id,
+          );
+          if (existing) {
+            setFeaturedProject(existing.project);
+            setFeaturedCashFlows(existing.cashFlows);
+          } else {
+            const [projectDetail, cashFlowRows] = await Promise.all([
+              projectService.fetchProjectById(selectedProject.id),
+              projectService.fetchCashFlows(selectedProject.id),
+            ]);
+            setFeaturedProject(projectDetail as ProjectRecord);
+            setFeaturedCashFlows((cashFlowRows ?? []) as CashFlowRecord[]);
+          }
+        }
+      } catch (loadError) {
+        setError(
+          loadError instanceof Error
+            ? loadError.message
+            : "Failed to load dashboard data",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void load();
+  }, []);
 
   const portfolioMetrics = useMemo(
     () => calculatePortfolioMetrics(projects, portfolioEntries),
@@ -349,9 +404,7 @@ export default function DashboardPage() {
                   tick={{ fontSize: 12 }}
                   tickLine={false}
                   axisLine={false}
-                  tickFormatter={(value) =>
-                    formatCompactCurrency(Number(value))
-                  }
+                  tickFormatter={(value) => formatCompactCurrency(Number(value))}
                   className="text-muted-foreground"
                 />
                 <ChartTooltip
@@ -449,9 +502,7 @@ export default function DashboardPage() {
                   <EmptyMedia variant="icon">
                     <LineChart className="h-5 w-5 text-primary/80" />
                   </EmptyMedia>
-                  <EmptyTitle>
-                    {t("overview.npvEvolutionEmptyTitle")}
-                  </EmptyTitle>
+                  <EmptyTitle>{t("overview.npvEvolutionEmptyTitle")}</EmptyTitle>
                   <EmptyDescription>
                     {t("overview.npvEvolutionEmptyDescription")}
                   </EmptyDescription>
