@@ -197,6 +197,7 @@
     "sidebar": {
       "overview": "Overview",
       "projects": "Projects",
+      "alternatives": "Alternatives",
       "newProject": "New Project",
       "recurring": "Recurring",
       "newRecurring": "New Recurring",

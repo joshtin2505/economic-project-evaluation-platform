@@ -16,6 +16,7 @@ import {
   Calculator,
   FileText,
   FolderKanban,
+  GitCompare,
   LayoutDashboard,
   LineChart,
   Percent,
@@ -37,6 +38,7 @@ export default function AppSidebar() {
   const mainNavItems = [
     { title: t("overview"), href: "/dashboard", icon: LayoutDashboard },
     { title: t("projects"), href: "/dashboard/projects", icon: FolderKanban },
+    { title: t("alternatives"), href: "/dashboard/alternatives", icon: GitCompare },
     { title: t("recurring"), href: "/dashboard/recurring", icon: Repeat },
   ];
 
