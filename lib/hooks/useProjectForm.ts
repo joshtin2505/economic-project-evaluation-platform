@@ -157,8 +157,7 @@ export function useProjectForm(initial?: {
         source.id === id
           ? {
               ...source,
-              [field]:
-                field === "name" ? String(value) : Number(value) || 0,
+              [field]: field === "name" ? String(value) : Number(value) || 0,
             }
           : source,
       ),
@@ -179,7 +178,9 @@ export function useProjectForm(initial?: {
 
   const removeFundingSource = (id: string) => {
     setFundingSources((current) =>
-      current.length > 1 ? current.filter((source) => source.id !== id) : current,
+      current.length > 1
+        ? current.filter((source) => source.id !== id)
+        : current,
     );
   };
 
@@ -190,9 +191,11 @@ export function useProjectForm(initial?: {
       riskPremium,
       fundingSources,
     );
-    
+
     // Use TMAR as discount rate if checkbox is checked, otherwise use manual discount rate
-    const effectiveDiscountRate = useTmarAsDiscountRate ? tmarPercent : discountRate;
+    const effectiveDiscountRate = useTmarAsDiscountRate
+      ? tmarPercent
+      : discountRate;
     const rate = effectiveDiscountRate / 100;
     let npv = -initialInvestment;
     let totalInflows = 0;
@@ -237,7 +240,8 @@ export function useProjectForm(initial?: {
     const irrPercent = irr * 100;
 
     // Calculate profitability index: PV of benefits / Initial investment
-    const profitabilityIndex = initialInvestment > 0 ? pvBenefits / initialInvestment : 0;
+    const profitabilityIndex =
+      initialInvestment > 0 ? pvBenefits / initialInvestment : 0;
 
     // Calculate payback period
     let cumulativeCashFlow = -initialInvestment;
@@ -245,8 +249,11 @@ export function useProjectForm(initial?: {
     for (let i = 0; i < cashFlows.length; i++) {
       cumulativeCashFlow += cashFlows[i].inflow - cashFlows[i].outflow;
       if (cumulativeCashFlow >= 0) {
-        const previousCumulative = cumulativeCashFlow - (cashFlows[i].inflow - cashFlows[i].outflow);
-        const fraction = Math.abs(previousCumulative) / (cashFlows[i].inflow - cashFlows[i].outflow);
+        const previousCumulative =
+          cumulativeCashFlow - (cashFlows[i].inflow - cashFlows[i].outflow);
+        const fraction =
+          Math.abs(previousCumulative) /
+          (cashFlows[i].inflow - cashFlows[i].outflow);
         paybackPeriod = i + fraction;
         break;
       }
@@ -288,7 +295,10 @@ export function useProjectForm(initial?: {
     setTmarMethod(data?.tmar_method === "mixta" ? "mixta" : "simple");
     setUseTmarAsDiscountRate(Boolean(data?.use_tmar_as_discount_rate) || false);
     setSalvageValue(Number(data?.salvage_value) || 0);
-    if (Array.isArray(data?.funding_sources) && data.funding_sources.length > 0) {
+    if (
+      Array.isArray(data?.funding_sources) &&
+      data.funding_sources.length > 0
+    ) {
       setFundingSources(
         data.funding_sources.map((source: FundingSource, index: number) => ({
           id: source.id ?? `source-${index}`,
@@ -308,48 +318,6 @@ export function useProjectForm(initial?: {
         })),
       );
     }
-  };
-
-  // Function to collect project data for database storage
-  const obtenerDatosProyecto = () => {
-    return {
-      nombre: projectName,
-      descripcion: description,
-      inversion_inicial: initialInvestment,
-      tasa_descuento: discountRate,
-      periodos: periods,
-      metodo_tmar: tmarMethod,
-      usar_tmar_como_tasa_descuento: useTmarAsDiscountRate,
-      // Only include origin data for the selected method
-      datos_tmar: {
-        metodo: tmarMethod,
-        ...(tmarMethod === "simple" ? {
-          inflacion: inflation,
-          prima_riesgo: riskPremium,
-        } : {
-          fuentes_financiamiento: fundingSources.map(source => ({
-            id: source.id,
-            nombre: source.name,
-            participacion: source.share,
-            costo: source.cost,
-          })),
-        }),
-      },
-      flujos_efectivo: cashFlows.map(cf => ({
-        periodo: cf.period,
-        entrada: cf.inflow,
-        salida: cf.outflow,
-        flujo_neto: cf.inflow - cf.outflow,
-      })),
-      resultados: {
-        vpn: calculations.npv,
-        tir: calculations.irr,
-        tmar: calculations.tmar,
-        tasa_descuento_efectiva: calculations.effectiveDiscountRate,
-        relacion_beneficio_costo: calculations.bcRatio,
-        total_entradas: calculations.totalInflows,
-      },
-    };
   };
 
   return {
@@ -381,7 +349,6 @@ export function useProjectForm(initial?: {
     updateCashFlow,
     calculations,
     setInitialValues,
-    obtenerDatosProyecto,
     salvageValue,
     setSalvageValue,
   };
