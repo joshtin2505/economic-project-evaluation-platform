@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "graphify": {
+      "source": "graphify-labs/graphify",
+      "sourceType": "github",
+      "skillPath": "graphify/SKILL.md",
+      "computedHash": "9a575f198ecf60a04cac7ecb51ef399ceaf3570f73121f72a0e25d039ff17c3c"
+    },
     "nextjs-supabase-auth": {
       "source": "sickn33/antigravity-awesome-skills",
       "sourceType": "github",
