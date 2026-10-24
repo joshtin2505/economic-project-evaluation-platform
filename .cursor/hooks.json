@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "command": "\".agents/skills/impeccable/scripts/impeccable\" hook",
+        "commandWindows": "cmd /c if exist \".agents\\skills\\impeccable\\scripts\\impeccable.cmd\" \".agents\\skills\\impeccable\\scripts\\impeccable.cmd\" hook"
+      }
+    ],
+    "stop": [
+      {
+        "command": "\".agents/skills/impeccable/scripts/impeccable\" hook",
+        "commandWindows": "cmd /c if exist \".agents\\skills\\impeccable\\scripts\\impeccable.cmd\" \".agents\\skills\\impeccable\\scripts\\impeccable.cmd\" hook"
+      },
+      {
+        "command": "node .agents/skills/design-taste-frontend/scripts/lint.mjs app components --app",
+        "commandWindows": "node .agents/skills/design-taste-frontend/scripts/lint.mjs app components --app"
+      }
+    ]
+  }
+}

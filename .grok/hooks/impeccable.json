@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "hooks": [
+    {
+      "event": "postToolUse",
+      "tools": ["edit", "write"],
+      "command": "\".agents/skills/impeccable/scripts/impeccable\" hook",
+      "commandWindows": "cmd /c if exist \".agents\\skills\\impeccable\\scripts\\impeccable.cmd\" \".agents\\skills\\impeccable\\scripts\\impeccable.cmd\" hook"
+    },
+    {
+      "event": "stop",
+      "command": "node .agents/skills/design-taste-frontend/scripts/lint.mjs app components --app",
+      "commandWindows": "node .agents/skills/design-taste-frontend/scripts/lint.mjs app components --app"
+    }
+  ]
+}

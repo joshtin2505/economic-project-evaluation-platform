@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "lint:design": "node .agents/skills/design-taste-frontend/scripts/lint.mjs app components --app",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },

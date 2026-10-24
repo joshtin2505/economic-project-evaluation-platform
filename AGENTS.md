@@ -49,7 +49,8 @@ pnpm install
 pnpm dev                    # servidor local
 pnpm exec tsc --noEmit      # ← ÚNICA comprobación real de tipos hoy
 pnpm build                  # compila; NO tipa (next.config.mjs: typescript.ignoreBuildErrors = true)
-pnpm lint                   # no funciona aún: eslint no está instalado (ver AI-READINESS-AUDIT)
+pnpm lint                   # linter eslint
+pnpm lint:design            # linter anti-slop (design-taste-frontend --app)
 ```
 
 ⚠️ `pnpm build` verde **no** prueba que los tipos estén bien. Hasta quitar `ignoreBuildErrors`, la evidencia de tipos es `tsc --noEmit`.
@@ -70,6 +71,7 @@ Reglas de oro de proceso:
 
 - [ ] `pnpm exec tsc --noEmit` sin errores **y** `pnpm build` OK (el build solo no tipa).
 - [ ] Si tocaste UI o flujo: recorrido(s) de `docs/ai/TESTING.md` §8 ejecutados en navegador, ES y EN, con evidencia.
+- [ ] Si tocaste UI: `pnpm lint:design` sin FAILs y respeto a la paleta/tokens de `achromatic-ledger` ([direction.json](.taste-skill/app/direction.json)).
 - [ ] Si tocaste un engine: test(s) con valor esperado calculado independientemente (calculadora/Excel) y casos borde (tasa 0, flujos vacíos, TIR sin solución).
 - [ ] Si tocaste BD: migración nueva + RLS + probado que otro usuario no ve los datos.
 - [ ] Textos en `es.json` y `en.json`.
