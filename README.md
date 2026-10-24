@@ -1,83 +1,48 @@
 # EconoLab
 
-Plataforma para evaluación de proyectos económicos y financieros construida con Next.js, TypeScript, `next-intl`, Tailwind y componentes reutilizables.
+Plataforma para **evaluación de proyectos de inversión**: VPN, TIR, B/C, Payback, TMAR, comparación de alternativas excluyentes,
+cronograma de inversión, control real vs proyectado, escenarios y sensibilidad, financiamiento, depreciación y estados pro-forma.
 
-## Arquitectura actual
+**Stack:** Next.js 16 · React 19 · TypeScript · Supabase (Auth, Postgres, RLS) · next-intl · Tailwind v4 · shadcn/ui · Recharts.
 
-La aplicación usa una sola árbol de rutas activo en `app/`.
-
-- `app/page.tsx`: landing page.
-- `app/dashboard/*`: panel principal y módulos de análisis.
-- `app/layout.tsx`: carga el locale desde la cookie `locale` y entrega `messages` a `NextIntlClientProvider`.
-- `proxy.ts`: passthrough mínimo para compatibilidad con Next 16.
-
-La carpeta localizada `app/[locale]` fue eliminada para evitar duplicación de UI y de navegación.
-
-## Persistencia de idioma
-
-El idioma ya no depende de segmentos dinámicos en la URL.
-
-- El selector de idioma escribe la cookie `locale`.
-- El layout raíz lee esa cookie en el servidor.
-- `next-intl` recibe el locale y los mensajes correctos sin cambiar la ruta.
-
-## Estructura recomendada
-
-La base ya está preparada para separar responsabilidades:
-
-- `app/`: composición de páginas y layouts.
-- `components/`: UI, shells y secciones reutilizables.
-- `components/ui/`: primitivas visuales.
-- `hooks/`: lógica de interacción.
-- `lib/`: utilidades y datos compartidos.
-- `i18n/`: configuración de idioma y helpers.
-- `messages/`: traducciones por idioma.
-
-## Principios SOLID aplicados
-
-- Responsabilidad única: cada layout, componente y helper debe resolver una sola tarea.
-- Abierto/cerrado: extiende con nuevos componentes o secciones sin tocar la base de navegación.
-- Sustitución de Liskov: los componentes UI deben poder reemplazarse sin romper contratos.
-- Segregación de interfaces: exporta helpers pequeños y específicos en vez de módulos monolíticos.
-- Inversión de dependencias: las páginas deben depender de shells y componentes compartidos, no de lógica duplicada.
-
-## Desarrollo
+## Inicio rápido
 
 ```bash
 pnpm install
+cp .env.example .env.local     # completar NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY
 pnpm dev
 ```
 
-## Setup Supabase (MVP)
-
-1. Crea un proyecto en Supabase.
-2. Copia `.env.example` a `.env.local` y configura:
+Base de datos: el esquema vive en `supabase/migrations/` (fuente de verdad). Aplícalo con la CLI de Supabase:
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+supabase link --project-ref <ref>
+supabase db push
 ```
 
-3. Abre el SQL Editor en Supabase y ejecuta el script:
+En *Authentication → Providers* habilita Email. Regístrate en `/auth`. El `dashboard` exige sesión (`proxy.ts`) y las tablas aíslan datos por usuario con RLS.
 
-```sql
--- archivo en este repo
-supabase/schema.sql
-```
-
-4. En Authentication > Providers, habilita Email.
-5. Inicia la app y accede a `/auth` para registrarte/iniciar sesion.
-
-Notas:
-- El `dashboard` esta protegido por sesion.
-- `projects` y `cash_flows` usan RLS para aislar datos por usuario.
-
-## Validación
+## Verificación
 
 ```bash
-pnpm build
+pnpm exec tsc --noEmit   # tipos reales
+pnpm build               # compila (no tipa: next.config.mjs tiene ignoreBuildErrors)
 ```
 
-## Nota
+Estrategia completa de pruebas (código → BD/RLS → navegador): [`docs/ai/TESTING.md`](docs/ai/TESTING.md).
 
-El proyecto todavía tiene lógica de negocio por endurecer, pero la estructura ya quedó lista para hacerlo sin arrastrar dos implementaciones paralelas de la app.
+## Arquitectura en una mirada
+
+- `lib/engines/` — matemática financiera **pura** (sin I/O).
+- `lib/services/` — acceso a Supabase; orquesta los engines.
+- `app/` — páginas (composición). `components/` — UI.
+- Idioma: cookie `locale` (ES/EN) vía `next-intl`; sin segmento `[locale]` en la URL.
+
+## Documentación
+
+Todo está indexado en [`docs/README.md`](docs/README.md):
+
+- Lógica de negocio y fórmulas → [`docs/domain/BUSINESS-LOGIC.md`](docs/domain/BUSINESS-LOGIC.md)
+- Arquitectura y datos → [`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md)
+- **Desarrollo con IA** (runbook de 0 a navegador, skills) → [`docs/ai/DEVELOPMENT-LIFECYCLE.md`](docs/ai/DEVELOPMENT-LIFECYCLE.md) y [`AGENTS.md`](AGENTS.md)
+- Diagnóstico y deuda conocida → [`docs/ai/AI-READINESS-AUDIT.md`](docs/ai/AI-READINESS-AUDIT.md)

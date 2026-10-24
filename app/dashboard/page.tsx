@@ -411,7 +411,7 @@ export default function DashboardPage() {
                   content={
                     <ChartTooltipContent
                       hideLabel
-                      formatter={(value: number | string) => [
+                      formatter={(value: any) => [
                         formatCompactCurrency(Math.abs(Number(value))),
                         "",
                       ]}
@@ -470,7 +470,7 @@ export default function DashboardPage() {
                     content={
                       <ChartTooltipContent
                         hideLabel
-                        formatter={(value: number | string) => [
+                        formatter={(value: any) => [
                           formatCompactCurrency(Number(value)),
                           "",
                         ]}

@@ -21,7 +21,7 @@ export async function fetchProjectById(id: string) {
   let { data, error } = await supabase
     .from("projects")
     .select(
-      "id,name,description,initial_investment,discount_rate,inflation,risk_premium,tmar_method,use_tmar_as_discount_rate,funding_sources,periods,results,salvage_value",
+      "id,name,description,initial_investment,discount_rate,inflation,risk_premium,tmar_method,use_tmar_as_discount_rate,funding_sources,periods,status,results,salvage_value",
     )
     .eq("id", id)
     .single();
@@ -31,7 +31,7 @@ export async function fetchProjectById(id: string) {
     const { data: data2, error: error2 } = await supabase
       .from("projects")
       .select(
-        "id,name,description,initial_investment,discount_rate,inflation,risk_premium,tmar_method,use_tmar_as_discount_rate,funding_sources,periods,results",
+        "id,name,description,initial_investment,discount_rate,inflation,risk_premium,tmar_method,use_tmar_as_discount_rate,funding_sources,periods,status,results",
       )
       .eq("id", id)
       .single();

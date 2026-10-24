@@ -32,6 +32,12 @@ import {
   TrendingUp,
   TrendingDown,
   Clock,
+  Layers,
+  Activity,
+  Sliders,
+  Landmark,
+  Building2,
+  FileSpreadsheet,
 } from "lucide-react"
 import * as projectService from "@/lib/services/projects"
 import { routes } from "@/lib/routes"
@@ -273,6 +279,30 @@ export default function ProjectsPage() {
                           <DropdownMenuItem>
                             <Eye className="mr-2 h-4 w-4" />
                             {t("actions.view")}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => void router.push(routes.projectInvestment(project.id))}>
+                            <Layers className="mr-2 h-4 w-4" />
+                            Cronograma de Inversión
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => void router.push(routes.projectControl(project.id))}>
+                            <Activity className="mr-2 h-4 w-4 text-emerald-500" />
+                            Control Real vs Proyectado
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => void router.push(routes.projectScenarios(project.id))}>
+                            <Sliders className="mr-2 h-4 w-4 text-primary" />
+                            Escenarios & Sensibilidad
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => void router.push(routes.projectFinancing(project.id))}>
+                            <Landmark className="mr-2 h-4 w-4 text-blue-500" />
+                            Financiamiento & WACC
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => void router.push(routes.projectAssets(project.id))}>
+                            <Building2 className="mr-2 h-4 w-4 text-amber-500" />
+                            Activos & Depreciación
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => void router.push(routes.projectProForma(project.id))}>
+                            <FileSpreadsheet className="mr-2 h-4 w-4 text-purple-500" />
+                            Estados Pro-Forma & FCL
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => void router.push(routes.projectEdit(project.id))}>
                             <Edit className="mr-2 h-4 w-4" />

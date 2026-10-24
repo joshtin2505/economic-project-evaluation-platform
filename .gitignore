@@ -15,3 +15,8 @@ node_modules
 .next/
 .DS_Store
 .temp/
+# Evidencia de pruebas manuales/navegador (capturas)
+evidence/
+
+.pnpm-store/
+.npmrc
